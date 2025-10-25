@@ -23,8 +23,8 @@
                 </div>
             @endif
             <div class="card-body px-0 pb-2 ">
-                <div class="p-0">
-                    <table class="table table-hover align-middle mb-0 w-100 text-center table-sm">
+                <div class="table-responsive px-3">
+                    <table class="table table-hover align-middle mb-0 text-center table-sm">
                         <thead class="bg-light">
                             <tr>
                                 <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
@@ -55,14 +55,14 @@
                         <tbody>
                             @foreach ($unit as $index => $units)
                                 <tr class={{ $units->status == 0 ? 'table-secondary' : '' }}>
-                                    <td class="text-body-sm">{{ $index + 1 }}</td>
-                                    <td class="text-body-sm">{{ $units->name }}</td>
-                                    <td class="text-wrap" style="max-width: 300px; white-space: normal;">
+                                    <td class="text-sm">{{ $index + 1 }}</td>
+                                    <td class="text-sm">{{ $units->name }}</td>
+                                    <td class="text-wrap text-sm" style="max-width: 500px; white-space: normal; line-height: 1.2; padding: 6px 12px;">
                                         {{ $units->deskripsi }}</td>
-                                    <td class="text-wrap" style="max-width: 220px; white-space: normal;">
+                                    <td class="text-wrap text-sm" style="max-width: 220px; white-space: normal; line-height: 1.2; padding: 6px 12px;">
                                         {{ $units->lokasi }}</td>
-                                    <td class="text-body-sm">{{ $units->kontak }}</td>
-                                    <td class="text-body-sm">{{ $units->emailUnit }}</td>
+                                    <td class="text-sm" style="padding: 10px 16px;">{{ $units->kontak }}</td>
+                                    <td class="text-sm" style="padding: 10px 16px;">{{ $units->emailUnit }}</td>
                                     <td>
                                         @if ($units->status == 1)
                                             <span class="badge bg-gradient-success text-white px-3 py-2">Aktif</span>
@@ -71,27 +71,29 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <a href=""
-                                            class="btn bg-gradient-info btn-sm text-white btn-view flex-fill {{ $units->status == 0 ? 'd-none' : '' }}"
-                                            data-id="{{ $units->id }}">View</a>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <a href=""
+                                                class="btn bg-gradient-info btn-sm text-white btn-view {{ $units->status == 0 ? 'd-none' : '' }}"
+                                                data-id="{{ $units->id }}">View</a>
 
-                                        <a href=""
-                                            class="btn bg-gradient-warning btn-sm text-white btn-edit flex-fill {{ $units->status == 0 ? 'd-none' : '' }}"
-                                            data-id = "{{ $units->id }}">Edit</a>
+                                            <a href=""
+                                                class="btn bg-gradient-warning btn-sm text-white btn-edit {{ $units->status == 0 ? 'd-none' : '' }}"
+                                                data-id = "{{ $units->id }}">Edit</a>
 
-                                        @if ($units->status == 1)
-                                            <button class="btn btn-danger btn-sm btn-toggle" data-id={{ $units->id }}
-                                                data-active="0">
-                                                <i
-                                                    class= "material-symbols-rounded text-sm align-middle flex-grow-2">block</i>&nbsp;&nbsp;NonAktifkan
-                                            </button>
-                                        @else
-                                            <button class="btn btn-success btn-sm btn-toggle" data-id={{ $unit->id }}
-                                                data-active="1">
-                                                <i
-                                                    class= "material-symbols-rounded text-sm align-middle flex-fill">check_circle</i>&nbsp;&nbsp;Aktifkan
-                                            </button>
-                                        @endif
+                                            @if ($units->status == 1)
+                                                <button class="btn btn-danger btn-sm btn-toggle"
+                                                    data-id={{ $units->id }} data-active="0">
+                                                    <i
+                                                        class= "material-symbols-rounded text-sm align-middle flex-grow-2">block</i>&nbsp;&nbsp;NonAktifkan
+                                                </button>
+                                            @else
+                                                <button class="btn btn-success btn-sm btn-toggle"
+                                                    data-id={{ $units->id }} data-active="1">
+                                                    <i
+                                                        class= "material-symbols-rounded text-sm align-middle">check_circle</i>&nbsp;&nbsp;Aktifkan
+                                                </button>
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

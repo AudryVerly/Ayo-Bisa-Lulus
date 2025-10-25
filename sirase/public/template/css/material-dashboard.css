@@ -29150,26 +29150,8 @@ pre[class*=language-] {
   }
 }
 
-.nav-link.active {
-  border-radius: 0.5rem;
-  transition: all 0.3s ease;
+td .btn {
+  margin-bottom: 0 !important;
 }
-
-/* Supaya kolom teks tidak terlalu rapat di layar kecil */
-@media (max-width: 768px) {
-
-  .table th,
-  .table td {
-    font-size: 12px;
-    padding: 6px 4px;
-  }
-
-  .btn,
-  .badge {
-    font-size: 10px !important;
-    padding: 4px 6px !important;
-  }
-}
-
 
 /*# sourceMappingURL=dashboard-free.css.map */

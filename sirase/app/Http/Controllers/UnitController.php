@@ -12,7 +12,7 @@ class UnitController extends Controller
      */
     public function index()
     {
-        $unit = Unit::all();
+        $unit = Unit::orderBy('status','desc')->paginate(3);
 
         return view('units.index', compact('unit'));
     }

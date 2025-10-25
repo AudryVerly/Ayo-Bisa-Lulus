@@ -14,7 +14,7 @@ class UserController extends Controller
     public function index()
     {
         //ini supaya yang ditampilin yang aktif aja
-        $user = User::orderBy('status','desc')->get();
+        $user = User::orderBy('status','desc')->paginate(5);
 
         return view('users.index',compact('user'));
     }

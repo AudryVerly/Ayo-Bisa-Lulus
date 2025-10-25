@@ -4,97 +4,133 @@
 
 @section('content')
     <div class ="container-fluid py-2">
-        <div class ="card my-4">
-            <div class="card-header p-0 position-relative mt-n4 mx-5 z-index-2">
-                <div
-                    class="bg-gradient-dark shadow-dark border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center px-4">
-                    <h6 class="text-white text-capitalize m-0">Master User</h6>
-                    <a href="{{ route('users.create') }}" class="btn bg-white text-dark border shadow-sm">
-                        <i class="material-symbols-rounded text-sm align-middle text-success">add</i>
-                        <span class="align-middle fw-bold">Tambah User</span>
-                    </a>
-                </div>
-            </div>
+        <div class="row">
+            <div class="col-12">
+                <div class ="card my-4">
+                    <div class="card-header p-0 position-relative mt-n4 mx-5 z-index-2">
+                        <div
+                            class="bg-gradient-dark shadow-dark border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center px-4">
+                            <h6 class="text-white text-capitalize m-0">Master User</h6>
+                            <a href="{{ route('users.create') }}" class="btn bg-white text-dark border shadow-sm">
+                                <i class="material-symbols-rounded text-sm align-middle text-success">add</i>
+                                <span class="align-middle fw-bold">Tambah User</span>
+                            </a>
+                        </div>
+                    </div>
 
-            @if (session('success'))
-                <div id ="alert-message" class="alert alert-success alert-dismissible text-white" role="alert">
-                    {{ session('success') }}</div>
-            @elseif (session('error'))
-                <div id ="alert-message" class="alert alert-danger alert-dismissible text-white" role="alert">
-                    {{ session('error') }}</div>
-            @endif
-            <div class="card-body px-0 pb-2">
-                <div class ="p-0">
-                    {{-- css ini ada dibagian tabel fit --}}
-                    <table class ="table table-hover align-middle mb-0 w-100 text-center table-sm">
-                        <thead class="bg-light">
-                            <tr>
-                                <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
-                                    style="text-align: center;">No</th>
-                                <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
-                                    style="text-align: center;">Nama
-                                </th>
-                                <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
-                                    style="text-align: center">Email
-                                </th>
-                                <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
-                                    style="text-align: center;">Role
-                                </th>
-                                <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
-                                    style="text-align: center;">Status
-                                </th>
-                                <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
-                                    style="text-align: center;">Aksi
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($user as $index => $users)
-                                <tr class={{ $users->status == 0 ? 'table-secondary' : '' }}>
-                                    <td class="text-body-sm" style="text-align: center;">{{ $index + 1 }}</td>
-                                    <td class="text-body-sm" style="text-align: center;">{{ $users->name }}</td>
-                                    <td class="text-body-sm" style="text-align: center;">{{ $users->email }}</td>
-                                    <td class="text-body-sm" style="text-align: center;">{{ $users->role }}</td>
-                                    {{-- <td>{{ $users->status }}</td> --}}
-                                    <td>
-                                        <div class="d-flex justify-content-center align-items-center ">
-                                            @if ($users->status == 1)
-                                                <span class="badge bg-gradient-success text-white px-3 py-2">Aktif</span>
-                                            @else
-                                                <span class="badge bg-gradient-danger text-white px-3 py-2">Nonaktif</span>
-                                            @endif
-                                        </div>
-                                    </td>
-                                    <td>
-                                        {{-- <div class="d-flex justify-content-center align-items-center w-100 gap-2"> --}}
-                                            {{-- data-id ini merupakan untuk mengambil id atau data dari baris yang sedang kita kerjakan --}}
-                                            <a href="{{ route('users.show', $users->id) }}"
-                                                class="btn bg-gradient-info btn-sm text-white btn-view flex-fill {{ $users->status == 0 ? 'd-none' : '' }}"
-                                                data-id="{{ $users->id }}">View</a>
+                    @if (session('success'))
+                        <div id ="alert-message" class="alert alert-success alert-dismissible text-white" role="alert">
+                            {{ session('success') }}</div>
+                    @elseif (session('error'))
+                        <div id ="alert-message" class="alert alert-danger alert-dismissible text-white" role="alert">
+                            {{ session('error') }}</div>
+                    @endif
+                    <div class="card-body px-2 pb-2">
+                        <div class ="table-responsive p-0">
+                            {{-- css ini ada dibagian tabel fit --}}
+                            <table class ="table align-items-center mb-0">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
+                                            style="text-align: center;">No</th>
+                                        <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
+                                            style="text-align: center;">Nama
+                                        </th>
+                                        <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
+                                            style="text-align: center">Email
+                                        </th>
+                                        <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
+                                            style="text-align: center;">Role
+                                        </th>
+                                        <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
+                                            style="text-align: center;">Status
+                                        </th>
+                                        <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
+                                            style="text-align: center;">Aksi
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($user as $index => $users)
+                                        <tr class={{ $users->status == 0 ? 'table-secondary' : '' }}>
+                                            <td class="text-sm" style="text-align: center;">{{ $index + 1 }}</td>
+                                            <td class="text-sm" style="text-align: center;">{{ $users->name }}</td>
+                                            <td class="text-sm" style="text-align: center;">{{ $users->email }}</td>
+                                            <td class="text-sm" style="text-align: center;">{{ $users->role }}</td>
+                                            {{-- <td>{{ $users->status }}</td> --}}
+                                            <td>
+                                                <div class="d-flex justify-content-center align-items-center ">
+                                                    @if ($users->status == 1)
+                                                        <span
+                                                            class="badge bg-gradient-success text-white px-3 py-2">Aktif</span>
+                                                    @else
+                                                        <span
+                                                            class="badge bg-gradient-danger text-white px-3 py-2">Nonaktif</span>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex justify-content-center gap-2">
+                                                    {{-- data-id ini merupakan untuk mengambil id atau data dari baris yang sedang kita kerjakan --}}
+                                                    <a href="{{ route('users.show', $users->id) }}"
+                                                        class="btn bg-gradient-info btn-sm text-white btn-view{{ $users->status == 0 ? 'd-none' : '' }}"
+                                                        data-id="{{ $users->id }} text-sm">View</a>
 
-                                            <a href="{{ route('users.edit', $users->id) }}"
-                                                class="btn bg-gradient-warning btn-sm text-white btn-edit flex-fill {{ $users->status == 0 ? 'd-none' : '' }}"
-                                                data-id = "{{ $users->id }}">Edit</a>
+                                                    <a href="{{ route('users.edit', $users->id) }}"
+                                                        class="btn bg-gradient-warning btn-sm text-white btn-edit {{ $users->status == 0 ? 'd-none' : '' }}"
+                                                        data-id = "{{ $users->id }}">Edit</a>
 
-                                            @if ($users->status == 1)
-                                                <button class="btn btn-danger btn-sm btn-toggle"
-                                                    data-id={{ $users->id }} data-active="0">
-                                                    <i
-                                                        class= "material-symbols-rounded text-sm align-middle flex-grow-2">block</i>&nbsp;&nbsp;NonAktifkan
-                                                </button>
-                                            @else
-                                                <button class="btn btn-success btn-sm btn-toggle"
-                                                    data-id={{ $users->id }} data-active="1">
-                                                    <i
-                                                        class= "material-symbols-rounded text-sm align-middle flex-fill">check_circle</i>&nbsp;&nbsp;Aktifkan
-                                                </button>
-                                            @endif
-                                        {{-- </div> --}}
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                                                    @if ($users->status == 1)
+                                                        <button class="btn btn-danger btn-sm btn-toggle"
+                                                            data-id={{ $users->id }} data-active="0">
+                                                            <i
+                                                                class= "material-symbols-rounded btn-sm text-sm align-middle flex-grow-2">block</i>&nbsp;&nbsp;NonAktifkan
+                                                        </button>
+                                                    @else
+                                                        <button class="btn btn-success btn-sm btn-toggle"
+                                                            data-id={{ $users->id }} data-active="1">
+                                                            <i
+                                                                class= "material-symbols-rounded text-sm align-middle">check_circle</i>&nbsp;&nbsp;Aktifkan
+                                                        </button>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            {{-- <div class="d-flex justify-content-center mt-3">
+                                {{ $user->links('pagination::bootstrap-5') }}
+                            </div> --}}
+                            {{-- yang first page dan lainnya adalah bawaan dari laravel --}}
+                            <nav aria-label="Paging page" class="mt-4">
+                                <ul class="pagination justify-content-end">
+                                    <li class="page-item {{ $user->onFirstPage() ? 'disabled' : '' }}">
+                                        <a class =" page-link {{ $user->onFirstPage() ? 'bg-light text-secondary' : 'bg-dark text-white' }}"
+                                            href="{{ $user->previousPageUrl() ?? '#' }}">
+                                            <span class="material-symbols-rounded">
+                                                keyboard_arrow_left
+                                            </span>
+                                        </a>
+                                    </li>
+
+                                    @for ($i = 1; $i <= $user->lastPage(); $i++)
+                                        <li class="page-item {{ $user->currentPage() == $i ? 'active' : '' }}">
+                                            <a class ="page-link {{ $user->currentPage() == $i ? 'bg-gradient-dark text-white border-0' : 'text-dark' }}"
+                                                href="{{ $user->url($i) }}">{{ $i }}</a>
+                                        </li>
+                                    @endfor
+
+                                    <li class="page-item {{ !$user->hasMorePages() ? 'disabled' : '' }} ">
+                                        <a class =" page-link {{ !$user->hasMorePages() ? 'bg-light text-secondary' : 'bg-dark text-white' }}"
+                                            href="{{ $user->nextPageUrl() ?? '#' }}">
+                                            <span class="material-symbols-rounded">keyboard_arrow_right</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

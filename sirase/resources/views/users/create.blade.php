@@ -27,19 +27,19 @@
                                     </ul>
                                 </div>
                             @endif
-                            <div class="form-group mb-4">
+                            <div class="form-group mb-2">
                                 <label for="name" class="form-label fw-bold text-secondary">Nama Lengkap</label>
                                 <input type="text" id="name" name="name"
                                     class="form-control shadow-sm border rounded-3 px-3 py-2"
                                     placeholder="Masukkan nama lengkap" required>
                             </div>
-                            <div class="form-group mb-4">
+                            <div class="form-group mb-2">
                                 <label for="email" class="form-label fw-bold text-secondary">Email</label>
                                 <input type="text" id="email" name="email"
                                     class="form-control shadow-sm border rounded-3 px-3 py-2"
                                     placeholder="Masukkan Email anda" required>
                             </div>
-                            <div class="form-group mb-4">
+                            <div class="form-group mb-2">
                                 <label for="email" class="form-label fw-bold text-secondary">Role</label>
                                 <select name="role" id="role"
                                     class="form-select shadow-sm border rounded-3 px-3 py-2" required>
@@ -50,7 +50,7 @@
                                     <option value="Mahasiswa">Mahasiswa</option>
                                 </select>
                             </div>
-                            <div class="form-group mb-4">
+                            <div class="form-group mb-2">
                                 <label for="status" class="form-label fw-bold text-secondary">Status Akun</label>
                                 <select name="status" id="status"
                                     class="form-select shadow-sm border rounded-3 px-3 py-2" required>

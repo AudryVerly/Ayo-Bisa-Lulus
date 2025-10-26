@@ -148,9 +148,9 @@
                 alert.style.opacity = '0';
                 setTimeout(() => alert.remove(), 500); //hapus elemen setelah fade out
             }
-        }, 2000); //muncul selama 3 detik
+        }, 3000); //muncul selama 3 detik
 
-        $(document).ready(function() {
+        $(document).ready(function(response) {
             //jadi ketika semua sudah siap dijalankan kita ambil data terlebih dahulu
             $('.btn-toggle').click(function() {
                 //ini merupakan id dari data
@@ -218,7 +218,7 @@
                                 Swal.fire({
                                     icon: 'success',
                                     title: 'Berhasil!',
-                                    text: `User berhasil diaktifkan`,
+                                    text: response.message,
                                     timer: 1500,
                                     showConfirmButton: false
                                 });

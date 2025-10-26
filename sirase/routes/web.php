@@ -3,6 +3,7 @@
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use Phiki\Phast\Root;
 
 Route::get('/', function () {
     return view('dashboard'); 
@@ -23,3 +24,9 @@ Route::post('users/{id}/destroy', [UserController::class,'destroy']);
 //routing unit
 Route::get('/units', [UnitController::class,'index'])->name('units.index');
 Route::get('/units/create', [UnitController::class, 'create'])->name('units.create');
+Route::post('/units',[UnitController::class, 'store'])->name('units.store');
+Route::get('/units/{id}/edit',[UnitController::class, 'edit'])->name('units.edit');
+Route::post('/units/{id}',[UnitController::class, 'update'])->name('units.update');
+Route::get('/units/{id}/show', [UnitController::class, 'show'])->name('units.show');
+Route::post('/units/{id}/active',[UnitController::class, 'active']);
+Route::post('/units/{id}/destroy',[UnitController::class, 'destroy']);

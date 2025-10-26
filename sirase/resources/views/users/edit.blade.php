@@ -11,8 +11,8 @@
                         @csrf
                         {{-- ini untuk menandakan kalau ini digunakaan untuk update data --}}
                         {{-- @method('PUT') --}}
-                        <div class ="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0"><i class="material-symbols-rounded text-sm">edit</i>&nbsp;&nbsp;Edit User</h5>
+                        <div class ="card-header bg-gradient-dark text-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0  text-white d-flex align-items-center"><i class="material-symbols-rounded text-sm text-white">edit</i>&nbsp;&nbsp;Edit User</h5>
                             <a href="{{ route('users.index') }}" class="btn btn-light btn-sm d-flex align-items-center">
                                 <i class="material-symbols-rounded text-sm">arrow_back</i>&nbsp;&nbsp;Kembali
                             </a>
@@ -27,17 +27,17 @@
                                     </ul>
                                 </div>
                             @endif
-                            <div class="form-group mb-4">
+                            <div class="form-group mb-2">
                                 <label for="name" class="form-label fw-bold text-secondary">Nama Lengkap</label>
                                 <input type="text" id="name" name="name" class="form-control shadow-sm border rounded-3 px-3 py-2"
                                     placeholder="Masukkan nama Lengkap" value="{{ $user->name }}" required>
                             </div>
-                            <div class = "form-group mb-4">
+                            <div class = "form-group mb-2">
                                 <label for="email" class="form-label fw-bold text-secondary">Email</label>
                                 <input type="text" id="email" name="email" class="form-control shadow-sm border rounded-3 px-3 py-2"
                                     placeholder="Masukkan email anda" value="{{ $user->email }}" required>
                             </div>
-                            <div class="form-group mb-4">
+                            <div class="form-group mb-2">
                                 <label for="role" class="form-label fw-bold text-secondary">Role User</label>
                                 <select name="role" id="role" class="form-select shadow-sm border rounded-3 px-3 py-2" required>
                                     <option value="SuperAdmin" {{ $user->role == 'SuperAdmin' ? 'selected' : '' }}>Super
@@ -51,7 +51,7 @@
                                     </option>
                                 </select>
                             </div>
-                            {{-- <div class="form-group mb-4">
+                            {{-- <div class="form-group mb-2">
                                 <label for="status" class="form-label fw-bold text-secondary">Status Akun</label>
                                 <select name="status" id="status" class="form-select shadow-sm border rounded-3 px-3 py-2" required>
                                     <option value="1" {{ $user->status == '1' ? 'selected' : '' }}>Aktif</option>

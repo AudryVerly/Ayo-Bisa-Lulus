@@ -12,7 +12,7 @@ class UnitController extends Controller
      */
     public function index()
     {
-        $unit = Unit::orderBy('status','desc')->paginate(3);
+        $unit = Unit::orderBy('status','desc')->paginate(2);
 
         return view('units.index', compact('unit'));
     }
@@ -48,7 +48,7 @@ class UnitController extends Controller
                 'emailUnit'=>$request->emailUnit,
                 'status'=> $request->status
             ]);
-            return redirect()->route('units.index')->with('successs','Unit berhasil ditambahkan.');
+            return redirect()->route('units.index')->with('success','Unit berhasil ditambahkan.');
         }catch(\Exception $e){
             return redirect()->route('units.index')->with('error','Gagal menambahkan Unit: '.$e->getMessage());
         }
@@ -84,7 +84,7 @@ class UnitController extends Controller
                 'deskripsi' => 'required',
                 'lokasi'=> 'required',
                 'kontak'=>'required',
-                'emailUnit'=> 'required|email|unique:unit',
+                'emailUnit'=> 'required|email|unique:unit,emailUnit,' . $unit->id . ',id',
 
             ]);
 
@@ -96,7 +96,7 @@ class UnitController extends Controller
                 'emailUnit'=>$request->emailUnit
             ]);
 
-            return redirect()->route('units.index')->with('successs','Data berhasil diUpdate.');
+            return redirect()->route('units.index')->with('success','Data berhasil diUpdate.');
         }catch(\Exception $e){
              return redirect()->route('units.index')->with('error','Gagal mengubah data unit: ' .$e->getMessage());
         }

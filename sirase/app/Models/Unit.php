@@ -16,4 +16,8 @@ class Unit extends Model
         'emailUnit',
         'status'
     ];
+
+    public function staffUnit(){
+        return $this->hasMany(StaffUnit::class, 'idUnit');
+    }
 }

@@ -25,6 +25,10 @@ class User extends Authenticatable
         'status',
     ];
 
+    public function staffUnit(){
+        return $this->hasMany(StaffUnit::class, 'idUser');
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

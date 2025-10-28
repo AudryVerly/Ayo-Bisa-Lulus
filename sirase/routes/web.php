@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\StaffUnitController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
+use App\Models\StaffUnit;
 use Illuminate\Support\Facades\Route;
 use Phiki\Phast\Root;
 
@@ -30,3 +32,10 @@ Route::post('/units/{id}',[UnitController::class, 'update'])->name('units.update
 Route::get('/units/{id}/show', [UnitController::class, 'show'])->name('units.show');
 Route::post('/units/{id}/active',[UnitController::class, 'active']);
 Route::post('/units/{id}/destroy',[UnitController::class, 'destroy']);
+
+//routing staffUnit
+Route::get('/staffUnits',[StaffUnitController::class, 'index'])->name('staff.index');
+Route::get('/staffUnits/create',[StaffUnitController::class, 'create'])->name('staff.create');
+Route::post('/staffUnits',[StaffUnitController::class, 'store'])->name('staff.store');
+Route::get('/staffUnits/{id}/edit',[StaffUnitController::class, 'edit'])->name('staff.edit');
+Route::post('/staffUnits/{id}',[StaffUnitController::class, 'update'])->name('staff.update');

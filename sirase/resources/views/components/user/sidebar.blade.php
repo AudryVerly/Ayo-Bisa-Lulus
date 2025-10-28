@@ -27,6 +27,12 @@
             <span class="nav-link-text ms-1">Master Unit</span>
           </a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link {{ request()->is('staffUnits*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}" href="{{ route('staff.index') }}">
+            <i class="material-symbols-rounded opacity-5">badge</i>
+            <span class="nav-link-text ms-1">Master Staff Unit</span>
+          </a>
+        </li>
         {{-- <li class="nav-item">
           <a class="nav-link text-dark" href="../pages/tables.html">
             <i class="material-symbols-rounded opacity-5">table_view</i>

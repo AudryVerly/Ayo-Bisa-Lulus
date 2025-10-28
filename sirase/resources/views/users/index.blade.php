@@ -73,7 +73,7 @@
                                                 <div class="d-flex justify-content-center gap-2">
                                                     {{-- data-id ini merupakan untuk mengambil id atau data dari baris yang sedang kita kerjakan --}}
                                                     <a href="{{ route('users.show', $users->id) }}"
-                                                        class="btn bg-gradient-info btn-sm text-white btn-view{{ $users->status == 0 ? 'd-none' : '' }}"
+                                                        class="btn bg-gradient-info btn-sm text-white btn-view {{ $users->status == 0 ? 'd-none' : '' }}"
                                                         data-id="{{ $users->id }} text-sm">View</a>
 
                                                     <a href="{{ route('users.edit', $users->id) }}"
@@ -190,7 +190,7 @@
                                     row.removeClass('table-secondary');
                                     viewBtn.removeClass('d-none');
                                     editBtn.removeClass('d-none');
-                                    badge.removeClass('bg-secondary')
+                                    badge.removeClass('bg-gradient-danger')
                                         .addClass('bg-success')
                                         .text('Aktif');
                                     button.removeClass('btn-success')
@@ -204,7 +204,7 @@
                                     row.addClass('table-secondary');
                                     viewBtn.addClass('d-none');
                                     editBtn.addClass('d-none');
-                                    badge.removeClass('bg-success')
+                                    badge.removeClass('bg-gradient-success')
                                         .addClass('bg-secondary')
                                         .text('Nonaktif');
                                     button.removeClass('btn-danger')

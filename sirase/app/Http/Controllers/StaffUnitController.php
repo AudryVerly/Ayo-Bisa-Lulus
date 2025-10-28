@@ -16,7 +16,7 @@ class StaffUnitController extends Controller
     {
         $staff = StaffUnit::with(['user','unit'])
             ->orderBy('status','desc')
-            ->get();
+            ->paginate();
         return view('staffUnits.index',compact('staff'));
     }
 
@@ -74,7 +74,9 @@ class StaffUnitController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $staff = StaffUnit::with(['user','unit'])
+                ->findOrFail($id);
+        return view('staffUnits.show',compact('staff'));
     }
 
     /**
@@ -104,7 +106,6 @@ class StaffUnitController extends Controller
                 'idUser' => 'required|exists:users,id',
                 'idUnit' => 'required|exists:unit,id',
                 'jabatan'=> 'required',
-                'status' => 'required|boolean',
             ]);
             
             //ini supaya gak keinput double di unit yang sama dengan nama yang sama 
@@ -116,11 +117,10 @@ class StaffUnitController extends Controller
                 return redirect()->route('staff.index')->with('error', 'User ini sudah terdaftar di unit tersebut.');
             }
 
-            StaffUnit::create([
+            $staff->update([
                 'idUser'=>$request->idUser,
                 'idUnit'=>$request->idUnit,
                 'jabatan'=>$request->jabatan,
-                'status'=>$request->status
             ]);
             return redirect()->route('staff.index')->with('success', 'Data Staff Unit berhasil diperbarui.');
         }catch (\Exception $e){
@@ -133,6 +133,17 @@ class StaffUnitController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $staff = StaffUnit::findOrFail($id);
+        $staff->update(['status' => 0]);
+
+        return response()->json(['message' => 'Staff Unit berhasil dinonaktifkan']);
+    }
+
+    public function active (string $id)
+    {
+        $staff = StaffUnit::findOrFail($id);
+        $staff->update(['status' => 1]);
+
+        return response()->json(['message' => 'Staff Unit berhasil diaktifkan']);
     }
 }

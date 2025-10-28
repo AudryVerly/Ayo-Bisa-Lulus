@@ -83,6 +83,10 @@
                                         class="align-middle">&nbsp;&nbsp;batal</span>
                                 </a>
                             </div>
+                            <div class="form-group mb-2">
+                                <label for="name" class="form-label fw-bold text-secondary">Nama User</label>
+                                <select name="idUser" id="idUser" class="form-select shadow-sm border rounded-3 px-3 py-2" required></select>
+                            </div>
                         </div>
                     </form>
                 </div>

@@ -39,3 +39,6 @@ Route::get('/staffUnits/create',[StaffUnitController::class, 'create'])->name('s
 Route::post('/staffUnits',[StaffUnitController::class, 'store'])->name('staff.store');
 Route::get('/staffUnits/{id}/edit',[StaffUnitController::class, 'edit'])->name('staff.edit');
 Route::post('/staffUnits/{id}',[StaffUnitController::class, 'update'])->name('staff.update');
+Route::get('/staffUnits/{id}/show', [StaffUnitController::class, 'show'])->name('staff.show');
+Route::post('/staffUnits/{id}/active',[StaffUnitController::class, 'active']);
+Route::post('/staffUnits/{id}/destroy',[StaffUnitController::class, 'destroy']);

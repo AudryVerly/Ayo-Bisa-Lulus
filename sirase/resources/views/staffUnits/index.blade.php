@@ -60,11 +60,11 @@
                                     </td>
                                     <td>
                                         <div class="d-flex justify-content-center gap-2">
-                                            <a href=""
+                                            <a href="{{ route('staff.show', $staffs->id) }}"
                                                 class="btn bg-gradient-info btn-sm text-white btn-view {{ $staffs->status == 0 ? 'd-none' : '' }}"
                                                 data-id="{{ $staffs->id }}">View</a>
 
-                                            <a href=""
+                                            <a href="{{ route('staff.edit', $staffs->id) }}"
                                                 class="btn bg-gradient-warning btn-sm text-white btn-edit {{ $staffs->status == 0 ? 'd-none' : '' }}"
                                                 data-id = "{{ $staffs->id }}">Edit</a>
 
@@ -87,8 +87,135 @@
                             @endforeach
                         </tbody>
                     </table>
+                    <nav aria-label="Paging page" class="mt-4">
+                        <ul class="pagination justify-content-end">
+                            <li class="page-item {{ $staff->onFirstPage() ? 'disabled' : '' }}">
+                                <a class =" page-link {{ $staff->onFirstPage() ? 'bg-light text-secondary' : 'bg-dark text-white' }}"
+                                    href="{{ $staff->previousPageUrl() ?? '#' }}">
+                                    <span class="material-symbols-rounded">
+                                        keyboard_arrow_left
+                                    </span>
+                                </a>
+                            </li>
+
+                            @for ($i = 1; $i <= $staff->lastPage(); $i++)
+                                <li class="page-item {{ $staff->currentPage() == $i ? 'active' : '' }}">
+                                    <a class ="page-link {{ $staff->currentPage() == $i ? 'bg-gradient-dark text-white border-0' : 'text-dark' }}"
+                                        href="{{ $staff->url($i) }}">{{ $i }}</a>
+                                </li>
+                            @endfor
+
+                            <li class="page-item {{ !$staff->hasMorePages() ? 'disabled' : '' }} ">
+                                <a class =" page-link {{ !$staff->hasMorePages() ? 'bg-light text-secondary' : 'bg-dark text-white' }}"
+                                    href="{{ $staff->nextPageUrl() ?? '#' }}">
+                                    <span class="material-symbols-rounded">keyboard_arrow_right</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    {{-- ini buat alert dialog --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        //kalau ini supaya alertnya hilang dalam 2 detik 
+        setTimeout(() => {
+            const alert = document.getElementById('alert-message');
+            if (alert) {
+                alert.style.transition = 'opacity 0.5s ease';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500); //hapus elemen setelah fade out
+            }
+        }, 3000); //muncul selama 3 detik
+
+        $(document).ready(function(response) {
+            //jadi ketika semua sudah siap dijalankan kita ambil data terlebih dahulu
+            $('.btn-toggle').click(function() {
+                //ini merupakan id dari data
+                const id = $(this).data('id');
+                const activate = $(this).data('active') == 1;
+                const row = $(this).closest('tr');
+                const viewBtn = row.find('.btn-view');
+                const editBtn = row.find('.btn-edit');
+                //ini merupakan bagian tulisan aktif non aktifkan
+                const badge = row.find('td:nth-child(6) span');
+                //button ini adalag button toggle atau this itu berisi semua js yang akan dilakukan 
+                const button = $(this);
+                //ini untuk mengambil dari url untuk mengupdate statusmya
+                const url = activate ? `/staffUnits/${id}/active` : `/staffUnits/${id}/destroy`;
+                const actionText = activate ? 'mengaktifkan' : 'mengnonaktifkan';
+
+                Swal.fire({
+                    title: `Apakah kamu yakin ingin ${actionText} user ini?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, lanjutkan',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        //ini adalah ajax yang digunakan untuk request perubahan dari keamanan laravel
+                        $.ajax({
+                            url: url,
+                            method: 'POST',
+                            data: {
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(response) {
+                                //ini kalau di aktifkan makan semua button akan ditampilkan
+                                if (activate) {
+                                    row.removeClass('table-secondary');
+                                    viewBtn.removeClass('d-none');
+                                    editBtn.removeClass('d-none');
+                                    badge.removeClass('bg-gradient-danger')
+                                        .addClass('bg-gradient-success')
+                                        .text('Aktif');
+                                    button.removeClass('btn-success')
+                                        .addClass('btn-danger')
+                                        .html(
+                                            '<i class="material-symbols-rounded text-sm align-middle">block</i>&nbsp;NonAktifkan'
+                                        );
+                                    button.data('active', 0);
+                                    //ini buat kalau mau matiin buttonya
+                                } else {
+                                    row.addClass('table-secondary');
+                                    viewBtn.addClass('d-none');
+                                    editBtn.addClass('d-none');
+                                    badge.removeClass('bg-gradient-success')
+                                        .addClass('bg-gradient-danger')
+                                        .text('Nonaktif');
+                                    button.removeClass('btn-danger')
+                                        .addClass('btn-success')
+                                        .html(
+                                            '<i class="material-symbols-rounded text-sm align-middle">check_circle</i>&nbsp;Aktifkan'
+                                        );
+                                    button.data('active', 1);
+                                }
+
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil!',
+                                    text: response.message,
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+                            },
+                            error: function() {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: 'Terjadi kesalahan saat mengubah status user.'
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 @endsection

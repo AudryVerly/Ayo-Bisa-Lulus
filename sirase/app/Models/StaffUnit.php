@@ -8,7 +8,7 @@ class StaffUnit extends Model
 {
     protected $table = 'staffUnit';
 
-    protected $fillable = ['idUser', 'idUnit', 'jabatan'];
+    protected $fillable = ['idUser', 'idUnit', 'jabatan','status'];
 
     public function user(){
         return $this->belongsTo(User::class, 'idUser');

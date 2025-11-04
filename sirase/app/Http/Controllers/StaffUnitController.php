@@ -16,7 +16,7 @@ class StaffUnitController extends Controller
     {
         $staff = StaffUnit::with(['user','unit'])
             ->orderBy('status','desc')
-            ->paginate();
+            ->paginate(5);
         return view('staffUnits.index',compact('staff'));
     }
 

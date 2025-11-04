@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\StaffUnitController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
+use App\Models\Mahasiswa;
 use App\Models\StaffUnit;
 use Illuminate\Support\Facades\Route;
 use Phiki\Phast\Root;
@@ -42,3 +44,13 @@ Route::post('/staffUnits/{id}',[StaffUnitController::class, 'update'])->name('st
 Route::get('/staffUnits/{id}/show', [StaffUnitController::class, 'show'])->name('staff.show');
 Route::post('/staffUnits/{id}/active',[StaffUnitController::class, 'active']);
 Route::post('/staffUnits/{id}/destroy',[StaffUnitController::class, 'destroy']);
+
+//routing mahasiswa
+Route::get('/mahasiswas', [MahasiswaController::class, 'index'])->name('mahasiswa.index');
+Route::get('/mahasiswas/create', [MahasiswaController::class, 'create'])->name('mahasiswa.create');
+Route::post('/mahasiswas', [MahasiswaController::class, 'store'])->name('mahasiswa.store');
+Route::get('/mahasiswas/{id}/show',[MahasiswaController::class, 'show'])->name('mahasiswa.show');
+Route::get('/mahasiswas/{id}/edit',[MahasiswaController::class, 'edit'])->name('mahasiswa.edit');
+Route::post('/mahasiswas/{id}', [MahasiswaController::class, 'update'])->name('mahasiswa.update');
+Route::post('/mahasiswas/{id}/active', [MahasiswaController::class, 'active']);
+Route::post('/mahasiswas/{id}/destroy',[MahasiswaController::class, 'destroy']);

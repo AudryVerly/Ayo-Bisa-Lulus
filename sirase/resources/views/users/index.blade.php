@@ -102,34 +102,34 @@
                             {{-- <div class="d-flex justify-content-center mt-3">
                                 {{ $user->links('pagination::bootstrap-5') }}
                             </div> --}}
-                            {{-- yang first page dan lainnya adalah bawaan dari laravel --}}
-                            <nav aria-label="Paging page" class="mt-4">
-                                <ul class="pagination justify-content-end">
-                                    <li class="page-item {{ $user->onFirstPage() ? 'disabled' : '' }}">
-                                        <a class =" page-link {{ $user->onFirstPage() ? 'bg-light text-secondary' : 'bg-dark text-white' }}"
-                                            href="{{ $user->previousPageUrl() ?? '#' }}">
-                                            <span class="material-symbols-rounded">
-                                                keyboard_arrow_left
-                                            </span>
-                                        </a>
-                                    </li>
-
-                                    @for ($i = 1; $i <= $user->lastPage(); $i++)
-                                        <li class="page-item {{ $user->currentPage() == $i ? 'active' : '' }}">
-                                            <a class ="page-link {{ $user->currentPage() == $i ? 'bg-gradient-dark text-white border-0' : 'text-dark' }}"
-                                                href="{{ $user->url($i) }}">{{ $i }}</a>
-                                        </li>
-                                    @endfor
-
-                                    <li class="page-item {{ !$user->hasMorePages() ? 'disabled' : '' }} ">
-                                        <a class =" page-link {{ !$user->hasMorePages() ? 'bg-light text-secondary' : 'bg-dark text-white' }}"
-                                            href="{{ $user->nextPageUrl() ?? '#' }}">
-                                            <span class="material-symbols-rounded">keyboard_arrow_right</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </nav>
                         </div>
+                        {{-- yang first page dan lainnya adalah bawaan dari laravel --}}
+                        <nav aria-label="Paging page" class="mt-4">
+                            <ul class="pagination justify-content-end">
+                                <li class="page-item {{ $user->onFirstPage() ? 'disabled' : '' }}">
+                                    <a class =" page-link {{ $user->onFirstPage() ? 'bg-light text-secondary' : 'bg-dark text-white' }}"
+                                        href="{{ $user->previousPageUrl() ?? '#' }}">
+                                        <span class="material-symbols-rounded">
+                                            keyboard_arrow_left
+                                        </span>
+                                    </a>
+                                </li>
+
+                                @for ($i = 1; $i <= $user->lastPage(); $i++)
+                                    <li class="page-item {{ $user->currentPage() == $i ? 'active' : '' }}">
+                                        <a class ="page-link {{ $user->currentPage() == $i ? 'bg-gradient-dark text-white border-0' : 'text-dark' }}"
+                                            href="{{ $user->url($i) }}">{{ $i }}</a>
+                                    </li>
+                                @endfor
+
+                                <li class="page-item {{ !$user->hasMorePages() ? 'disabled' : '' }} ">
+                                    <a class =" page-link {{ !$user->hasMorePages() ? 'bg-light text-secondary' : 'bg-dark text-white' }}"
+                                        href="{{ $user->nextPageUrl() ?? '#' }}">
+                                        <span class="material-symbols-rounded">keyboard_arrow_right</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>

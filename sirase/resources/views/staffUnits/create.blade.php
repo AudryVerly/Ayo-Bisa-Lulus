@@ -12,7 +12,7 @@
                                     class="material-symbols-rounded text-sm text-white ">person_add</i>&nbsp;&nbsp;Add Staff
                                 Unit
                             </h5>
-                            <a href="{{ route('units.index') }}" class="btn btn-light btn-sm d-flex align-items-center">
+                            <a href="{{ route('staff.index') }}" class="btn btn-light btn-sm d-flex align-items-center">
                                 <i class="material-symbols-rounded text-sm">arrow_back</i>&nbsp;&nbsp;Kembali
                             </a>
                         </div>
@@ -56,7 +56,7 @@
                                 </select>
                             </div>
                             <div class="form-group mb-2">
-                                <label for="jabatan" class="Jabatan"class="form-label fw-bold text-secondary">Masukkan
+                                <label for="jabatan" name="Jabatan" class="form-label fw-bold text-secondary">Masukkan
                                     Jabatan Staff
                                 </label>
                                 <input type="text" id="jabatan" name="jabatan"
@@ -82,10 +82,6 @@
                                     <i class="material-symbols-rounded text-sm">close</i><span
                                         class="align-middle">&nbsp;&nbsp;batal</span>
                                 </a>
-                            </div>
-                            <div class="form-group mb-2">
-                                <label for="name" class="form-label fw-bold text-secondary">Nama User</label>
-                                <select name="idUser" id="idUser" class="form-select shadow-sm border rounded-3 px-3 py-2" required></select>
                             </div>
                         </div>
                     </form>

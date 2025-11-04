@@ -87,33 +87,33 @@
                             @endforeach
                         </tbody>
                     </table>
-                    <nav aria-label="Paging page" class="mt-4">
-                        <ul class="pagination justify-content-end">
-                            <li class="page-item {{ $staff->onFirstPage() ? 'disabled' : '' }}">
-                                <a class =" page-link {{ $staff->onFirstPage() ? 'bg-light text-secondary' : 'bg-dark text-white' }}"
-                                    href="{{ $staff->previousPageUrl() ?? '#' }}">
-                                    <span class="material-symbols-rounded">
-                                        keyboard_arrow_left
-                                    </span>
-                                </a>
-                            </li>
-
-                            @for ($i = 1; $i <= $staff->lastPage(); $i++)
-                                <li class="page-item {{ $staff->currentPage() == $i ? 'active' : '' }}">
-                                    <a class ="page-link {{ $staff->currentPage() == $i ? 'bg-gradient-dark text-white border-0' : 'text-dark' }}"
-                                        href="{{ $staff->url($i) }}">{{ $i }}</a>
-                                </li>
-                            @endfor
-
-                            <li class="page-item {{ !$staff->hasMorePages() ? 'disabled' : '' }} ">
-                                <a class =" page-link {{ !$staff->hasMorePages() ? 'bg-light text-secondary' : 'bg-dark text-white' }}"
-                                    href="{{ $staff->nextPageUrl() ?? '#' }}">
-                                    <span class="material-symbols-rounded">keyboard_arrow_right</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
                 </div>
+                <nav aria-label="Paging page" class="mt-4">
+                    <ul class="pagination justify-content-end">
+                        <li class="page-item {{ $staff->onFirstPage() ? 'disabled' : '' }}">
+                            <a class =" page-link {{ $staff->onFirstPage() ? 'bg-light text-secondary' : 'bg-dark text-white' }}"
+                                href="{{ $staff->previousPageUrl() ?? '#' }}">
+                                <span class="material-symbols-rounded">
+                                    keyboard_arrow_left
+                                </span>
+                            </a>
+                        </li>
+
+                        @for ($i = 1; $i <= $staff->lastPage(); $i++)
+                            <li class="page-item {{ $staff->currentPage() == $i ? 'active' : '' }}">
+                                <a class ="page-link {{ $staff->currentPage() == $i ? 'bg-gradient-dark text-white border-0' : 'text-dark' }}"
+                                    href="{{ $staff->url($i) }}">{{ $i }}</a>
+                            </li>
+                        @endfor
+
+                        <li class="page-item {{ !$staff->hasMorePages() ? 'disabled' : '' }} ">
+                            <a class =" page-link {{ !$staff->hasMorePages() ? 'bg-light text-secondary' : 'bg-dark text-white' }}"
+                                href="{{ $staff->nextPageUrl() ?? '#' }}">
+                                <span class="material-symbols-rounded">keyboard_arrow_right</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>

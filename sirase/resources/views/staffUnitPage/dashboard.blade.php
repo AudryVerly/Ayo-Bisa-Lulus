@@ -1,0 +1,8 @@
+@extends('layouts.app')
+@section('breadcrumb', 'Dashboard')
+{{-- @section('title', 'Dashboard') --}}
+
+@section('content')
+<div class="container-fluid">
+    <h1>Selamat Datang di Dashboard StaffUnit</h1>
+</div>

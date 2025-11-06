@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Cache\Console\CacheTableCommand;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -41,11 +42,12 @@ class UserController extends Controller
             'role' => 'required',
             'status' => 'required|boolean'
         ]);
+        $plain = $request->password ?? 'password';
         //kalau di laravel kalau mau buat baru tinggal pakai ini saja
         User::create([
             'name' =>$request->name,
             'email'=>$request->email,
-            'password'=>bcrypt('password'),
+            'password'=>Hash::make($plain),
             'role' =>$request->role,
             'status' => $request->status
         ]);

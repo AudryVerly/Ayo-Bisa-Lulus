@@ -13,40 +13,40 @@
     <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
         <ul class="navbar-nav">
             @can('role:Mahasiswa')
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('/dashboardMahasiswa') || request()->is('dashboardMahasiswa') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
-                    href="{{ url('/dashboardMahasiswa') }}">
-                    <i class="material-symbols-rounded opacity-5">dashboard</i>
-                    <span class="nav-link-text ms-1">Dashboard</span>
-                </a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('/dashboardMahasiswa') || request()->is('dashboardMahasiswa') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                        href="{{ url('/dashboardMahasiswa') }}">
+                        <i class="material-symbols-rounded opacity-5">dashboard</i>
+                        <span class="nav-link-text ms-1">Dashboard</span>
+                    </a>
+                </li>
             @endcan
             @can('role:StaffUnit')
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('/dashboardStaffUnit') || request()->is('dashboardStaffUnit') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
-                    href="{{ url('/dashboardStaffUnit') }}">
-                    <i class="material-symbols-rounded opacity-5">dashboard</i>
-                    <span class="nav-link-text ms-1">Dashboard</span>
-                </a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('/dashboardStaffUnit') || request()->is('dashboardStaffUnit') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                        href="{{ url('/dashboardStaffUnit') }}">
+                        <i class="material-symbols-rounded opacity-5">dashboard</i>
+                        <span class="nav-link-text ms-1">Dashboard</span>
+                    </a>
+                </li>
             @endcan
             @can('role:AdminUnit')
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('/dashboardAdminUnit') || request()->is('dashboardAdminUnit') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
-                    href="{{ url('/dashboardAdminUnit') }}">
-                    <i class="material-symbols-rounded opacity-5">dashboard</i>
-                    <span class="nav-link-text ms-1">Dashboard</span>
-                </a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('/dashboardAdminUnit') || request()->is('dashboardAdminUnit') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                        href="{{ url('/dashboardAdminUnit') }}">
+                        <i class="material-symbols-rounded opacity-5">dashboard</i>
+                        <span class="nav-link-text ms-1">Dashboard</span>
+                    </a>
+                </li>
             @endcan
             @can('role:SuperAdmin')
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('/dashboard') || request()->is('dashboard') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
-                    href="{{ url('/dashboard') }}">
-                    <i class="material-symbols-rounded opacity-5">dashboard</i>
-                    <span class="nav-link-text ms-1">Dashboard</span>
-                </a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('/dashboard') || request()->is('dashboard') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                        href="{{ url('/dashboard') }}">
+                        <i class="material-symbols-rounded opacity-5">dashboard</i>
+                        <span class="nav-link-text ms-1">Dashboard</span>
+                    </a>
+                </li>
             @endcan
             @can('role:SuperAdmin')
                 <li class="nav-item">
@@ -58,31 +58,40 @@
                 </li>
             @endcan
             @can('role:SuperAdmin')
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('units*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
-                    href="{{ route('units.index') }}">
-                    <i class="material-symbols-rounded opacity-5">corporate_fare</i>
-                    <span class="nav-link-text ms-1">Master Unit</span>
-                </a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('units*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                        href="{{ route('units.index') }}">
+                        <i class="material-symbols-rounded opacity-5">corporate_fare</i>
+                        <span class="nav-link-text ms-1">Master Unit</span>
+                    </a>
+                </li>
             @endcan
             @can('role:SuperAdmin')
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('staffUnits*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
-                    href="{{ route('staff.index') }}">
-                    <i class="material-symbols-rounded opacity-5">badge</i>
-                    <span class="nav-link-text ms-1">Master Staff Unit</span>
-                </a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('staffUnits*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                        href="{{ route('staff.index') }}">
+                        <i class="material-symbols-rounded opacity-5">badge</i>
+                        <span class="nav-link-text ms-1">Master Staff Unit</span>
+                    </a>
+                </li>
             @endcan
             @can('role:SuperAdmin')
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('mahasiswas*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
-                    href="{{ route('mahasiswa.index') }}">
-                    <i class="material-symbols-rounded opacity-5">school</i>
-                    <span class="nav-link-text ms-1">Master Mahasiswa</span>
-                </a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('mahasiswas*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                        href="{{ route('mahasiswa.index') }}">
+                        <i class="material-symbols-rounded opacity-5">school</i>
+                        <span class="nav-link-text ms-1">Master Mahasiswa</span>
+                    </a>
+                </li>
+            @endcan
+            @can('role:AdminUnit')
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('lowongans*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                        href="{{ route('lowongans.index') }}">
+                        <i class="material-symbols-rounded opacity-5">work</i>
+                        <span class="nav-link-text ms-1">Lowongan</span>
+                    </a>
+                </li>
             @endcan
             <hr class="horizontal dark mt-4 mb-2">
             <li class="nav-item mt-3">

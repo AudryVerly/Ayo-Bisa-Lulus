@@ -20,4 +20,9 @@ class Unit extends Model
     public function staffUnit(){
         return $this->hasMany(StaffUnit::class, 'idUnit');
     }
+
+    public function lowongan(){
+        return $this->hasMany(Lowongan::class, 'idUnit');
+    }
+
 }

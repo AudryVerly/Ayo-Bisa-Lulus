@@ -43,6 +43,7 @@
         <!-- End Navbar -->
         @yield('content')
     </main>
+    @yield('side-panel')
     <div class="fixed-plugin">
         <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
             <i class="material-symbols-rounded py-2">settings</i>

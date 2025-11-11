@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\lowonganController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\StaffUnitController;
 use App\Http\Controllers\UnitController;
@@ -30,6 +31,7 @@ Route::middleware(['auth','role:Mahasiswa'])->group(function(){
 
 Route::middleware(['auth','role:AdminUnit'])->group(function(){
    Route::get('/dashboardAdminUnit', function () {return view('adminUnitPage.dashboard');})->name('adminunit.dashboard');
+   Route::get('/lowongans',[lowonganController::class,'index'])->name('lowongans.index');
 });
 
 Route::middleware(['auth','role:StaffUnit'])->group(function(){

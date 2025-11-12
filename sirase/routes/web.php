@@ -32,6 +32,11 @@ Route::middleware(['auth','role:Mahasiswa'])->group(function(){
 Route::middleware(['auth','role:AdminUnit'])->group(function(){
    Route::get('/dashboardAdminUnit', function () {return view('adminUnitPage.dashboard');})->name('adminunit.dashboard');
    Route::get('/lowongans',[lowonganController::class,'index'])->name('lowongans.index');
+   Route::get('/lowongans/{id}/edit', [lowonganController::class, 'edit'])->name('lowongans.edit');
+   Route::post('/lowongans/{id}',[lowonganController::class, 'update'])->name('lowongans.update');
+   Route::get('/lowongans/create',[lowonganController::class, 'create'])->name('lowongans.create');
+   Route::post('/lowongans',[lowonganController::class, 'store'])->name('lowongans.store');
+//    Route::get('/lowongans/{id}/manage',[lowonganController::class, 'show'])->name('lowongans.show');
 });
 
 Route::middleware(['auth','role:StaffUnit'])->group(function(){

@@ -9,10 +9,10 @@
                     <div class="card-header p-0 position-relative mt-n4 mx-5 z-index-2">
                         <div
                             class="bg-gradient-dark shadow-dark border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center px-4">
-                            <h6 class="text-white text-capitalize m-0">Master User</h6>
-                            <a href="" class="btn bg-white text-dark border shadow-sm">
+                            <h6 class="text-white text-capitalize m-0">Lowongan</h6>
+                            <a href="{{ route('lowongans.create') }}" class="btn bg-white text-dark border shadow-sm">
                                 <i class="material-symbols-rounded text-sm align-middle text-success">add</i>
-                                <span class="align-middle fw-bold">Tambah User</span>
+                                <span class="align-middle fw-bold">Tambah Lowongan</span>
                             </a>
                         </div>
                     </div>
@@ -62,7 +62,7 @@
                                             <td class="text-sm" style="text-align: center;">{{ $lowongans->unit->name }}
                                             </td>
                                             <td class="text-sm" style="text-align: center;">
-                                                {{ $lowongans->durasiKerja }}</td>
+                                                {{ $lowongans->durasiKerja }} bulan </td>
                                             <td class="text-sm" style="text-align: center;">
                                                 {{ $lowongans->awalPendaftaran }}</td>
                                             <td class="text-sm" style="text-align: center;">
@@ -78,10 +78,131 @@
                                                     @endif
                                                 </div>
                                             </td>
+                                            <td>
+                                                <div class="d-flex justify-content-center gap-2"
+                                                    style="text-align: center;">
+                                                    {{-- ini tuh buat modal-> modal adalah kek popup di boostrap --}}
+                                                    <button type="button" class="btn bg-gradient-info btn-sm text-white"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#detailModal{{ $lowongans->id }}">
+                                                        Manage Form
+                                                    </button>
+                                                </div>
+                                            </td>
                                         </tr>
+                                        @push('modals')
+                                            <div class="modal fade" id="detailModal{{ $lowongans->id }}" tabindex="-1"
+                                                aria-labelledby="detailModalLabel{{ $lowongans->id }}" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div
+                                                            class="modal-header d-flex justify-content-between align-items-center bg-dark text-white px-4 py-3">
+                                                            <div>
+                                                                <h5 class="modal-title"
+                                                                    id="detailModalLabel{{ $lowongans->id }}"
+                                                                    style="color: white;">
+                                                                    {{ $lowongans->judulLowongan }}
+                                                                </h5>
+                                                                <small class="text-white-50">Detail Informasi Lowongan</small>
+                                                            </div>
+                                                            <div class="d-flex align-items-center gap-2">
+                                                                @if ($lowongans->status == 1)
+                                                                    <span class="badge bg-success px-3 py-2">Open</span>
+                                                                @else
+                                                                    <span class="badge bg-danger px-3 py-2">Closed</span>
+                                                                @endif
+                                                                <button type="button" class="btn-close btn-close-white"
+                                                                    data-bs-dismiss="modal"></button>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="modal-body">
+                                                            <div class="mb-2">
+                                                                <strong>Posisi: </strong> {{ $lowongans->posisiLowongan }}
+                                                            </div>
+                                                            <div class="mb-2">
+                                                                <strong>Unit: </strong> {{ $lowongans->unit->name ?? '-' }}
+                                                            </div>
+                                                            <div class="mb-2">
+                                                                <strong>Durasi Kerja: </strong>
+                                                                {{ $lowongans->durasiKerja ?? '-' }} bulan
+                                                            </div>
+                                                            <div class="mb-2">
+                                                                <strong>Periode Pendaftaran: </strong>
+                                                                {{ \Carbon\Carbon::parse($lowongans->awalPendaftaran)->translatedFormat('d F Y ') }}
+                                                                -
+                                                                {{ \Carbon\Carbon::parse($lowongans->batasPendaftaran)->translatedFormat('d F Y ') }}
+                                                            </div>
+                                                            <hr
+                                                                style="border-top: 2px solid rgba(21, 21, 21, 0.2); margin: 1rem 0;">
+                                                            <div class="mb-2">
+                                                                <strong class="mb-1">Periode Kerja : </strong>
+                                                                {{ \Carbon\Carbon::parse($lowongans->mulaiKerja)->translatedFormat('d F Y ') }}
+                                                                -
+                                                                {{ \Carbon\Carbon::parse($lowongans->akhirKerja)->translatedFormat('d F Y ') }}
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <h6 class="mb-1">Deskripsi</h6>
+                                                                <p>
+                                                                    {{ $lowongans->deskripsi ?? 'Tidak ada deskripsi.' }}</p>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <h6 class="mb-1">Kualifikasi</h6>
+                                                                @if (!empty($lowongans->kualifikasi))
+                                                                    <ul>
+                                                                        @foreach (explode("\n", $lowongans->kualifikasi) as $kuali)
+                                                                            <li>{{ $kuali }}</li>
+                                                                        @endforeach
+                                                                    </ul>
+                                                                @else
+                                                                    <p class="text-muted">Tidak ada kualifikasi tercatat.</p>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="modal-footer">
+                                                            <div>
+                                                                <a href="{{ route('lowongans.edit', $lowongans->id) }}"
+                                                                    class="btn bg-gradient-info text-white px-4">
+                                                                    <i class="material-symbols-rounded text-sm">edit</i><span
+                                                                        class="align-middle">&nbsp;&nbsp;Edit Lowongan</span>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endpush
                                     @endforeach
                                 </tbody>
                             </table>
+                            {{-- yang first page dan lainnya adalah bawaan dari laravel --}}
+                            <nav aria-label="Paging page" class="mt-4">
+                                <ul class="pagination justify-content-end">
+                                    <li class="page-item {{ $lowongan->onFirstPage() ? 'disabled' : '' }}">
+                                        <a class =" page-link {{ $lowongan->onFirstPage() ? 'bg-light text-secondary' : 'bg-dark text-white' }}"
+                                            href="{{ $lowongan->previousPageUrl() ?? '#' }}">
+                                            <span class="material-symbols-rounded">
+                                                keyboard_arrow_left
+                                            </span>
+                                        </a>
+                                    </li>
+
+                                    @for ($i = 1; $i <= $lowongan->lastPage(); $i++)
+                                        <li class="page-item {{ $lowongan->currentPage() == $i ? 'active' : '' }}">
+                                            <a class ="page-link {{ $lowongan->currentPage() == $i ? 'bg-gradient-dark text-white border-0' : 'text-dark' }}"
+                                                href="{{ $lowongan->url($i) }}">{{ $i }}</a>
+                                        </li>
+                                    @endfor
+
+                                    <li class="page-item {{ !$lowongan->hasMorePages() ? 'disabled' : '' }} ">
+                                        <a class =" page-link {{ !$lowongan->hasMorePages() ? 'bg-light text-secondary' : 'bg-dark text-white' }}"
+                                            href="{{ $lowongan->nextPageUrl() ?? '#' }}">
+                                            <span class="material-symbols-rounded">keyboard_arrow_right</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
                         </div>
                     </div>
                 </div>

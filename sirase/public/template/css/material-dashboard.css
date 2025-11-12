@@ -29154,4 +29154,53 @@ td .btn {
   margin-bottom: 0 !important;
 }
 
+/* ini buat header modalnya */
+.modal-header {
+  background: linear-gradient(135deg,#10203a,#12304a);
+  /* ungu ke biru */
+  color: white;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Pastikan backdrop & modal berada di atas semua elemen lain */
+.modal-backdrop {
+  z-index: 11000 !important;
+}
+
+.modal {
+  z-index: 11001 !important;
+  position: fixed !important;
+}
+
+.modal-dialog-centered {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+}
+
+/* Turunkan z-index sidebar agar backdrop/modal bisa menutupi.
+   Nilai 1030 aman karena lebih kecil dari 11000. */
+#sidenav-main,
+.sidenav {
+  z-index: 1030 !important;
+}
+
+/* turunkan fixed-plugin agar tidak muncul di atas modal */
+.fixed-plugin {
+  z-index: 1020 !important;
+}
+
+/* Saat modal terbuka, non-aktifkan interaksi pada sidebar supaya rapi */
+body.modal-open #sidenav-main,
+body.modal-open .sidenav {
+  pointer-events: none;
+  /* optional: sedikit redupkan untuk visual */
+  opacity: 0.95;
+  transition: opacity 0.15s ease;
+}
+
+/* ini berguna supaya nanti kualifikasi muncul dalam bentuk bullet */
+
 /*# sourceMappingURL=dashboard-free.css.map */

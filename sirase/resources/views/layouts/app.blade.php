@@ -42,8 +42,10 @@
         <x-user.navbar />
         <!-- End Navbar -->
         @yield('content')
+
+        {{-- ini but side panel --}}
+        @yield('side-panel')
     </main>
-    @yield('side-panel')
     <div class="fixed-plugin">
         <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
             <i class="material-symbols-rounded py-2">settings</i>
@@ -148,6 +150,8 @@
             }
         });
     </script>
+
+    @stack('modals')
 </body>
 
 </html>

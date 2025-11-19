@@ -18,7 +18,7 @@
                             </a>
                         </div>
                         <div class="card-body">
-                            @if ($errors->any())
+                            {{-- @if ($errors->any())
                                 <div class="alert alert-danger">
                                     <ul class="mb-0">
                                         @foreach ($errors->all() as $error)
@@ -26,28 +26,34 @@
                                         @endforeach
                                     </ul>
                                 </div>
-                            @endif
+                            @endif --}}
                             <div class="form-group mb-2">
                                 <label for="name" class="form-label fw-bold text-secondary">Nama Lengkap</label>
                                 <input type="text" id="name" name="name" class="form-control shadow-sm border rounded-3 px-3 py-2"
-                                    placeholder="Masukkan nama Lengkap" value="{{ $user->name }}" required>
+                                    placeholder="Masukkan nama Lengkap" value="{{ old('name', $user->name) }}" >
+                                @error('name')
+                                    <div class="text-danger">{{$message}}</div>
+                                @enderror
                             </div>
                             <div class = "form-group mb-2">
                                 <label for="email" class="form-label fw-bold text-secondary">Email</label>
                                 <input type="text" id="email" name="email" class="form-control shadow-sm border rounded-3 px-3 py-2"
-                                    placeholder="Masukkan email anda" value="{{ $user->email }}" required>
+                                    placeholder="Masukkan email anda" value="{{ old('email',$user->email) }}">
+                                 @error('email')
+                                    <div class="text-danger">{{$message}}</div>
+                                @enderror
                             </div>
                             <div class="form-group mb-2">
                                 <label for="role" class="form-label fw-bold text-secondary">Role User</label>
-                                <select name="role" id="role" class="form-select shadow-sm border rounded-3 px-3 py-2" required>
-                                    <option value="SuperAdmin" {{ $user->role == 'SuperAdmin' ? 'selected' : '' }}>Super
+                                <select name="role" id="role" class="form-select shadow-sm border rounded-3 px-3 py-2">
+                                    <option value="SuperAdmin" {{old('role',$user->role) == 'SuperAdmin' ? 'selected' : '' }}>Super
                                         Admin
                                     </option>
-                                    <option value="AdminUnit" {{ $user->role == 'AdminUnit' ? 'selected' : '' }}>Admin Unit
+                                    <option value="AdminUnit" {{ old('role',$user->role) == 'AdminUnit' ? 'selected' : '' }}>Admin Unit
                                     </option>
-                                    <option value="StaffUnit" {{ $user->role == 'StaffUnit' ? 'selected' : '' }}>Staff Unit
+                                    <option value="StaffUnit" {{ old('role',$user->role) == 'StaffUnit' ? 'selected' : '' }}>Staff Unit
                                     </option>
-                                    <option value="Mahasiswa" {{ $user->role == 'Mahasiswa' ? 'selected' : '' }}>Mahasiswa
+                                    <option value="Mahasiswa" {{ old('role',$user->role) == 'Mahasiswa' ? 'selected' : '' }}>Mahasiswa
                                     </option>
                                 </select>
                             </div>

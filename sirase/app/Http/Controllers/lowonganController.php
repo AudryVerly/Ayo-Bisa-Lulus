@@ -60,7 +60,6 @@ class lowonganController extends Controller
      */
     public function store(Request $request)
     {
-        try{
             $idUnit = Auth::user()->staffUnit()->pluck('idUnit')->first();
              $request->validate([
                 'judulLowongan'   => 'required|string|max:255',
@@ -89,9 +88,6 @@ class lowonganController extends Controller
                 'akhirKerja'      => $request->akhirKerja,
             ]);
             return redirect()->route('lowongans.index')->with('success', 'Lowongan berhasil ditambahkan.');
-        }catch (\Exception $e){
-            return redirect()->route('lowongans.index')->with('error', 'Gagal menambah lowongan: ' . $e->getMessage());
-        }
     }
 
     /**
@@ -108,38 +104,34 @@ class lowonganController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        try{
-            $lowongan = Lowongan::findOrFail($id);
-            $request->validate([
-                'judulLowongan'   => 'required|string|max:255',
-                'deskripsi'       => 'required|string',
-                'kualifikasi'     => 'required|string',
-                'posisiLowongan'  => 'required|string|max:255',
-                'durasiKerja'     => 'required|integer|min:1',
-                'awalPendaftaran' => 'required|date',
-                'batasPendaftaran'=> 'required|date|after_or_equal:awalPendaftaran',
-                'mulaiKerja'      => 'required|date|after_or_equal:batasPendaftaran',
-                'akhirKerja'      => 'required|date|after_or_equal:mulaiKerja',
-            ]);
+        $lowongan = Lowongan::findOrFail($id);
+        $request->validate([
+            'judulLowongan'   => 'required|string|max:255',
+            'deskripsi'       => 'required|string',
+            'kualifikasi'     => 'required|string',
+            'posisiLowongan'  => 'required|string|max:255',
+            'durasiKerja'     => 'required|integer|min:1',
+            'awalPendaftaran' => 'required|date',
+            'batasPendaftaran'=> 'required|date|after_or_equal:awalPendaftaran',
+            'mulaiKerja'      => 'required|date|after_or_equal:batasPendaftaran',
+            'akhirKerja'      => 'required|date|after_or_equal:mulaiKerja',
+        ]);
 
             //ini supaya dia bisa memsiahkan spasi, whitespace dan koma
-            $request['kualifikasi'] = trim(preg_replace('/\r\n|\r|\n/', "\n", $request['kualifikasi']));
+        $request['kualifikasi'] = trim(preg_replace('/\r\n|\r|\n/', "\n", $request['kualifikasi']));
 
-            $lowongan->update([
-                'judulLowongan'   => $request->judulLowongan,
-                'deskripsi'       => $request->deskripsi,
-                'kualifikasi'     => $request->kualifikasi,
-                'posisiLowongan'  => $request->posisiLowongan,
-                'durasiKerja'     => $request->durasiKerja,
-                'awalPendaftaran' => $request->awalPendaftaran,
-                'batasPendaftaran'=> $request->batasPendaftaran,
-                'mulaiKerja'      => $request->mulaiKerja,
-                'akhirKerja'      => $request->akhirKerja,
-            ]);
-            return redirect()->route('lowongans.index')->with('success', 'Informasi Lowongan berhasil diperbarui');
-        }catch (\Exception $e){
-            return redirect()->route('lowongans.index')->with('error', 'Gagal memperbarui informasi lowongan: ' . $e->getMessage());
-        }
+        $lowongan->update([
+            'judulLowongan'   => $request->judulLowongan,
+            'deskripsi'       => $request->deskripsi,
+            'kualifikasi'     => $request->kualifikasi,
+            'posisiLowongan'  => $request->posisiLowongan,
+            'durasiKerja'     => $request->durasiKerja,
+            'awalPendaftaran' => $request->awalPendaftaran,
+            'batasPendaftaran'=> $request->batasPendaftaran,
+            'mulaiKerja'      => $request->mulaiKerja,
+            'akhirKerja'      => $request->akhirKerja,
+        ]);
+        return redirect()->route('lowongans.index')->with('success', 'Informasi Lowongan berhasil diperbarui');
 
     }
 

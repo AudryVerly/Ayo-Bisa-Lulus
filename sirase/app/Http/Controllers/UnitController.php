@@ -30,28 +30,24 @@ class UnitController extends Controller
      */
     public function store(Request $request)
     {
-        try
-        {
-            $request->validate([
-                'name' => 'required',
-                'deskripsi' => 'required',
-                'lokasi'=> 'required',
-                'kontak'=>'required',
-                'emailUnit'=> 'required|email|unique:unit',
-                'status'=> 'required|boolean'
-            ]);
-            Unit::create([
-                'name'=>$request->name,
-                'deskripsi'=>$request->deskripsi,
-                'lokasi'=>$request->lokasi,
-                'kontak'=>$request->kontak,
-                'emailUnit'=>$request->emailUnit,
-                'status'=> $request->status
-            ]);
-            return redirect()->route('units.index')->with('success','Unit berhasil ditambahkan.');
-        }catch(\Exception $e){
-            return redirect()->route('units.index')->with('error','Gagal menambahkan Unit: '.$e->getMessage());
-        }
+
+        $request->validate([
+            'name' => 'required',
+            'deskripsi' => 'required',
+            'lokasi'=> 'required',
+            'kontak'=>'required',
+            'emailUnit'=> 'required|email|unique:unit',
+            'status'=> 'required|boolean'
+        ]);
+        Unit::create([
+            'name'=>$request->name,
+            'deskripsi'=>$request->deskripsi,
+            'lokasi'=>$request->lokasi,
+            'kontak'=>$request->kontak,
+            'emailUnit'=>$request->emailUnit,
+            'status'=> $request->status
+        ]);
+        return redirect()->route('units.index')->with('success','Unit berhasil ditambahkan.');
     }
 
     /**
@@ -77,29 +73,25 @@ class UnitController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        try{
-            $unit = Unit::findOrFail($id);
-            $request->validate([
-                'name'=>'required',
-                'deskripsi' => 'required',
-                'lokasi'=> 'required',
-                'kontak'=>'required',
-                'emailUnit'=> 'required|email|unique:unit,emailUnit,' . $unit->id . ',id',
+        $unit = Unit::findOrFail($id);
+        $request->validate([
+            'name'=>'required',
+            'deskripsi' => 'required',
+            'lokasi'=> 'required',
+            'kontak'=>'required',
+            'emailUnit'=> 'required|email|unique:unit,emailUnit,' . $unit->id . ',id',
 
-            ]);
+        ]);
 
-            $unit->update([
-                'name' => $request->name,
-                'deskripsi' =>$request->deskripsi,
-                'lokasi' =>$request->lokasi,
-                'kontak' =>$request->kontak,
-                'emailUnit'=>$request->emailUnit
-            ]);
+        $unit->update([
+            'name' => $request->name,
+            'deskripsi' =>$request->deskripsi,
+            'lokasi' =>$request->lokasi,
+            'kontak' =>$request->kontak,
+            'emailUnit'=>$request->emailUnit
+        ]);
 
-            return redirect()->route('units.index')->with('success','Data berhasil diUpdate.');
-        }catch(\Exception $e){
-             return redirect()->route('units.index')->with('error','Gagal mengubah data unit: ' .$e->getMessage());
-        }
+        return redirect()->route('units.index')->with('success','Data berhasil diUpdate.');
     }
 
     /**

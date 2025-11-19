@@ -17,7 +17,7 @@
                             </a>
                         </div>
                         <div class="card-body">
-                            @if ($errors->any())
+                            {{-- @if ($errors->any())
                                 <div class="alert alert-danger">
                                     <ul class="mb-0">
                                         @foreach ($errors->all() as $error)
@@ -25,12 +25,12 @@
                                         @endforeach
                                     </ul>
                                 </div>
-                            @endif
+                            @endif --}}
 
                             <div class="form-group mb-2">
                                 <label for="name" class="form-label fw-bold text-secondary">Nama Lengkap</label>
                                 <select name="idUser" id="idUser"
-                                    class="form-select shadow-sm border rounded-3 px-3 py-2" required>
+                                    class="form-select shadow-sm border rounded-3 px-3 py-2">
                                     @foreach ($users as $user)
                                         <option value="{{ $user->id }}"
                                             {{ old('idUser', $staff->idUser) == $user->id ? 'selected' : '' }}>
@@ -38,11 +38,14 @@
                                         </option>
                                     @endforeach
                                 </select>
+                                @error('idUser')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="form-group mb-2">
                                 <label for="Unit" class="form-label fw-bold text-secondary">Nama Unit </label>
                                 <select name="idUnit" id="idUnit"
-                                    class="form-select shadow-sm border rounded-3 px-3 py-2" required>
+                                    class="form-select shadow-sm border rounded-3 px-3 py-2">
                                     @foreach ($units as $unit)
                                         <option value="{{ $unit->id }}"
                                             {{ old('idUnit', $staff->idUnit) == $unit->id ? 'selected' : '' }}>
@@ -50,13 +53,19 @@
                                         </option>
                                     @endforeach
                                 </select>
+                                @error('idUnit')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class = "form-group mb-2">
                                 <label for="jabatan" class="form-label fw-bold text-secondary">Jabatan</label>
                                 <input type="text" id="jabatan" name="jabatan"
                                     class="form-control shadow-sm border rounded-3 px-3 py-2"
-                                    placeholder="Masukkan email anda" value="{{ $staff->jabatan }}" required>
+                                    placeholder="Masukkan jabatan anda" value="{{ old('jabatan', $staff->jabatan) }}">
                             </div>
+                             @error('jabatan')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             <div class="text-end mt-4">
                                 <button type="submit" class="btn bg-gradient-success text-white px-4">
                                     <i class="material-symbols-rounded text-sm">save</i><span

@@ -17,7 +17,7 @@
                             </a>
                         </div>
                         <div class="card-body">
-                            @if ($errors->any())
+                            {{-- @if ($errors->any())
                                 <div class="alert alert-danger">
                                     <ul class="mb-0">
                                         @foreach ($errors->all() as $error)
@@ -25,45 +25,64 @@
                                         @endforeach
                                     </ul>
                                 </div>
-                            @endif
+                            @endif --}}
                             <div class="form-group mb-2">
                                 <label for="name" class="form-label fw-bold text-secondary">Nama Unit</label>
                                 <input type="text" id="name" name="name"
                                     class="form-control shadow-sm border rounded-3 px-3 py-2"
-                                    placeholder="Masukkan nama Unit" required>
+                                    placeholder="Masukkan nama Unit" value="{{ old('name') }}">
+                                @error('name')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="form-group mb-2">
                                 <label for="deskripsi" class="form-label fw-bold text-secondary">Deskripsi Unit</label>
                                 <textarea id="deskripsi" name="deskripsi" class="form-control shadow-sm border rounded-3 px-3 py-2" rows="4"
-                                    placeholder="Masukkan deskripsi unit secara lengkap" required>
+                                    placeholder="Masukkan deskripsi unit secara lengkap" value="{{ old('deskripsi') }}">
                                 </textarea>
+                                @error('deskripsi')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="form-group mb-2">
                                 <label for="lokasi" class="form-label fw-bold text-secondary">Lokasi Unit</label>
                                 <textarea id="lokasi" name="lokasi" class="form-control shadow-sm border rounded-3 px-3 py-2" rows="2"
-                                    placeholder="Masukkan alamat unit secara lengkap" required>
+                                    placeholder="Masukkan alamat unit secara lengkap" value ="{{ old('lokasi') }}">
                                 </textarea>
+                                @error('lokasi')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="form-group mb-2">
                                 <label for="kontak" class="form-label fw-bold text-secondary">Kontak Unit</label>
                                 <input type="text" id="kontak" name="kontak"
                                     class="form-control shadow-sm border rounded-3 px-3 py-2"
-                                    placeholder="Masukkan Kontak Unit" required>
+                                    placeholder="Masukkan Kontak Unit" value="{{ old('kontak') }}">
+                                @error('kontak')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="form-group mb-2">
                                 <label for="emailUnit" class="form-label fw-bold text-secondary">Email Unit</label>
                                 <input type="text" id="emailUnit" name="emailUnit"
                                     class="form-control shadow-sm border rounded-3 px-3 py-2"
-                                    placeholder="Email Unit secara lengkap" required>
+                                    placeholder="Email Unit secara lengkap" value="{{ old('emailUnit') }}">
+
+                                @error('emailUnit')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="form-group mb-2">
                                 <label for="status" class="form-label fw-bold text-secondary">Status Unit</label>
                                 <select name="status" id="status"
-                                    class="form-select shadow-sm border rounded-3 px-3 py-2" required>
-                                    <option value="" disabled selected>Status Akun</option>
-                                    <option value="1">Aktif</option>
-                                    <option value="0">NonAktif</option>
+                                    class="form-select shadow-sm border rounded-3 px-3 py-2">
+                                    <option value="" disabled {{ old('status') ? '' : 'selected'}}>Status Akun</option>
+                                    <option value="1" {{ old('status') == '1' ? 'selected' : '' }}>Aktif</option>
+                                    <option value="0" {{ old('status') == '0' ? 'selected' : '' }}>NonAktif</option>
                                 </select>
+                                 @error('status')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="text-end mt-4">

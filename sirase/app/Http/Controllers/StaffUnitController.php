@@ -39,34 +39,47 @@ class StaffUnitController extends Controller
      */
     public function store(Request $request)
     {
-        try{
-            $request->validate([
-                'idUser' => 'required|exists:users,id',
-                'idUnit' => 'required|exists:unit,id',
-                'jabatan'=> 'required',
-                'status' => 'required|boolean',
-            ]);
+        $request->validate([
+            'idUser' => [
+                'required',
+                'exists:users,id',
+                //ini buat cek validasi diawal pas required
+                // function($attribute, $value, $fail) use ($request) {
+                //     if (StaffUnit::where('idUser', $value)->where('idUnit', $request->idUnit)->exists()) {
+                //         $fail('User ini sudah terdaftar di unit tersebut');
+                //     }
+                // }
+            ],
+            'idUnit' => 'required|exists:unit,id',
+            'jabatan' => 'required',
+            'status'  => 'required|boolean',
+        ]);
+        // $request->validate([
+        //     'idUser' => 'required|exists:users,id',
+        //     'idUnit' => 'required|exists:unit,id',
+        //     'jabatan'=> 'required',
+        //     'status' => 'required|boolean',
+        // ]);
 
             // ini buat ngecek apaka user ini ada di unit apa enggak
             //karena 1 user bisa di banyak staffunit dan 1 unit bisa punya banyak staffunit
-            $exist = StaffUnit::where('idUser', $request->idUser)
+        $exist = StaffUnit::where('idUser', $request->idUser)
                                 ->where('idUnit', $request->idUnit)
                                 ->exists();
+        // dd($exist, $request->idUser, $request->idUnit);
 
-            if($exist){
-                return redirect()->route('staff.index')->with('error','User ini sudah terdaftar di unit tersebut.');
-            }
-
-            StaffUnit::create([
-                'idUser'=>$request->idUser,
-                'idUnit'=>$request->idUnit,
-                'jabatan'=>$request->jabatan,
-                'status'=>$request->status
-            ]);
-            return redirect()->route('staff.index')->with('success','Staff Unit berhasil ditambahkan.');
-        }catch(\Exception $e){
-             return redirect()->route('staff.index')->with('error','Gagal menambahkan Staff Unit: '.$e->getMessage());
+        if($exist){
+            return redirect()->back()
+                                ->withErrors(['idUser' => 'User ini sudah terdaftar di unit tersebut'])
+                                ->withInput();
         }
+        StaffUnit::create([
+            'idUser'=>$request->idUser,
+            'idUnit'=>$request->idUnit,
+            'jabatan'=>$request->jabatan,
+            'status'=>$request->status
+        ]);
+        return redirect()->route('staff.index')->with('success','Staff Unit berhasil ditambahkan.');
     }
 
     /**
@@ -100,32 +113,30 @@ class StaffUnitController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        try{
-            $staff = StaffUnit::findOrFail($id);
-            $request->validate([
-                'idUser' => 'required|exists:users,id',
-                'idUnit' => 'required|exists:unit,id',
-                'jabatan'=> 'required',
-            ]);
+        $staff = StaffUnit::findOrFail($id);
+        $request->validate([
+            'idUser' => 'required|exists:users,id',
+            'idUnit' => 'required|exists:unit,id',
+            'jabatan'=> 'required',
+        ]);
             
-            //ini supaya gak keinput double di unit yang sama dengan nama yang sama 
-            $exist = StaffUnit::where('idUser', $request->idUser)
-                                ->where('idUnit', $request->idUnit)
-                                ->where('id', '!=', $id)
-                                ->exists();
-            if($exist){
-                return redirect()->route('staff.index')->with('error', 'User ini sudah terdaftar di unit tersebut.');
-            }
+        //ini supaya gak keinput double di unit yang sama dengan nama yang sama 
+         $exist = StaffUnit::where('idUser', $request->idUser)
+                            ->where('idUnit', $request->idUnit)
+                            ->where('id', '!=', $id)
+                            ->exists();
+        if($exist){
+                return redirect()->back()
+                            ->withErrors(['idUser' => 'User ini sudah terdaftar di unit tersebut'])
+                             ->withInput();
+        }
 
-            $staff->update([
+        $staff->update([
                 'idUser'=>$request->idUser,
                 'idUnit'=>$request->idUnit,
                 'jabatan'=>$request->jabatan,
-            ]);
-            return redirect()->route('staff.index')->with('success', 'Data Staff Unit berhasil diperbarui.');
-        }catch (\Exception $e){
-           return redirect()->route('staff.index')->with('error', 'Gagal memperbarui data Staff Unit: ' . $e->getMessage());
-        }
+        ]);
+        return redirect()->route('staff.index')->with('success', 'Data Staff Unit berhasil diperbarui.');
     }
 
     /** 

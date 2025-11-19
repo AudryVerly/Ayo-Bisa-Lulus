@@ -37,32 +37,28 @@ class MahasiswaController extends Controller
      */
     public function store(Request $request)
     {
-        try{
-            $request->validate([
-                'idUser' => 'required:exists:users,id',
-                'nrp' => 'required|integer',
-                'fakultas' => 'required',
-                'jurusan' => 'required',
-                'tahunMasuk' => 'required|digits:4|integer|min:1900|max:' . date('Y'),
-                'noTelepon' => 'required',
-                'status' => 'required|boolean',
-            ]);
+        $request->validate([
+            'idUser' => 'required:exists:users,id',
+            'nrp' => 'required|integer',
+            'fakultas' => 'required',
+            'jurusan' => 'required',
+            'tahunMasuk' => 'required|digits:4|integer|min:1900|max:' . date('Y'),
+            'noTelepon' => 'required',
+            'status' => 'required|boolean',
+        ]);
 
             // simpan ke tabel mahasiswa
-            Mahasiswa::create([
-                'idUser' => $request->idUser,
-                'nrp' => $request->nrp,
-                'fakultas' => $request->fakultas,
-                'jurusan' => $request->jurusan,
-                'tahunMasuk' => $request->tahunMasuk,
-                'noTelepon' => $request->noTelepon,
-                'status' => $request->status,
-            ]);
+        Mahasiswa::create([
+            'idUser' => $request->idUser,
+            'nrp' => $request->nrp,
+            'fakultas' => $request->fakultas,
+            'jurusan' => $request->jurusan,
+            'tahunMasuk' => $request->tahunMasuk,
+            'noTelepon' => $request->noTelepon,
+            'status' => $request->status,
+        ]);
 
-            return redirect()->route('mahasiswa.index')->with('success', 'Mahasiswa berhasil ditambahkan ke data');
-        }catch(\Exception $e){
-            return redirect()->route('mahasiswa.index')->with('error', 'Gagal menambahkan data mahasiswa: ' .$e->getMessage());
-        }
+         return redirect()->route('mahasiswa.index')->with('success', 'Mahasiswa berhasil ditambahkan ke data');
     }
 
     /**
@@ -97,28 +93,24 @@ class MahasiswaController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        try{
-            $mahasiswa = Mahasiswa::findOrFail($id);
-            $request->validate([
-                'nrp' => 'required|integer',
-                'fakultas' => 'required',
-                'jurusan' => 'required',
-                'tahunMasuk' => 'required|digits:4|integer|min:1900|max:' . date('Y'),
-                'noTelepon' => 'required',
-            ]);
+        $mahasiswa = Mahasiswa::findOrFail($id);
+        $request->validate([
+            'nrp' => 'required|integer',
+            'fakultas' => 'required',
+            'jurusan' => 'required',
+            'tahunMasuk' => 'required|digits:4|integer|min:1900|max:' . date('Y'),
+            'noTelepon' => 'required',
+        ]);
 
             // simpan ke tabel mahasiswa
-            $mahasiswa->update([
-                'nrp' => $request->nrp,
-                'fakultas' => $request->fakultas,
-                'jurusan' => $request->jurusan,
-                'tahunMasuk' => $request->tahunMasuk,
-                'noTelepon' => $request->noTelepon,
-            ]);
-            return redirect()->route('mahasiswa.index')->with('success', 'Berhasil Menggubah data Mahasiswa');
-        }catch(\Exception $e){
-            return redirect()->route('mahasiswa.index')->with('error', 'Gagal Menggubah data Mahasiswa: ' .$e->getMessage());
-        }
+         $mahasiswa->update([
+            'nrp' => $request->nrp,
+            'fakultas' => $request->fakultas,
+            'jurusan' => $request->jurusan,
+            'tahunMasuk' => $request->tahunMasuk,
+            'noTelepon' => $request->noTelepon,
+         ]);
+        return redirect()->route('mahasiswa.index')->with('success', 'Berhasil Menggubah data Mahasiswa');
     }
 
     /**

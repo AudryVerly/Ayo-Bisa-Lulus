@@ -17,7 +17,7 @@
                             </a>
                         </div>
                         <div class="card-body">
-                            @if ($errors->any())
+                            {{-- @if ($errors->any())
                                 <div class="alert alert-danger">
                                     <ul class="mb-0">
                                         @foreach ($errors->all() as $error)
@@ -25,77 +25,120 @@
                                         @endforeach
                                     </ul>
                                 </div>
-                            @endif
+                            @endif --}}
                             <div class="form-group mb-2">
                                 <label for="name" class="form-label fw-bold text-secondary">Nama Mahasiswa</label>
                                 <select name="idUser" id="idUser"
-                                    class="form-select shadow-sm border rounded-3 px-3 py-2" required>
+                                    class="form-select shadow-sm border rounded-3 px-3 py-2">
                                     <option value="">Pilih User</option>
                                     @foreach ($user as $users)
-                                        <option value="{{ $users->id }}">{{ $users->name }}</option>
+                                        <option value="{{ $users->id }}"
+                                            {{ old('idUser') == $users->idUser ? 'selected' : '' }}>{{ $users->name }}
+                                        </option>
                                     @endforeach
                                 </select>
+                                @error('idUser')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="form-group mb-2">
                                 <label for="nrp" name="nrp" class="form-label fw-bold text-secondary">NRP</label>
                                 <input type="number" id="nrp" name="nrp"
                                     class="form-control shadow-sm border rounded-3 px-3 py-2"
-                                    placeholder="Masukkan Nrp Mahasiswa" required>
+                                    placeholder="Masukkan Nrp Mahasiswa" value="{{ old('nrp') }}">
+                                @error('nrp')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="form-group mb-2">
                                 <label for="fakultas" name="fakultas"
                                     class="form-label fw-bold text-secondary">Fakultas</label>
                                 <select name="fakultas" id="fakultas"
-                                    class="form-select shadow-sm border rounded-3 px-3 py-2" required>
-                                    <option value="" disabled selected>Fakultas Mahasiswa</option>
-                                    <option value="Fakultas Farmasi">Fakultas Farmasi</option>
-                                    <option value="Fakultas Hukum">Fakultas Hukum</option>
-                                    <option value="Fakultas Bisnis">Fakultas Bisnis</option>
-                                    <option value="Fakultas Psikologi">Fakultas Psikologi</option>
-                                    <option value="Fakultas Teknik">Fakultas Teknik</option>
-                                    <option value="Fakultas Industri Kreatif">Fakultas Industri Kreatif</option>
-                                    <option value="Fakultas Kedokteran">Fakultas Kedokteran</option>
-                                    <option value="Fakultas Bioteknologi">Fakultas Bioteknologi</option>
+                                    class="form-select shadow-sm border rounded-3 px-3 py-2">
+                                    <option value="" disabled {{ old('fakultas') ? '' : 'selected' }}>Fakultas
+                                        Mahasiswa</option>
+
+                                    <option value="Fakultas Farmasi"
+                                        {{ old('fakultas') == 'Fakultas Farmasi' ? 'selected' : '' }}>Fakultas Farmasi
+                                    </option>
+                                    <option value="Fakultas Hukum"
+                                        {{ old('fakultas') == 'Fakultas Hukum' ? 'selected' : '' }}>Fakultas Hukum</option>
+                                    <option value="Fakultas Bisnis"
+                                        {{ old('fakultas') == 'Fakultas Bisnis' ? 'selected' : '' }}>Fakultas Bisnis
+                                    </option>
+                                    <option value="Fakultas Psikologi"
+                                        {{ old('fakultas') == 'Fakultas Psikologi' ? 'selected' : '' }}>Fakultas Psikologi
+                                    </option>
+                                    <option value="Fakultas Teknik"
+                                        {{ old('fakultas') == 'Fakultas Teknik' ? 'selected' : '' }}>Fakultas Teknik
+                                    </option>
+                                    <option value="Fakultas Industri Kreatif"
+                                        {{ old('fakultas') == 'Fakultas Industri Kreatif' ? 'selected' : '' }}>Fakultas
+                                        Industri Kreatif</option>
+                                    <option value="Fakultas Kedokteran"
+                                        {{ old('fakultas') == 'Fakultas Kedokteran' ? 'selected' : '' }}>Fakultas
+                                        Kedokteran</option>
+                                    <option value="Fakultas Bioteknologi"
+                                        {{ old('fakultas') == 'Fakultas Bioteknologi' ? 'selected' : '' }}>Fakultas
+                                        Bioteknologi</option>
                                 </select>
+                                @error('fakultas')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="form-group mb-2">
                                 <label for="jurusan" name="jurusan"
                                     class="form-label fw-bold text-secondary">Jurusan</label>
                                 <input type="text" id="jurusan" name="jurusan"
                                     class="form-control shadow-sm border rounded-3 px-3 py-2"
-                                    placeholder="Masukkan jurusan Mahasiswa" required>
+                                    placeholder="Masukkan jurusan Mahasiswa" value="{{ old('jurusan') }}">
+                                @error('jurusan')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="form-group mb-2">
                                 <label for="tahunMasuk" name="tahunMasuk" class="form-label fw-bold text-secondary">Tahun
                                     Masuk</label>
-                                <input type="number" id="tahunMasuk" name="tahunMasuk"
+                                <input type="year" id="tahunMasuk" name="tahunMasuk"
                                     class="form-control shadow-sm border rounded-3 px-3 py-2"
                                     placeholder="Masukkan Tahun Masuk (contoh: 2022)" min="1900"
-                                    max="{{ date('Y') }}" required>
+                                    max="{{ date('Y') }}" value="{{ old('tahunMasuk') }}">
+                                @error('tahunMasuk')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
-                             <div class="form-group mb-2">
-                                <label for="noTelepon" name="noTelepon"
-                                    class="form-label fw-bold text-secondary">Nomor Telepon</label>
+                            <div class="form-group mb-2">
+                                <label for="noTelepon" name="noTelepon" class="form-label fw-bold text-secondary">Nomor
+                                    Telepon</label>
                                 <input type="text" id="noTelepon" name="noTelepon"
                                     class="form-control shadow-sm border rounded-3 px-3 py-2"
-                                    placeholder="Masukkan jurusan Mahasiswa (contoh: 085xxxxxxxxxx)" required>
+                                    placeholder="Masukkan jurusan Mahasiswa (contoh: 085xxxxxxxxxx)"
+                                    value="{{ old('noTelepon') }}">
+                                @error('noTelepon')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="form-group mb-2">
                                 <label for="status" class="form-label fw-bold text-secondary">Status Unit</label>
                                 <select name="status" id="status"
-                                    class="form-select shadow-sm border rounded-3 px-3 py-2" required>
-                                    <option value="" disabled selected>Status Akun</option>
-                                    <option value="1">Aktif</option>
-                                    <option value="0">NonAktif</option>
+                                    class="form-select shadow-sm border rounded-3 px-3 py-2">
+                                    <option value="" disabled {{ old('status') ? '' : 'selected' }}>Status Akun
+                                    </option>
+                                    <option value="1" {{ old('status') == '1' ? 'selected' : '' }}>Aktif</option>
+                                    <option value="0" {{ old('status') == '0' ? 'selected' : '' }}>NonAktif</option>
                                 </select>
+                                @error('status')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
-                             <div class="text-end mt-4">
+                            <div class="text-end mt-4">
                                 <button type="submit" class="btn bg-gradient-success text-white px-4">
                                     <i class="material-symbols-rounded text-sm">save</i><span
                                         class="align-middle">&nbsp;&nbsp;Simpan
                                         Perubahan</span>
                                 </button>
-                                <a href="{{ route('mahasiswa.index') }}" class="btn bg-gradient-secondary text-white px-4">
+                                <a href="{{ route('mahasiswa.index') }}"
+                                    class="btn bg-gradient-secondary text-white px-4">
                                     <i class="material-symbols-rounded text-sm">close</i><span
                                         class="align-middle">&nbsp;&nbsp;batal</span>
                                 </a>

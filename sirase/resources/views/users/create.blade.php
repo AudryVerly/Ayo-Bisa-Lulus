@@ -18,7 +18,7 @@
                         </div>
                         <div class="card-body">
                             {{-- ini untuk misalnya ada error salah input atau apa --}}
-                            @if ($errors->any())
+                            {{-- @if ($errors->any())
                                 <div class="alert alert-danger">
                                     <ul class="mb-0">
                                         @foreach ($errors->all() as $error)
@@ -26,38 +26,52 @@
                                         @endforeach
                                     </ul>
                                 </div>
-                            @endif
+                            @endif --}}
                             <div class="form-group mb-2">
                                 <label for="name" class="form-label fw-bold text-secondary">Nama Lengkap</label>
                                 <input type="text" id="name" name="name"
                                     class="form-control shadow-sm border rounded-3 px-3 py-2"
-                                    placeholder="Masukkan nama lengkap" required>
+                                    placeholder="Masukkan nama lengkap" value="{{ old('name') }}">
+                                @error('name')
+                                    <div class="text-danger">{{$message}}</div>
+                                @enderror
                             </div>
                             <div class="form-group mb-2">
                                 <label for="email" class="form-label fw-bold text-secondary">Email</label>
                                 <input type="text" id="email" name="email"
                                     class="form-control shadow-sm border rounded-3 px-3 py-2"
-                                    placeholder="Masukkan Email anda" required>
+                                    placeholder="Masukkan Email anda" value="{{ old('email') }}">
+                                @error('email')
+                                    <div class="text-danger">{{$message}}</div>
+                                @enderror
                             </div>
                             <div class="form-group mb-2">
                                 <label for="email" class="form-label fw-bold text-secondary">Role</label>
                                 <select name="role" id="role"
-                                    class="form-select shadow-sm border rounded-3 px-3 py-2" required>
-                                    <option value="" disabled selected>Pilih Role User</option>
-                                    <option value="SuperAdmin">Super Admin</option>
-                                    <option value="AdminUnit">Admin Unit</option>
-                                    <option value="StaffUnit">Staff Unit</option>
-                                    <option value="Mahasiswa">Mahasiswa</option>
+                                    class="form-select shadow-sm border rounded-3 px-3 py-2">
+                                    <option value="" disabled {{ old('role') ? '' : 'selected' }}>Pilih Role User</option>
+                                    <option value="SuperAdmin" {{ old('role') == "SuperAdmin" ? 'selected': '' }}>Super Admin</option>
+                                    <option value="AdminUnit" {{ old('role') == "AdminUnit" ? 'selected' : '' }}>Admin Unit</option>
+                                    <option value= "StaffUnit" {{ old('role') == "StaffUnit" ? 'selected' : '' }}>Staff Unit</option>
+                                    <option value= "Mahasiswa" {{ old('role') == "Mahasiswa"? 'selected' : '' }}>Mahasiswa</option>
                                 </select>
+
+                                @error('role')
+                                    <div class="text-danger">{{$message}}</div>
+                                @enderror
                             </div>
                             <div class="form-group mb-2">
                                 <label for="status" class="form-label fw-bold text-secondary">Status Akun</label>
                                 <select name="status" id="status"
-                                    class="form-select shadow-sm border rounded-3 px-3 py-2" required>
-                                    <option value="" disabled selected>Status Akun</option>
-                                    <option value="1">Aktif</option>
-                                    <option value="0">NonAktif</option>
+                                    class="form-select shadow-sm border rounded-3 px-3 py-2">
+                                    <option value="" disabled {{ old('status') ? '' : 'selected' }}>Status Akun</option>
+                                    <option value="1" {{ old('status') == '1' ? 'selected' : '' }}>Aktif</option>
+                                    <option value="0" {{ old('status') == '0' ? 'selected' : '' }}>NonAktif</option>
                                 </select>
+
+                                 @error('status')
+                                    <div class="text-danger">{{$message}}</div>
+                                @enderror
                             </div>
 
                             <div class="text-end mt-4">

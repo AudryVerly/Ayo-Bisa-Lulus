@@ -33,9 +33,9 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        try{
+        
             //ini supaya ketika input masukk sesuai dengan requirenya
-            $request->validate([
+        $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users',
             //'password' => 'required|min:8',
@@ -52,9 +52,6 @@ class UserController extends Controller
             'status' => $request->status
         ]);
         return redirect()->route('users.index')->with('success','User berhasil ditambahkan.');
-        }catch(\Exception $e){
-            return redirect()->route('users.index')->with('error','Gagal menambahkan User: '.$e->getMessage());
-        }
     }
 
     /**
@@ -80,28 +77,24 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        try
-        {
-            $user = User::findOrFail($id);
+        $user = User::findOrFail($id);
             //ini gak update status karena kita bisa destroy dia menjadi tidak aktif lagi
-            $request->validate([
-                'name' => 'required',
-                'email' => 'required|email|unique:users,email,'. $user->id . ',id',
-                'role' => 'required',
+            //ini email juga harus unik gak boleh sama
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email,'. $user->id . ',id',
+            'role' => 'required',
                 //'status' => 'required|boolean'
-            ]);
+        ]);
 
-            $user ->update([
-                'name' => $request->name,
-                'email' => $request->email,
-                'role' => $request->role,
-                //'status' =>$request->status
-            ]);
+        $user ->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'role' => $request->role,
+            //'status' =>$request->status
+        ]);
 
-            return redirect()->route('users.index')-> with('success','Data berhasil diUpdate');
-        } catch(\Exception $e){
-            return redirect()->route('users.index')->with('error','Gagal mengubah data user: ' .$e->getMessage());
-        }
+        return redirect()->route('users.index')-> with('success','Data berhasil diUpdate');
     }
 
     /**

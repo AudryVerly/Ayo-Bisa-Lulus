@@ -17,7 +17,7 @@
                             </a>
                         </div>
                         <div class="card-body">
-                            @if ($errors->any())
+                            {{-- @if ($errors->any())
                                 <div class="alert alert-danger">
                                     <ul class="mb-0">
                                         @foreach ($errors->all() as $error)
@@ -25,35 +25,48 @@
                                         @endforeach
                                     </ul>
                                 </div>
-                            @endif
+                            @endif --}}
                             <div class="form-group mb-2">
-                                <label for="name" class="form-label fw-bold text-secondary">Nama Staff</label>
+                                <label for="idUser" class="form-label fw-bold text-secondary">Nama Staff</label>
                                 <select name="idUser" id="idUser"
-                                    class="form-select shadow-sm border rounded-3 px-3 py-2" required>
+                                    class="form-select shadow-sm border rounded-3 px-3 py-2">
                                     <option value="">Pilih User</option>
                                     <optgroup label="Admin Unit">
                                         @foreach ($users->where('role', 'AdminUnit') as $user)
-                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                            <option value="{{ $user->id }}"
+                                                {{ old('idUser') == $user->id ? 'selected' : '' }}>{{ $user->name }}
+                                            </option>
                                         @endforeach
                                     </optgroup>
 
                                     <optgroup label="Staff Unit">
                                         @foreach ($users->where('role', 'StaffUnit') as $user)
-                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                            <option value="{{ $user->id }}"
+                                                {{ old('idUser') == $user->id ? 'selected' : '' }}>{{ $user->name }}
+                                            </option>
                                         @endforeach
                                     </optgroup>
                                 </select>
+                                @error('idUser')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="form-group mb-2">
-                                <label for="unit" class="unit"class="form-label fw-bold text-secondary">Masukkan
+                                <label for="idUnit"
+                                    class="idunit"class="form-label fw-bold text-secondary">Masukkan
                                     Unit</label>
                                 <select name="idUnit" id="idUnit"
-                                    class="form-select shadow-sm border rounded-3 px-3 py-2" required>
+                                    class="form-select shadow-sm border rounded-3 px-3 py-2 @error('idUnit') is-invalid @enderror">
                                     <option value="">Pilih Unit</option>
                                     @foreach ($units as $unit)
-                                        <option value="{{ $unit->id }}">{{ $unit->name }}</option>
+                                        <option value="{{ $unit->id }}"
+                                            {{ old('idUnit') == $unit->id ? 'selected' : '' }}>{{ $unit->name }}
+                                        </option>
                                     @endforeach
                                 </select>
+                                @error('idUnit')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="form-group mb-2">
                                 <label for="jabatan" name="Jabatan" class="form-label fw-bold text-secondary">Masukkan
@@ -61,16 +74,23 @@
                                 </label>
                                 <input type="text" id="jabatan" name="jabatan"
                                     class="form-control shadow-sm border rounded-3 px-3 py-2"
-                                    placeholder="Masukkan Jabatan User" required>
+                                    placeholder="Masukkan Jabatan User" value="{{ old('jabatan') }}">
+                                @error('jabatan')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="form-group mb-2">
                                 <label for="status" class="form-label fw-bold text-secondary">Status Unit</label>
                                 <select name="status" id="status"
-                                    class="form-select shadow-sm border rounded-3 px-3 py-2" required>
-                                    <option value="" disabled selected>Status Akun</option>
-                                    <option value="1">Aktif</option>
-                                    <option value="0">NonAktif</option>
+                                    class="form-select shadow-sm border rounded-3 px-3 py-2">
+                                    <option value="" disabled {{ old('status') ? '' : 'selected' }}>Status Akun
+                                    </option>
+                                    <option value="1" {{ old('status') == '1' ? 'selected' : '' }}>Aktif</option>
+                                    <option value="0" {{ old('status') == '0' ? 'selected' : '' }}>NonAktif</option>
                                 </select>
+                                @error('status')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="text-end mt-4">
                                 <button type="submit" class="btn bg-gradient-success text-white px-4">

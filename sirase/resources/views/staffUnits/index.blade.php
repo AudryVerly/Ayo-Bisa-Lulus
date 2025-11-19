@@ -24,7 +24,7 @@
             @endif
             <div class="card-body px-0 pb-2">
                 <div class="table-responsive px-3">
-                    <table class="table table-hover align-middle mb-0 text-center table-sm">
+                    <table id="tableStaff" class="table table-hover align-middle mb-0 text-center table-sm">
                         <thead class="bg-light">
                             <tr>
                                 <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
@@ -88,7 +88,7 @@
                         </tbody>
                     </table>
                 </div>
-                <nav aria-label="Paging page" class="mt-4">
+                {{-- <nav aria-label="Paging page" class="mt-4">
                     <ul class="pagination justify-content-end">
                         <li class="page-item {{ $staff->onFirstPage() ? 'disabled' : '' }}">
                             <a class =" page-link {{ $staff->onFirstPage() ? 'bg-light text-secondary' : 'bg-dark text-white' }}"
@@ -113,15 +113,39 @@
                             </a>
                         </li>
                     </ul>
-                </nav>
+                </nav> --}}
             </div>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    {{-- ini adalah css dari datatable --}}
+@endsection
+@push('scripts')
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    {{-- <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script> --}}
     {{-- ini buat alert dialog --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    {{-- ini scriptnya datable --}}
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
     <script>
+        $(document).ready(function() {
+            $('#tableStaff').DataTable({
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json",
+                    paginate:{
+                        previous: "<",
+                        next: ">",
+                    }
+                },
+                lengthMenu:[5, 10 , 25 , 50 , 100],
+                columnDefs:[
+                    //ini supaya tabel index terakhir gak bisa disort
+                    {orderable: false, targets: -1}
+                ]
+            });
+        });
         //kalau ini supaya alertnya hilang dalam 2 detik 
         setTimeout(() => {
             const alert = document.getElementById('alert-message');
@@ -218,4 +242,4 @@
             });
         });
     </script>
-@endsection
+@endpush

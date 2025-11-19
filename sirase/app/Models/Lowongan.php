@@ -23,4 +23,8 @@ class Lowongan extends Model
     public function unit(){
         return $this->belongsTo(Unit::class, 'idUnit');
     }
+
+    public function tahapRekrutmen(){
+        return $this->hasMany(tahapRekrutmen::class,'idLowongan');
+    }
 }

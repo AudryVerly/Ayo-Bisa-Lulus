@@ -24,7 +24,7 @@
             @endif
             <div class="card-body px-0 pb-2 ">
                 <div class="table-responsive px-3">
-                    <table class="table table-hover align-middle mb-0 text-center table-sm">
+                    <table id="unittable" class="table table-hover align-middle mb-0 text-center table-sm">
                         <thead class="bg-light">
                             <tr>
                                 <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
@@ -102,39 +102,37 @@
                         </tbody>
                     </table>
                 </div>
-                <nav aria-label="Paging page" class="mt-4">
-                    <ul class="pagination justify-content-end">
-                        <li class="page-item {{ $unit->onFirstPage() ? 'disabled' : '' }}">
-                            <a class =" page-link {{ $unit->onFirstPage() ? 'bg-light text-secondary' : 'bg-dark text-white' }}"
-                                href="{{ $unit->previousPageUrl() ?? '#' }}">
-                                <span class="material-symbols-rounded">
-                                    keyboard_arrow_left
-                                </span>
-                            </a>
-                        </li>
-
-                        @for ($i = 1; $i <= $unit->lastPage(); $i++)
-                            <li class="page-item {{ $unit->currentPage() == $i ? 'active' : '' }}">
-                                <a class ="page-link {{ $unit->currentPage() == $i ? 'bg-gradient-dark text-white border-0' : 'text-dark' }}"
-                                    href="{{ $unit->url($i) }}">{{ $i }}</a>
-                            </li>
-                        @endfor
-
-                        <li class="page-item {{ !$unit->hasMorePages() ? 'disabled' : '' }} ">
-                            <a class =" page-link {{ !$unit->hasMorePages() ? 'bg-light text-secondary' : 'bg-dark text-white' }}"
-                                href="{{ $unit->nextPageUrl() ?? '#' }}">
-                                <span class="material-symbols-rounded">keyboard_arrow_right</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
             </div>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+@endsection
+@push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    {{-- ini scriptnya datable --}}
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
     <script>
+        $(document).ready(function() {
+            $('#unittable').DataTable({
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json",
+                    paginate: {
+                        previous: "<",
+                        next: ">",
+                    }
+                },
+                lengthMenu: [5, 10, 25, 50, 100],
+                columnDefs: [
+                    //ini supaya tabel index terakhir gak bisa disort
+                    {
+                        orderable: false,
+                        targets: -1
+                    }
+                ]
+            })
+        })
         setTimeout(() => {
             const alert = document.getElementById('alert-message');
             if (alert) {
@@ -224,4 +222,4 @@
             });
         });
     </script>
-@endsection
+@endpush

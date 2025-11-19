@@ -25,7 +25,7 @@
             @endif
             <div class="card-body px-0 pb-2">
                 <div class="table-responsive px-3">
-                    <table class="table table-hover align-middle mb-0 text-center table-sm">
+                    <table id ="mahasiswatable" class="table table-hover align-middle mb-0 text-center table-sm">
                         <thead class="bg-light">
                             <tr>
                                 <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
@@ -106,40 +106,38 @@
                         </tbody>
                     </table>
                 </div>
-                <nav aria-label="Paging page" class="mt-4">
-                    <ul class="pagination justify-content-end">
-                        <li class="page-item {{ $mahasiswa->onFirstPage() ? 'disabled' : '' }}">
-                            <a class =" page-link {{ $mahasiswa->onFirstPage() ? 'bg-light text-secondary' : 'bg-dark text-white' }}"
-                                href="{{ $mahasiswa->previousPageUrl() ?? '#' }}">
-                                <span class="material-symbols-rounded">
-                                    keyboard_arrow_left
-                                </span>
-                            </a>
-                        </li>
-
-                        @for ($i = 1; $i <= $mahasiswa->lastPage(); $i++)
-                            <li class="page-item {{ $mahasiswa->currentPage() == $i ? 'active' : '' }}">
-                                <a class ="page-link {{ $mahasiswa->currentPage() == $i ? 'bg-gradient-dark text-white border-0' : 'text-dark' }}"
-                                    href="{{ $mahasiswa->url($i) }}">{{ $i }}</a>
-                            </li>
-                        @endfor
-
-                        <li class="page-item {{ !$mahasiswa->hasMorePages() ? 'disabled' : '' }} ">
-                            <a class =" page-link {{ !$mahasiswa->hasMorePages() ? 'bg-light text-secondary' : 'bg-dark text-white' }}"
-                                href="{{ $mahasiswa->nextPageUrl() ?? '#' }}">
-                                <span class="material-symbols-rounded">keyboard_arrow_right</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
             </div>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+@endsection
+@push('scripts')
     {{-- ini buat alert dialog --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+
+    {{-- ini scriptnya datable --}}
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
     <script>
+        $(document).ready(function() {
+            $('#mahasiswatable').DataTable({
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json",
+                    paginate: {
+                        previous: "<",
+                        next: ">",
+                    }
+                },
+                lengthMenu: [5, 10, 25, 50, 100],
+                columnDefs: [
+                    //ini supaya tabel index terakhir gak bisa disort
+                    {
+                        orderable: false,
+                        targets: -1
+                    }
+                ]
+            })
+        })
         //kalau ini supaya alertnya hilang dalam 2 detik 
         setTimeout(() => {
             const alert = document.getElementById('alert-message');
@@ -236,4 +234,4 @@
             });
         });
     </script>
-@endsection
+@endpush

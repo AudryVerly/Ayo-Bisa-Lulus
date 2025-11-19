@@ -43,8 +43,6 @@
         <!-- End Navbar -->
         @yield('content')
 
-        {{-- ini but side panel --}}
-        @yield('side-panel')
     </main>
     <div class="fixed-plugin">
         <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
@@ -139,7 +137,14 @@
     <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="{{ asset('template/js/material-dashboard.min.js') }}"></script>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script> 
+
+    {{-- //ini punya moidals supaya --}}
+    @stack('modals')
+
+    {{-- ini supaya nanti kalau kita run jtabels dan script itu ada diposisinya --}}
+    @stack('scripts')
     <script>
         $(window).on('pageshow', function(event) {
             const nav = performance.getEntriesByType('navigation');
@@ -150,8 +155,6 @@
             }
         });
     </script>
-
-    @stack('modals')
 </body>
 
 </html>

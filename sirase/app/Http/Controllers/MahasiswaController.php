@@ -15,7 +15,7 @@ class MahasiswaController extends Controller
     {
         $mahasiswa = Mahasiswa::with(['user'])
         ->orderBy('status','desc')
-        ->paginate(5);
+        ->get();
         return view('mahasiswa.index',compact('mahasiswa'));
     }
 

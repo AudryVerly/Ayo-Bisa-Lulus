@@ -28,7 +28,7 @@
                     <div class="card-body px-2 pb-2">
                         <div class ="table-responsive p-0">
                             {{-- css ini ada dibagian tabel fit --}}
-                            <table class ="table align-items-center mb-0">
+                            <table class ="table align-items-center mb-0" id="usertable">
                                 <thead class="bg-light">
                                     <tr>
                                         <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
@@ -103,43 +103,43 @@
                                 {{ $user->links('pagination::bootstrap-5') }}
                             </div> --}}
                         </div>
-                        {{-- yang first page dan lainnya adalah bawaan dari laravel --}}
-                        <nav aria-label="Paging page" class="mt-4">
-                            <ul class="pagination justify-content-end">
-                                <li class="page-item {{ $user->onFirstPage() ? 'disabled' : '' }}">
-                                    <a class =" page-link {{ $user->onFirstPage() ? 'bg-light text-secondary' : 'bg-dark text-white' }}"
-                                        href="{{ $user->previousPageUrl() ?? '#' }}">
-                                        <span class="material-symbols-rounded">
-                                            keyboard_arrow_left
-                                        </span>
-                                    </a>
-                                </li>
-
-                                @for ($i = 1; $i <= $user->lastPage(); $i++)
-                                    <li class="page-item {{ $user->currentPage() == $i ? 'active' : '' }}">
-                                        <a class ="page-link {{ $user->currentPage() == $i ? 'bg-gradient-dark text-white border-0' : 'text-dark' }}"
-                                            href="{{ $user->url($i) }}">{{ $i }}</a>
-                                    </li>
-                                @endfor
-
-                                <li class="page-item {{ !$user->hasMorePages() ? 'disabled' : '' }} ">
-                                    <a class =" page-link {{ !$user->hasMorePages() ? 'bg-light text-secondary' : 'bg-dark text-white' }}"
-                                        href="{{ $user->nextPageUrl() ?? '#' }}">
-                                        <span class="material-symbols-rounded">keyboard_arrow_right</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+@endsection
+@push('scripts')
+    {{-- <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script> --}}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    {{-- ini scriptnya datable --}}
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
     {{-- ini buat alert dialog --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        $(document).ready(function() {
+            $("#usertable").DataTable({
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json",
+                    paginate: {
+                        previous: "<",
+                        next: ">",
+                    }
+                },
+                //ini untuk mengatur entris yang mau ditampilin
+                lengthMenu:[5, 10 , 25 , 50 , 100],
+                columnDefs: [
+                    //ini supaya tabel index terakhir gak bisa disort
+                    {
+                        orderable: false,
+                        targets: -1
+                    }
+                ]
+            })
+        })
         //kalau ini supaya alertnya hilang dalam 2 detik 
         setTimeout(() => {
             const alert = document.getElementById('alert-message');
@@ -236,4 +236,4 @@
             });
         });
     </script>
-@endsection
+@endpush

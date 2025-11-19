@@ -20,9 +20,10 @@ class lowonganController extends Controller
         $idUnit = Auth::user()->staffUnit()->pluck('idUnit')->first();
         //ini saya pakaikan asia jakarta karena dia jam UTC
         $today = Carbon::today('Asia/Jakarta')->toDateString();
-        $lowonganToUpdate = Lowongan::where('idUnit', $idUnit)->get();
+        $lowonganbuka = Lowongan::where('idUnit', $idUnit)->get();
 
-        foreach($lowonganToUpdate as $lowongan){
+        //ini bagian supaya lowonganya buka sesuai dengan harinya
+        foreach($lowonganbuka as $lowongan){
             // dd($lowongan->id, $lowongan->judulLowongan, $lowongan->status);
             $awalPendaftaran = Carbon::parse($lowongan->awalPendaftaran)->toDateString();
             $batasPendaftaran = Carbon::parse($lowongan->batasPendaftaran)->toDateString();
@@ -42,7 +43,7 @@ class lowonganController extends Controller
         $lowongan = Lowongan::with(['unit'])
                     ->where('idUnit', $idUnit)
                     ->orderBy('status','desc')
-                   ->paginate(5);
+                   ->get();
         return view('lowongan.utama', compact('lowongan'));
     }
 

@@ -27,7 +27,7 @@
 
                     <div class="card-body px-2 pb-2">
                         <div class="table-responsive p-0">
-                            <table class="table align-items-center mb-0">
+                            <table id="lowongantable" class="table align-items-center mb-0">
                                 <thead class="bg-light">
                                     <tr>
                                         <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
@@ -111,7 +111,7 @@
                                                                 @else
                                                                     <span class="badge bg-danger px-3 py-2">Closed</span>
                                                                 @endif
-                                                                <button type="button" class="btn-close btn-close-white"
+                                                                <button type="button" class="btn-close btn-close btn-white"
                                                                     data-bs-dismiss="modal"></button>
                                                             </div>
                                                         </div>
@@ -176,33 +176,6 @@
                                     @endforeach
                                 </tbody>
                             </table>
-                            {{-- yang first page dan lainnya adalah bawaan dari laravel --}}
-                            <nav aria-label="Paging page" class="mt-4">
-                                <ul class="pagination justify-content-end">
-                                    <li class="page-item {{ $lowongan->onFirstPage() ? 'disabled' : '' }}">
-                                        <a class =" page-link {{ $lowongan->onFirstPage() ? 'bg-light text-secondary' : 'bg-dark text-white' }}"
-                                            href="{{ $lowongan->previousPageUrl() ?? '#' }}">
-                                            <span class="material-symbols-rounded">
-                                                keyboard_arrow_left
-                                            </span>
-                                        </a>
-                                    </li>
-
-                                    @for ($i = 1; $i <= $lowongan->lastPage(); $i++)
-                                        <li class="page-item {{ $lowongan->currentPage() == $i ? 'active' : '' }}">
-                                            <a class ="page-link {{ $lowongan->currentPage() == $i ? 'bg-gradient-dark text-white border-0' : 'text-dark' }}"
-                                                href="{{ $lowongan->url($i) }}">{{ $i }}</a>
-                                        </li>
-                                    @endfor
-
-                                    <li class="page-item {{ !$lowongan->hasMorePages() ? 'disabled' : '' }} ">
-                                        <a class =" page-link {{ !$lowongan->hasMorePages() ? 'bg-light text-secondary' : 'bg-dark text-white' }}"
-                                            href="{{ $lowongan->nextPageUrl() ?? '#' }}">
-                                            <span class="material-symbols-rounded">keyboard_arrow_right</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </nav>
                         </div>
                     </div>
                 </div>
@@ -210,3 +183,30 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#lowongantable').DataTable({
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json",
+                    paginate: {
+                        previous: "<",
+                        next: ">",
+                    }
+                },
+                lengthMenu: [5, 10, 25, 50, 100],
+                columnDefs: [
+                    //ini supaya tabel index terakhir gak bisa disort
+                    {
+                        orderable: false,
+                        targets: -1
+                    }
+                ]
+            });
+        });
+    </script>
+@endpush

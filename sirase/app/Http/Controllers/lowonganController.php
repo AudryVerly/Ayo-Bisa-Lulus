@@ -18,13 +18,20 @@ class lowonganController extends Controller
         //Ini untuk mencari idUnit dari user yang login 
         //ini pakai pluck soalnya relasinya one to many 
         $idUnit = Auth::user()->staffUnit()->pluck('idUnit')->first();
-        //ini saya pakaikan asia jakarta karena dia jam UTC
-        $today = Carbon::today('Asia/Jakarta')->toDateString();
         $lowonganbuka = Lowongan::where('idUnit', $idUnit)->get();
 
-        //ini bagian supaya lowonganya buka sesuai dengan harinya
-        foreach($lowonganbuka as $lowongan){
-            // dd($lowongan->id, $lowongan->judulLowongan, $lowongan->status);
+        $lowongan = Lowongan::with(['unit'])
+                    ->where('idUnit', $idUnit)
+                    ->orderBy('status','desc')
+                   ->get();
+        return view('lowongan.utama', compact('lowongan'));
+    }
+
+    public function autoUpdate(){
+        $lowongans = Lowongan::all();
+        $today = Carbon::today('Asia/Jakarta')->toDateString();
+
+        foreach($lowongans as $lowongan){
             $awalPendaftaran = Carbon::parse($lowongan->awalPendaftaran)->toDateString();
             $batasPendaftaran = Carbon::parse($lowongan->batasPendaftaran)->toDateString();
 
@@ -33,18 +40,12 @@ class lowonganController extends Controller
                     $lowongan->update(['status' =>1]);
                 }
             }elseif($today > $batasPendaftaran || $awalPendaftaran > $today){
-                    if($lowongan->status == 1){
-                     $lowongan->update(['status' =>0]);
-                    }        
+                if($lowongan->status == 1){
+                    $lowongan->update(['status' =>0]);
+                }        
             }
-            //dd($lowongan->status);
         }
 
-        $lowongan = Lowongan::with(['unit'])
-                    ->where('idUnit', $idUnit)
-                    ->orderBy('status','desc')
-                   ->get();
-        return view('lowongan.utama', compact('lowongan'));
     }
 
     /**
@@ -135,29 +136,60 @@ class lowonganController extends Controller
 
     }
 
-    // public function publish(string $id,Request $request){
-    //     try{
-    //         $lowongan = Lowongan::findOrfail($id);
-    //         $today = Carbon::today();
+    public function publish(string $id){
+    
+        $lowongan = Lowongan::findOrfail($id);
+        $today = Carbon::today('Asia/Jakarta')->toDateString();
 
-    //         $awalPendaftaran = Carbon::parse($lowongan->awalPendaftaran)->startOfDay();
-    //         $batasPendaftaran = Carbon::parse($lowongan->batasPendaftaran)->endOfDay();
+        $awalPendaftaran = Carbon::parse($lowongan->awalPendaftaran)->toDateString();
+        $batasPendaftaran = Carbon::parse($lowongan->batasPendaftaran)->toDateString();
+
+        if($today < $awalPendaftaran){
+            return back()->with('error', 'Lowongan tidak bisa di publish karena belum waktunya.');
+        }
+
+        if($today > $batasPendaftaran){
+            return back()->with('error', 'Lowongan tidak bisa di publish karena sudah melewati batas pendaftaran .');
+        }
+        
+        if($today >= $awalPendaftaran && $today <= $batasPendaftaran){
+            if($lowongan->status == 0){
+                    $lowongan->update(['status' =>1]);
+            }
+            return back()->with('success', 'Lowongan berhasil di publish');
+        }
 
 
+    }
 
+    public function unpublish(string $id){
+        $lowongan = Lowongan::findOrfail($id);
+        $today = Carbon::today('Asia/Jakarta')->toDateString();
 
-    //     }catch (\Exception $e){
+        $awalPendaftaran = Carbon::parse($lowongan->awalPendaftaran)->toDateString();
+        $batasPendaftaran = Carbon::parse($lowongan->batasPendaftaran)->toDateString();
 
-    //     }
+        //ini kalau belum waktunya
+        if($today < $awalPendaftaran){
+            return back()->with('error', 'Lowongan belum bisa di unpublish karena belum waktunya');
+        }
 
+        //ini kalau masih kebuka jadinya bisa di unpublish
+        if($today > $batasPendaftaran){
+            if($lowongan->status == 1){
+                    $lowongan->update(['status' =>0]);
+            }
+            return back()->with('success', 'Lowongan berhasil di unpublish (masa pendaftaran sudah lewat).');
+        }
 
-    // }
+        // ini dalam keadaan misalnya admin mau unpublish
+        if($today >= $awalPendaftaran && $today <= $batasPendaftaran){
+            if($lowongan->status == 1){
+                    $lowongan->update(['status' =>0]);
+            }
+            return back()->with('success', 'Lowongan berhasil di unpublish');
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return back()->with('error', 'Lowongan tidak berhasil di unpublish');
     }
 }

@@ -105,15 +105,22 @@
                                                                 </h5>
                                                                 <small class="text-white-50">Detail Informasi Lowongan</small>
                                                             </div>
-                                                            <div class="d-flex align-items-center gap-2">
-                                                                @if ($lowongans->status == 1)
-                                                                    <span class="badge bg-success px-3 py-2">Open</span>
-                                                                @else
-                                                                    <span class="badge bg-danger px-3 py-2">Closed</span>
-                                                                @endif
-                                                                <button type="button" class="btn-close btn-close btn-white"
+
+                                                            <div class="d-flex align-items-center gap-3">
+                                                                <div class="d-flex flex-column align-items-end gap-1 me-1">
+                                                                    <small class="text-white-50">Status Lowongan</small>
+
+                                                                    @if ($lowongans->status == 1)
+                                                                        <span class="badge bg-success px-3 py-2">Open</span>
+                                                                    @else
+                                                                        <span class="badge bg-danger px-3 py-2">Closed</span>
+                                                                    @endif
+                                                                </div>
+
+                                                                <button type="button" class="btn-close btn-white"
                                                                     data-bs-dismiss="modal"></button>
                                                             </div>
+
                                                         </div>
 
                                                         <div class="modal-body">
@@ -161,7 +168,40 @@
                                                         </div>
 
                                                         <div class="modal-footer">
-                                                            <div>
+                                                            <div class="d-flex gap-2">
+                                                                @if ($lowongans->status == 0)
+                                                                    <form
+                                                                        action="{{ route('lowongan.publish', $lowongans->id) }}"
+                                                                        method="POST">
+                                                                        @csrf
+                                                                        <button class="btn bg-gradient-primary btn-publish"
+                                                                            data-id={{ $lowongans->id }}
+                                                                            data-awal={{ $lowongans->awalPendaftaran }}
+                                                                            data-akhir={{ $lowongans->batasPendaftaran }}
+                                                                            data-status={{ $lowongans->status }}>
+                                                                            <i
+                                                                                class="material-symbols-rounded text-sm">publish</i><span
+                                                                                class="align-middle">&nbsp;&nbsp;Publish
+                                                                                Lowongan</span>
+                                                                        </button>
+                                                                    </form>
+                                                                @else
+                                                                    <form
+                                                                        action="{{ route('lowongan.unpublish', $lowongans->id) }}"
+                                                                        method="POST">
+                                                                        @csrf
+                                                                        <button id="btn-unpublish" class="btn bg-gradient-warning btn-unpublish"
+                                                                            data-id={{ $lowongans->id }}
+                                                                            data-awal={{ $lowongans->awalPendaftaran }}
+                                                                            data-akhir={{ $lowongans->batasPendaftaran }}
+                                                                            data-status={{ $lowongans->status }}>
+                                                                            <i
+                                                                                class="material-symbols-rounded text-sm">unpublished</i><span
+                                                                                class="align-middle">&nbsp;&nbsp;Unpublish
+                                                                                Lowongan</span>
+                                                                        </button>
+                                                                    </form>
+                                                                @endif
                                                                 <a href="{{ route('lowongans.edit', $lowongans->id) }}"
                                                                     class="btn bg-gradient-info text-white px-4">
                                                                     <i class="material-symbols-rounded text-sm">edit</i><span
@@ -189,6 +229,34 @@
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
     <script>
+        $(document).ready(function(){
+            $('.btn-publish, .btn-unpublish').each(function(){
+                let today = new Date();
+                let awal = new Date($(this).data('awal'));
+                let akhir = new Date($(this).data('akhir'));
+                let status = $(this).data('status');
+                let button = $(this)
+
+                button.hide();
+
+                if(today < awal){
+                    return;
+                }
+
+                if(today >= awal && today <= akhir){
+                    if(status == 0 && button.hasClass("btn-publish")){
+                        button.show();
+                    }
+
+                    if(status == 1 && button.hasClass("btn-unpublish")){
+                        button.show();
+                    }
+
+                    return;
+                }
+
+            });
+        });
         $(document).ready(function() {
             $('#lowongantable').DataTable({
                 language: {

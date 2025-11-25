@@ -6,6 +6,7 @@ use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\StaffUnitController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
+use App\Models\Lowongan;
 use App\Models\Mahasiswa;
 use App\Models\StaffUnit;
 use Illuminate\Container\Attributes\Auth;
@@ -22,6 +23,8 @@ Route::middleware('guest')->group(function(){
 });
 
 Route::post('/logout',[AuthController::class, 'logout'])->name('logout');
+Route::get('/autoupdate',[lowonganController::class, 'autoUpdate'])->name('lowongan.autoupdate');
+
 
 // Route::get('/dashboard', function () {return view('dashboard');})->name('superadmin.dashboard')->middleware('role:SuperAdmin');
 
@@ -36,6 +39,8 @@ Route::middleware(['auth','role:AdminUnit'])->group(function(){
    Route::post('/lowongans/{id}',[lowonganController::class, 'update'])->name('lowongans.update');
    Route::get('/lowongans/create',[lowonganController::class, 'create'])->name('lowongans.create');
    Route::post('/lowongans',[lowonganController::class, 'store'])->name('lowongans.store');
+   Route::post('/lowongan{id}', [lowonganController::class, 'publish'])->name('lowongan.publish');
+   Route::post('/lowongan/{id}', [lowonganController::class, 'unpublish'])->name('lowongan.unpublish');
 //    Route::get('/lowongans/{id}/manage',[lowonganController::class, 'show'])->name('lowongans.show');
 });
 

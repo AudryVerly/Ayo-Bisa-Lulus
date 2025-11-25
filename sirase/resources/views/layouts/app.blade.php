@@ -146,6 +146,11 @@
     {{-- ini supaya nanti kalau kita run jtabels dan script itu ada diposisinya --}}
     @stack('scripts')
     <script>
+        $(document).ready(function(){
+            $.get("{{ route('lowongan.autoupdate') }}");
+        })
+    </script>
+    <script>
         $(window).on('pageshow', function(event) {
             const nav = performance.getEntriesByType('navigation');
             const isBack = nav.length > 0 && nav[0].type === 'back_forward';

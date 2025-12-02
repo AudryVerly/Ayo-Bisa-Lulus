@@ -42,9 +42,13 @@ Route::middleware(['auth','role:AdminUnit'])->group(function(){
    Route::post('/lowongans',[lowonganController::class, 'store'])->name('lowongans.store');
    Route::post('/lowongan{id}', [lowonganController::class, 'publish'])->name('lowongan.publish');
    Route::post('/lowongan/{id}', [lowonganController::class, 'unpublish'])->name('lowongan.unpublish');
+   
    Route::get('/formulir', [FormulirController::class, 'index'])->name('formulir.utama');
    Route::get('/formulir/{id}/manage', [FormulirController::class, 'show'])->name('formulir.manage');
    Route::post('/formulir/add',[FormulirController::class, 'store'])->name('formulir.add');
+   Route::post('/formulir/{id}/update', [FormulirController::class, 'update'])->name('formulir.update');
+   Route::post('/formulir/{id}/active', [FormulirController::class, 'active'])->name('formulir.active');
+   Route::post('/formulir/{id}/nonactive', [FormulirController::class, 'nonactive'])->name('formulir.nonActive');
 //    Route::get('/lowongans/{id}/manage',[lowonganController::class, 'show'])->name('lowongans.show');
 });
 

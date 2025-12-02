@@ -129,7 +129,7 @@ class MahasiswaController extends Controller
         $mahasiswa = Mahasiswa::findOrFail($id);
         $mahasiswa->update(['status' => 1]);
 
-         return response()->json(['message' => 'Mahasiswa berhasil diaktifkan']);
+        return response()->json(['message' => 'Mahasiswa berhasil diaktifkan']);
 
     }
 }

@@ -63,26 +63,39 @@ class FormulirController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
     {
-        //
+        $formulir = formulir::findorfail($id);
+        $request->validate([
+            'namaField' =>'required|string',
+            'tipeField' => 'required|string',
+            'required'   => 'required',
+        ]);
+
+        $formulir->update([
+            'namaField' =>$request ->namaField,
+            'tipeField' => $request->tipeField,
+            'opsi_field' => $request->opsi_field,
+            'required' => $request->required,
+        ]);
+
+        return redirect()->back()->with('success','Field berhasil ditambahkan');
+    
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+    public function active(string $id){
+        $formulir = formulir::findorFail($id);
+        $formulir->update(['status' => 1]);
+
+        return response()->json(['message' => 'Field ini berhasil diaktifkan']);
+    }
+
+    public function nonactive(string $id){
+        $formulir = formulir::findorFail($id);
+        $formulir->update(['status' => 0]);
+
+        return response()->json(['message' => 'Field ini berhasil dinonktifkan']);
     }
 }

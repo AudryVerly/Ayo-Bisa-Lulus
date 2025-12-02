@@ -190,7 +190,8 @@
                                                                         action="{{ route('lowongan.unpublish', $lowongans->id) }}"
                                                                         method="POST">
                                                                         @csrf
-                                                                        <button id="btn-unpublish" class="btn bg-gradient-warning btn-unpublish"
+                                                                        <button id="btn-unpublish"
+                                                                            class="btn bg-gradient-warning btn-unpublish"
                                                                             data-id={{ $lowongans->id }}
                                                                             data-awal={{ $lowongans->awalPendaftaran }}
                                                                             data-akhir={{ $lowongans->batasPendaftaran }}
@@ -229,8 +230,16 @@
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
     <script>
-        $(document).ready(function(){
-            $('.btn-publish, .btn-unpublish').each(function(){
+        setTimeout(() => {
+            const alert = document.getElementById('alert-message');
+            if (alert) {
+                alert.style.transition = 'opacity 0.5s ease';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500); //hapus elemen setelah fade out
+            }
+        }, 3000);
+        $(document).ready(function() {
+            $('.btn-publish, .btn-unpublish').each(function() {
                 let today = new Date();
                 let awal = new Date($(this).data('awal'));
                 let akhir = new Date($(this).data('akhir'));
@@ -239,16 +248,16 @@
 
                 button.hide();
 
-                if(today < awal){
+                if (today < awal) {
                     return;
                 }
 
-                if(today >= awal && today <= akhir){
-                    if(status == 0 && button.hasClass("btn-publish")){
+                if (today >= awal && today <= akhir) {
+                    if (status == 0 && button.hasClass("btn-publish")) {
                         button.show();
                     }
 
-                    if(status == 1 && button.hasClass("btn-unpublish")){
+                    if (status == 1 && button.hasClass("btn-unpublish")) {
                         button.show();
                     }
 

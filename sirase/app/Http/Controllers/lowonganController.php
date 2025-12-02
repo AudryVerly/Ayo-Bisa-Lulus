@@ -20,6 +20,7 @@ class lowonganController extends Controller
         $idUnit = Auth::user()->staffUnit()->pluck('idUnit')->first();
         $lowonganbuka = Lowongan::where('idUnit', $idUnit)->get();
 
+        //with itu adalah relasi atau join
         $lowongan = Lowongan::with(['unit'])
                     ->where('idUnit', $idUnit)
                     ->orderBy('status','desc')
@@ -92,6 +93,7 @@ class lowonganController extends Controller
     }
 
     /**
+     * 
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)

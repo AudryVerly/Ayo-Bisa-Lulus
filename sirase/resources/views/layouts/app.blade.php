@@ -148,6 +148,11 @@
     <script>
         $(document).ready(function(){
             $.get("{{ route('lowongan.autoupdate') }}");
+            
+            //refresh setiap 1 menit
+            setInterval(() => {
+                $.get("{{ route('lowongan.autoupdate') }}");
+            },60000);
         })
     </script>
     <script>

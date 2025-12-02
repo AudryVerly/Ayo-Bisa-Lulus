@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FormulirController;
 use App\Http\Controllers\lowonganController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\StaffUnitController;
@@ -41,6 +42,9 @@ Route::middleware(['auth','role:AdminUnit'])->group(function(){
    Route::post('/lowongans',[lowonganController::class, 'store'])->name('lowongans.store');
    Route::post('/lowongan{id}', [lowonganController::class, 'publish'])->name('lowongan.publish');
    Route::post('/lowongan/{id}', [lowonganController::class, 'unpublish'])->name('lowongan.unpublish');
+   Route::get('/formulir', [FormulirController::class, 'index'])->name('formulir.utama');
+   Route::get('/formulir/{id}/manage', [FormulirController::class, 'show'])->name('formulir.manage');
+   Route::post('/formulir/add',[FormulirController::class, 'store'])->name('formulir.add');
 //    Route::get('/lowongans/{id}/manage',[lowonganController::class, 'show'])->name('lowongans.show');
 });
 

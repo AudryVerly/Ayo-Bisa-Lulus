@@ -27,4 +27,8 @@ class Lowongan extends Model
     public function tahapRekrutmen(){
         return $this->hasMany(tahapRekrutmen::class,'idLowongan');
     }
+
+    public function kontenFormulir(){
+        return $this->hasMany(formulir::class, 'idLowongan');
+    }
 }

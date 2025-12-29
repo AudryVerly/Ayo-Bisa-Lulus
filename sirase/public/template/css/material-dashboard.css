@@ -29158,7 +29158,7 @@ td .btn {
 
 /* ini buat header modalnya */
 .modal-header {
-  background: linear-gradient(135deg,#10203a,#12304a);
+  background: linear-gradient(135deg, #10203a, #12304a);
   /* ungu ke biru */
   color: white;
   border-bottom: 2px solid rgba(255, 255, 255, 0.2);
@@ -29197,124 +29197,232 @@ body.modal-open .sidenav {
 
 /* ini cssnya buat datatable */
 .dataTables_wrapper thead th {
-    font-size: 0.75rem !important;
-    text-transform: uppercase !important;
-    color: gray !important;
-    letter-spacing: 0;
-    border-bottom: 1px solid whitesmoke!important;
+  font-size: 0.75rem !important;
+  text-transform: uppercase !important;
+  color: gray !important;
+  letter-spacing: 0;
+  border-bottom: 1px solid whitesmoke !important;
 }
 
 /* 2. Style Pagination: Bulat & abu */
 .dataTables_wrapper .page-item .page-link {
-    color: gray ;
-    border: none !important;
-    border-radius: 50% !important; /* Membuat Bulat */
-    margin: 0 2px;
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.875rem;
-    cursor: pointer;
-    transition: all 0.3s;
+  color: gray;
+  border: none !important;
+  border-radius: 50% !important;
+  /* Membuat Bulat */
+  margin: 0 2px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s;
 }
 
 /* Warna Tombol Aktif (Pink Gradient) */
 .dataTables_wrapper .page-item.active .page-link {
-    background-image: linear-gradient(195deg, dimgray 0%, black 100%);
-    box-shadow: 0 3px 5px -1px rgba(0,0,0,.09), 0 2px 3px -1px rgba(0,0,0,.07);
-    /* teks putih */
-    color: white !important; 
-    border: none;
+  background-image: linear-gradient(195deg, dimgray 0%, black 100%);
+  box-shadow: 0 3px 5px -1px rgba(0, 0, 0, .09), 0 2px 3px -1px rgba(0, 0, 0, .07);
+  /* teks putih */
+  color: white !important;
+  border: none;
 }
 
 /* Hover Effect */
 .dataTables_wrapper .page-item:not(.active) .page-link:hover {
-    background-color: lightgray;
-    color: black;
+  background-color: lightgray;
+  color: black;
 }
 
 
 /* Hapus outline biru saat klik */
 .page-link:focus {
-    box-shadow: none !important;
+  box-shadow: none !important;
 }
 
 /* Posisi Pagination di Kanan */
 .dataTables_wrapper .dataTables_paginate .pagination {
-    justify-content: flex-end !important;
-    margin-top: 10px;
+  justify-content: flex-end !important;
+  margin-top: 10px;
 }
 
 /* 3. Style Input Search & Dropdown Entries */
 .dataTables_wrapper .dataTables_filter input,
 .dataTables_wrapper .dataTables_length select {
-    border: 1px solid lightgray !important;
-    border-radius: 0.375rem !important;
-    padding: 0.3rem 0.5rem !important;
-    font-size: 0.875rem;
-    color: black;
-    margin-left: 5px;
-    background-color: transparent;
+  border: 1px solid lightgray !important;
+  border-radius: 0.375rem !important;
+  padding: 0.3rem 0.5rem !important;
+  font-size: 0.875rem;
+  color: black;
+  margin-left: 5px;
+  background-color: transparent;
 }
 
 /* Warna Fokus Input (Pink) */
 .dataTables_wrapper .dataTables_filter input:focus,
 .dataTables_wrapper .dataTables_length select:focus {
-    border-color: blue !important;
-    outline: 0;
+  border-color: blue !important;
+  outline: 0;
 }
 
 /* Rapikan Label Search & Show */
-.dataTables_length label, 
+.dataTables_length label,
 .dataTables_filter label {
-    font-size: 0.875rem;
-    color: #7b809a;
-    margin-bottom: 0;
+  font-size: 0.875rem;
+  color: #7b809a;
+  margin-bottom: 0;
 }
 
 .dataTables_wrapper .paginate_button.previous,
 .dataTables_wrapper .paginate_button.next {
-    border-radius: 50% !important;
-    width: 36px !important;
-    height: 36px !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 0 !important;
-    margin: 0 2px !important;
+  border-radius: 50% !important;
+  width: 36px !important;
+  height: 36px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  margin: 0 2px !important;
 
-    background-color: lightgray !important; /* BACKGROUND NORMAL */
-    color: gray !important;
-    border: none !important;
+  background-color: lightgray !important;
+  /* BACKGROUND NORMAL */
+  color: gray !important;
+  border: none !important;
 }
 
-/* * Disabled - tetap lingkaran abu soft */ 
+/* * Disabled - tetap lingkaran abu soft */
 .dataTables_wrapper .paginate_button.disabled {
-    background-color: #e6e6e6 !important; /* abu paling soft */
-    color: #9e9e9e !important;
-    cursor: not-allowed !important;
-    opacity: 1 !important; /* jangan dibuat transparan */
-    border: none !important;
+  background-color: #e6e6e6 !important;
+  /* abu paling soft */
+  color: #9e9e9e !important;
+  cursor: not-allowed !important;
+  opacity: 1 !important;
+  /* jangan dibuat transparan */
+  border: none !important;
 }
 
 /* Buang efek border putih DataTables bawaan */
 .dataTables_wrapper .paginate_button {
-    border: none 
+  border: none
 }
 
 /* ini supaya kalau misalnya kita disable buttonya tetap terang */
 .field-disabled {
-    background-color: rgba(233, 236, 239, 0.65) !important;
+  background-color: rgba(233, 236, 239, 0.65) !important;
 }
+
 
 .field-disabled .btntoggle {
-    opacity: 1 !important;
+  opacity: 1 !important;
 }
 
 
+/* ini buat tahapan rekrutmen */
+.stage-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, .07);
+}
 
-/* ini berguna supaya nanti kualifikasi muncul dalam bentuk bullet */
+.stage-card.disabled {
+  background: #eee;
+  opacity: .6;
+}
+
+.stage-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stage-number {
+  width: 40px;
+  height: 40px;
+  background: #6366f1;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.stage-name {
+  font-weight: 600;
+}
+
+.stage-status {
+  font-size: 12px;
+  color: #888;
+}
+
+.btn-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+}
+
+.preview-item {
+  background: #1f2933;
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+/* WRAPPER */
+.tahap-toggle-switch {
+  position: relative;
+  transform: translateY(-6px);
+  width: 46px;
+  height: 24px;
+}
+
+/* HIDE INPUT */
+.tahap-toggle-input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* TRACK */
+.tahap-toggle-label {
+  position: absolute;
+  cursor: pointer;
+  background-color: #cbd5e1;
+  border-radius: 999px;
+  width: 100%;
+  height: 100%;
+  transition: background-color 0.25s ease;
+}
+
+/* KNOB */
+.tahap-toggle-label::after {
+  content: "";
+  position: absolute;
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  top: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.25s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .25);
+}
+
+/* CHECKED */
+.tahap-toggle-input:checked+.tahap-toggle-label {
+  background-color: #22c55e;
+}
+
+.tahap-toggle-input:checked+.tahap-toggle-label::after {
+  transform: translateX(22px);
+}
 
 /*# sourceMappingURL=dashboard-free.css.map */

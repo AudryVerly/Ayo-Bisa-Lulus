@@ -5,6 +5,7 @@ use App\Http\Controllers\FormulirController;
 use App\Http\Controllers\lowonganController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\StaffUnitController;
+use App\Http\Controllers\TahapRekrutmenController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use App\Models\Lowongan;
@@ -49,7 +50,11 @@ Route::middleware(['auth','role:AdminUnit'])->group(function(){
    Route::post('/formulir/{id}/update', [FormulirController::class, 'update'])->name('formulir.update');
    Route::post('/formulir/{id}/active', [FormulirController::class, 'active'])->name('formulir.active');
    Route::post('/formulir/{id}/nonactive', [FormulirController::class, 'nonactive'])->name('formulir.nonActive');
-//    Route::get('/lowongans/{id}/manage',[lowonganController::class, 'show'])->name('lowongans.show');
+  // Route::get('/lowongans/{id}/manage',[lowonganController::class, 'show'])->name('lowongans.show');
+
+  Route::get('/tahapan', [TahapRekrutmenController::class, 'index'])->name('tahapan.utama');
+  Route::get('/tahapana/{id}/manage', [TahapRekrutmenController::class, 'show']) ->name('tahapan.manage');
+  Route::post('/tahapan/{id}/toggle', [TahapRekrutmenController::class, 'toggle'])->name('tahapan.toggle');
 });
 
 Route::middleware(['auth','role:StaffUnit'])->group(function(){

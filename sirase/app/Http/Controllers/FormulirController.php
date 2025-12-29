@@ -16,7 +16,6 @@ class FormulirController extends Controller
     {
         $idUnit = Auth::user()->staffUnit()->pluck('idUnit')->first();
         // dd($idUnit);
-        $lowonganUnit = Lowongan::where('idUnit',"=", $idUnit)->get();
         //ini untuk tampilan index supaya muncul lowongan di unit tersebut doang
         //with itu adalh relasi atau join
         $lowongan = Lowongan::with(['unit'])

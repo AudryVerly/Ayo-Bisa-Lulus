@@ -6,6 +6,7 @@ use App\Http\Controllers\lowonganController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\StaffUnitController;
 use App\Http\Controllers\TahapRekrutmenController;
+use App\Http\Controllers\TimPenilaiController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use App\Models\Lowongan;
@@ -55,6 +56,8 @@ Route::middleware(['auth','role:AdminUnit'])->group(function(){
   Route::get('/tahapan', [TahapRekrutmenController::class, 'index'])->name('tahapan.utama');
   Route::get('/tahapana/{id}/manage', [TahapRekrutmenController::class, 'show']) ->name('tahapan.manage');
   Route::post('/tahapan/{id}/toggle', [TahapRekrutmenController::class, 'toggle'])->name('tahapan.toggle');
+
+  Route::get('/penilaian', [TimPenilaiController::class, 'index'])->name('timPenilai.utama');
 });
 
 Route::middleware(['auth','role:StaffUnit'])->group(function(){

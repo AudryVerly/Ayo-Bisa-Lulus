@@ -54,8 +54,12 @@ Route::middleware(['auth','role:AdminUnit'])->group(function(){
   // Route::get('/lowongans/{id}/manage',[lowonganController::class, 'show'])->name('lowongans.show');
 
   Route::get('/tahapan', [TahapRekrutmenController::class, 'index'])->name('tahapan.utama');
-  Route::get('/tahapana/{id}/manage', [TahapRekrutmenController::class, 'show']) ->name('tahapan.manage');
+  Route::get('/tahapan/{id}/manage', [TahapRekrutmenController::class, 'show']) ->name('tahapan.manage');
   Route::post('/tahapan/{id}/toggle', [TahapRekrutmenController::class, 'toggle'])->name('tahapan.toggle');
+  Route::post('/tahapan/{id}/update', [TahapRekrutmenController::class, 'update'])->name('tahapan.update');
+  Route::get('/tahapan/{id}/preview',[TahapRekrutmenController::class, 'previewlist']);
+  Route::get('/tahapan/{id}/previewkanan', [TahapRekrutmenController::class, 'listTahapan']);
+  Route::post('/tahapan/store',[TahapRekrutmenController::class, 'store'])->name('tahapan.tambah');
 
   Route::get('/penilaian', [TimPenilaiController::class, 'index'])->name('timPenilai.utama');
 });

@@ -32,7 +32,7 @@
                                         </div>
                                     </div>
                                     <div class="p-4">
-                                        <div class="d-flex flex-column gap-3 rounded">
+                                        <div id ="listTahapan" class="d-flex flex-column gap-3 rounded">
                                             @foreach ($tahapan as $tahap)
                                                 <div class="tahapCard d-flex justify-content-between align-items-center w-100 p-3 rounded"
                                                     style="background:#f7f6f6ee; border-left:5px; box-shadow:0 4px 12px rgba(0,0,0,0.08); border-radius:12px; border:1px solid rgb(118, 113, 113);">
@@ -66,12 +66,12 @@
                                                                 class="tahap-toggle-label"></label>
                                                         </div>
 
-                                                        <button type="button"
-                                                            class="btn btn-secondary btn-sm btnedittahapan"
-                                                            data-id="{{ $tahap->id }}" data-name="{{ $tahap->name }}"
-                                                            data-status="{{ $tahap->status }}"
+                                                        <button type="button" class="btnedit btn btn-secondary btn-sm"
+                                                            data-id-tahapan="{{ $tahap->id }}"
+                                                            data-name="{{ $tahap->name }}"
+                                                            data-urutan = "{{ $tahap->urutan }}"
                                                             style="width:45px;height:45px;border-radius:12px;font-size:18px;"
-                                                            data-bs-target="#modaledittahap">
+                                                            data-bs-toggle="modal" data-bs-target="#modaledittahap">
                                                             <i class="material-symbols-rounded text-sm">edit</i>
                                                         </button>
                                                     </div>
@@ -90,7 +90,8 @@
                                             style="font-size: 1.2rem;">visibility</span>
                                         Preview Workflow
                                     </h6>
-                                    <div id="previewList" class="d-flex flex-column gap-3">
+                                    <div id="previewList" class="d-flex flex-column gap-3"
+                                        data-id-lowongan = "{{ $lowongan->id }}">
                                         @foreach ($tahapan as $tahap)
                                             @if ($tahap->status == 1)
                                                 <div class="p-3 rounded d-flex align-items-center gap-2 preview-item "
@@ -116,9 +117,164 @@
         </div>
     </div>
 @endsection
+@push('modals')
+    <div class="modal fade" id="modaledittahap" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="formeditPenilaian" method="POST">
+                    @csrf
+                    <div>
+                        <div
+                            class="modal-header d-flex justify-content-between align-items-center bg-dark text-white px-4 py-3">
+                            <h5 class="modal-title text-white">Edit Tim Penilai</h5>
+                            <button type="button" class="btn-close btn-white" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <input type="hidden" name="idTahapan" id="idTahapan">
+                            <div class="form-group mb-2">
+                                <label for="nameTahapan" class="form-label fw-bold text-secondary">Nama Tahapan</label>
+                                <input type="text" class="form-control shadow-sm border rounded-3 px-3 py-2"
+                                    name="name" id="edit_namaUrutan" placeholder= "Masukkan Tahapan Rekrutmen"
+                                    value="{{ old('name') }}">
+                                    <div class="text-danger" id="errorName"></div>
+                                {{-- @error('name')
+                                    <div class="text-danger" id="errorName">{{ $message }}</div>
+                                @enderror --}}
+                            </div>
+
+                            <div class="form-group mb-2">
+                                <label for="urutanTahapan" class="form-label fw-bold text-secondary">Urutan Tahapan</label>
+                                <input type="number" class="form-control shadow-sm border rounded-3 px-3 py-2"
+                                    name="urutan" id="edit_urutan" placeholder= "Masukkan Urutan Rekrutmen"
+                                    value="{{ old('urutan') }}">
+
+                                <div class="text-danger" id="errorUrutan"></div>
+                                {{-- @error('urutan')
+                                    <div class="text-danger" id="errorUrutan">{{ $message }}</div>
+                                @enderror --}}
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modaladdtahapan" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form action="{{ route('tahapan.tambah') }}" method="POST">
+                    @csrf
+                    <div
+                        class="modal-header d-flex justify-content-between align-items-center bg-dark text-white px-4 py-3">
+                        <h5 class="modal-title text-white">Tambah Tahapan</h5>
+                        <button type="button" class="btn-close btn-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="idLowongan" id="idLowongan">
+                        <div class="form-group mb-1">
+                            <label for="name" class="form-label fw-bold text-secondary">Nama Urutan</label>
+                            <input type="text" class="form-control shadow-sm border rounded-3 px-3 py-2"
+                                name="name" id="namaUrutan" placeholder="Masukkan Nama urutan"
+                                value="{{ old('name') }}">
+                            @error('name')
+                                <div class="text-danger" id="errorName">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+@endpush
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        function refreshTahapan() {
+            let idLowongan = $('#previewList').data('id-lowongan');
+            $.get(`/tahapan/${idLowongan}/preview`, function(data) {
+
+                let htmlkanan = '';
+                data.forEach(function(tahapan) {
+                    htmlkanan += `<div class="p-3 rounded d-flex align-items-center gap-2 preview-item "
+                            data-id = "${tahapan.id}"
+                                style="background:#374151;">
+                                        <span
+                                            class="badge rounded-circle bg-dark p-3 d-flex justify-content-center align-items-center previewurutan"
+                                            style="width: 36px; height: 36px; font-size: 0.9rem; ">
+                                                ${tahapan.urutan}
+                                        </span>
+                                        <strong style="font-size: 0.95rem;" class="previewname">
+                                                ${tahapan.name}
+                                         </strong>
+                         </div>
+                `;
+                });
+                $('#previewList').html(htmlkanan);
+            });
+
+            $.get(`/tahapan/${idLowongan}/previewkanan`, function(data) {
+                let htmlkiri = '';
+
+                data.forEach(function(tahapan) {
+                    //ini supaya dia muncul kalau statusnya 1 aja
+                    let isActive = tahapan.status === 1;
+                    let bgColor = isActive ? '#f7f6f6ee' : 'lightgray';
+                    let btnEdit = isActive ?
+                        `<button type="button" class="btnedit btn btn-secondary btn-sm"
+                                            data-id-tahapan="${tahapan.id}"
+                                            data-name="${tahapan.name}"
+                                            data-urutan ="${tahapan.urutan}"
+                                            style="width:45px;height:45px;border-radius:12px;font-size:18px;"
+                                            data-bs-toggle="modal" data-bs-target="#modaledittahap">
+                                            <i class="material-symbols-rounded text-sm">edit</i>
+                </button>` : '';
+
+                    htmlkiri += ` <div class="tahapCard d-flex justify-content-between align-items-center w-100 p-3 rounded"
+                                    style="background:${bgColor}; border-left:5px; box-shadow:0 4px 12px rgba(0,0,0,0.08); border-radius:12px; border:1px solid rgb(118, 113, 113);">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <span
+                                                class="tahapurutan badge rounded-circle bg-dark p-3 d-flex justify-content-center align-items-center"
+                                                style="width: 36px; height: 36px; font-size: 0.9rem; ">
+                                                ${tahapan.urutan}
+                                            </span>
+                                        <div class="d-flex flex-column">
+                                            <strong style="font-size: 0.95rem;" class="tahapname">
+                                                    ${tahapan.name }
+                                            </strong>
+                                            <small class="text-secondary d-block">
+                                                ${tahapan.status == 1 ? 'Aktif' : 'Non-Aktif'}
+                                            </small>
+                                        </div>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="tahap-toggle-switch">
+                                                <input type="checkbox" id="toggle-${tahapan.id}"
+                                                    class="tahap-toggle-input" data-id="${tahapan.id}"
+                                                        ${tahapan.status == 1 ? 'checked' : '' }>
+                                                    <label for="toggle-${tahapan.id}"
+                                                        class="tahap-toggle-label"></label>
+                                            </div>
+
+                                            ${btnEdit}
+                                        </div>
+                            </div>`;
+                });
+                $('#listTahapan').html(htmlkiri);
+            });
+        }
+
         $(document).on('change', '.tahap-toggle-input', function() {
             let toggle = $(this);
             let id = toggle.data('id');
@@ -161,29 +317,6 @@
                         },
                         success: function(response) {
 
-                            //kalau misalnya udah di checked tapi belum muncul nanti di munculin
-                            if (isChecked) {
-                                if ($('#previewList').find(`[data-id = "${id}"]`).length ===
-                                    0) {
-                                    $(`#previewList`).append(`
-                                        <div class="p-3 rounded d-flex align-items-center gap-2 preview-item "
-                                            data-id = "${id}"
-                                                style="background:#374151;">
-                                                <span
-                                                    class="badge rounded-circle bg-dark p-3 d-flex justify-content-center align-items-center previewurutan"
-                                                    style="width: 36px; height: 36px; font-size: 0.9rem; ">
-                                                    ${urutan}
-                                                </span>
-                                                <strong style="font-size: 0.95rem;" class="previewname">
-                                                    ${name}
-                                                </strong>
-                                        </div>
-                                    `);
-                                }
-                            } else {
-                                $('#previewList').find(`[data-id="${id}"]`).remove();
-                            }
-
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Berhasil!',
@@ -191,6 +324,7 @@
                                 timer: 1500,
                                 showConfirmButton: false
                             });
+                            refreshTahapan();
                         },
                         error: function() {
                             toggle.prop('checked', previouschecked);
@@ -206,5 +340,74 @@
 
             });
         });
+
+
+        $(document).on('click', '.btnedit', function() {
+            let id = $(this).data('idTahapan');
+            let name = $(this).data('name');
+            let urutan = $(this).data('urutan');
+
+            $('#idTahapan').val(id);
+            $('#edit_namaUrutan').val(name);
+            $('#edit_urutan').val(urutan);
+            $('#errorName').text('');
+            $('#errorUrutan').text('');
+
+            // $('#formeditPenilaian').attr('action', '/tahapan/' + id + '/update');
+        });
+
+        //ini jadinya kita pisah supaya dia bisa buat priviewnya update
+        //kita harus pakai ini karena setelah aku coba supaya bisa upadte previewnya
+        $('#formeditPenilaian').submit(function(e) {
+            e.preventDefault();
+            //ini jadinya kalau submit kita ambil data yang udah diisi
+            let id = $('#idTahapan').val();
+            let name = $('#edit_namaUrutan').val();
+            let urutan = $('#edit_urutan').val();
+
+            $.post(`/tahapan/${id}/update`, {
+                _token: '{{ csrf_token() }}',
+                name,
+                urutan
+            }, function(response) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: response.message,
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+                $('#modaledittahap').modal('hide');
+                refreshTahapan();
+                //kenapa errornya gini karena kita pakai prevent default jadi gak ada reload langsung 
+            }).fail(function(xhr) {
+                let errors = xhr.responseJSON?.errors || {};
+                $('#errorName').text(errors.name ? errors.name[0] : '');
+                $('#errorUrutan').text(errors.urutan ? errors.urutan[0] : '');
+            });
+
+        });
+
+        $(document).on('click', '[data-bs-target="#modaladdtahapan"]', function() {
+            $('#idLowongan').val($(this).data('id-lowongan'));
+        });
+
+        $('#modaledittahap , #modaladdtahapan').on('hidden.bs.modal', function() {
+            //hapus pesan error
+            $(this).find('.text-danger').text('');
+            $(this).find('input:not([type=hidden])').val('');
+        });
+
+        @if ($errors->any())
+            $(document).ready(function() {
+                @if (old('idTahapan'))
+                    $('#modaledittahap').modal('show');
+                @endif
+
+                @if (old('idLowongan'))
+                    $('#modaladdtahapan').modal('show');
+                @endif
+            });
+        @endif
     </script>
 @endpush

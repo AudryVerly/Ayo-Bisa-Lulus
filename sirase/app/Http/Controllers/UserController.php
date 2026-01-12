@@ -33,8 +33,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        
-            //ini supaya ketika input masukk sesuai dengan requirenya
+        //ini supaya ketika input masukk sesuai dengan requirenya
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users',

@@ -15,7 +15,7 @@
                             <button class="btn bg-white text-dark border shadow-sm" data-bs-toggle="modal"
                                 data-bs-target="#modaladdtahapan" data-id-lowongan={{ $lowongan->id }}>
                                 <i class="material-symbols-rounded text-sm align-middle text-success">add</i>
-                                <span class="align-middle fw-bold">Tambah Unit</span>
+                                <span class="align-middle fw-bold">Tambah Tahapan</span>
                             </button>
                         </div>
                     </div>
@@ -137,7 +137,7 @@
                                 <input type="text" class="form-control shadow-sm border rounded-3 px-3 py-2"
                                     name="name" id="edit_namaUrutan" placeholder= "Masukkan Tahapan Rekrutmen"
                                     value="{{ old('name') }}">
-                                    <div class="text-danger" id="errorName"></div>
+                                <div class="text-danger" id="errorName"></div>
                                 {{-- @error('name')
                                     <div class="text-danger" id="errorName">{{ $message }}</div>
                                 @enderror --}}
@@ -388,6 +388,7 @@
 
         });
 
+        //ini mengirim id si lowongan
         $(document).on('click', '[data-bs-target="#modaladdtahapan"]', function() {
             $('#idLowongan').val($(this).data('id-lowongan'));
         });

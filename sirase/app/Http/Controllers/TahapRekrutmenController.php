@@ -30,6 +30,7 @@ class TahapRekrutmenController extends Controller
     {
         $request ->validate([
             'name' => 'required|string',
+            //ini ada supaya dapat idlowongannya dan bisa tau urutan terakhir drimana
             'idLowongan' => 'required|exists:lowongan,id'
         ]);
 

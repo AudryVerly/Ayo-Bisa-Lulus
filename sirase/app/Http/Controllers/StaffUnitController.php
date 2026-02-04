@@ -43,26 +43,15 @@ class StaffUnitController extends Controller
             'idUser' => [
                 'required',
                 'exists:users,id',
-                //ini buat cek validasi diawal pas required
-                // function($attribute, $value, $fail) use ($request) {
-                //     if (StaffUnit::where('idUser', $value)->where('idUnit', $request->idUnit)->exists()) {
-                //         $fail('User ini sudah terdaftar di unit tersebut');
-                //     }
-                // }
             ],
             'idUnit' => 'required|exists:unit,id',
             'jabatan' => 'required',
             'status'  => 'required|boolean',
         ]);
-        // $request->validate([
-        //     'idUser' => 'required|exists:users,id',
-        //     'idUnit' => 'required|exists:unit,id',
-        //     'jabatan'=> 'required',
-        //     'status' => 'required|boolean',
-        // ]);
 
-            // ini buat ngecek apaka user ini ada di unit apa enggak
-            //karena 1 user bisa di banyak staffunit dan 1 unit bisa punya banyak staffunit
+
+        // ini buat ngecek apaka user ini ada di unit apa enggak
+        //karena 1 user bisa di banyak staffunit dan 1 unit bisa punya banyak staffunit
         $exist = StaffUnit::where('idUser', $request->idUser)
                                 ->where('idUnit', $request->idUnit)
                                 ->exists();

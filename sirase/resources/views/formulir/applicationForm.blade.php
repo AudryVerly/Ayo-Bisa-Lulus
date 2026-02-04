@@ -12,8 +12,7 @@
             </div>
             <div class="card-body bg-light" style="border-radius: 0 0 12px 12px;">
                 @foreach ($field as $f)
-                    <div class="field-card p-3 mb-3 shadow-sm border rounded d-flex align-items-center gap-3 justify-content-between {{ $f->status == 0 ? 'field-disabled text-muted' : 'bg-white' }}"
-                        data-id="{{ $f->id }}">
+                    <div class="field-card p-3 mb-3 shadow-sm border rounded d-flex align-items-center gap-3 justify-content-between {{ $f->status == 0 ? 'field-disabled text-muted' : 'bg-white' }}">
                         <div class="d-flex align-items-center gap-3 flex-grow-1">
                             <div class="bg-dark text-white d-flex justify-content-center align-items-center"
                                 style="width:45px;height:45px;border-radius:12px;font-size:18px;">

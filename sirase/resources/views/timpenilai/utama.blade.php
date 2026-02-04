@@ -54,8 +54,8 @@
                                             </td>
                                             <td>
                                                 <div class="d-flex justify-content-center gap-2">
-                                                    <a href="" class="btn bg-gradient-info btn-sm text-white">
-                                                        Manage Tim
+                                                    <a href="{{ route('timPenilai.manage', $low->id) }}" class="btn bg-gradient-info btn-sm text-white">
+                                                        Manage Asessor
                                                     </a>
                                                 </div>
                                             </td>

@@ -62,6 +62,12 @@ Route::middleware(['auth','role:AdminUnit'])->group(function(){
   Route::post('/tahapan/store',[TahapRekrutmenController::class, 'store'])->name('tahapan.tambah');
 
   Route::get('/penilaian', [TimPenilaiController::class, 'index'])->name('timPenilai.utama');
+  Route::get('/penilaian/{id}/manage',[TimPenilaiController::class,'show'])->name('timPenilai.manage');
+  Route::post('/penilaian/add',[TimPenilaiController::class, 'store'])->name('timPenilai.add');
+  Route::get('/show-staff',[TimPenilaiController::class,'showStaffUnit'])->name('timPenilai.showstaff');
+  Route::get('/show-staffEdit', [TimPenilaiController::class, 'showStaffUnitEdit'])->name('timPenilai.showstaffedit');
+  Route::post('/penilaian/{id}/update',[TimPenilaiController::class, 'update'])->name('timPenilai.update');
+  Route::post('/penilaian/{id}/toggle',[TimPenilaiController::class, 'toggle'])->name('timPenilai.toggle');
 });
 
 Route::middleware(['auth','role:StaffUnit'])->group(function(){

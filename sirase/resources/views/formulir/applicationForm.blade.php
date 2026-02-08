@@ -24,7 +24,7 @@
                                 @elseif ($f->tipeField == 'date')
                                     <i class="material-symbols-rounded text-sm">date_range</i>
                                 @elseif ($f->tipeField == 'textarea')
-                                    <i class="material-symbols-rounded text-sm">text_select_area</i>
+                                    <i class="material-symbols-rounded text-sm">text_fields</i>
                                 @elseif ($f->tipeField == 'select')
                                     <i class="material-symbols-rounded text-sm">expand_circle_down</i>
                                 @elseif ($f->tipeField == 'radio')
@@ -130,7 +130,7 @@
                                                 <option value="date" {{ old('tipeField') == 'date' ? 'selected' : '' }}>
                                                     Date</option>
                                                 <option value="textarea"
-                                                    {{ old('tipeField') == 'textarea' ? 'selected' : '' }}>Textarea
+                                                    {{ old('tipeField') == 'textarea' ? 'selected' : '' }}>TextArea
                                                 </option>
                                                 <option value="select" {{ old('tipeField') == 'select' ? 'selected' : '' }}>
                                                     Select(dropdown)

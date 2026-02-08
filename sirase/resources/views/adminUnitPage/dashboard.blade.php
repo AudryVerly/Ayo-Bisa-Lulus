@@ -6,3 +6,4 @@
 <div class="container-fluid">
     <h1>Selamat Datang di Dashboard AdminUnit</h1>
 </div>
+@endsection

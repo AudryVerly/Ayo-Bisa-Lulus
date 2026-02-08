@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardMahasiswaController;
 use App\Http\Controllers\FormulirController;
 use App\Http\Controllers\lowonganController;
 use App\Http\Controllers\MahasiswaController;
@@ -32,7 +33,8 @@ Route::get('/autoupdate',[lowonganController::class, 'autoUpdate'])->name('lowon
 // Route::get('/dashboard', function () {return view('dashboard');})->name('superadmin.dashboard')->middleware('role:SuperAdmin');
 
 Route::middleware(['auth','role:Mahasiswa'])->group(function(){
-    Route::get('/dashboardMahasiswa', function () {return view('mahasiswaPage.dashboard');})->name('mahasiswa.dashboard');
+    Route::get('dashboardMahasiswa', [DashboardMahasiswaController::class,'index'])->name('mahasiswa.dashboard');
+    Route::get('/detailLowongan/{id}/lowongan',[DashboardMahasiswaController::class, 'detailLowongan'])->name('mahasiswa.detail');
 });
 
 Route::middleware(['auth','role:AdminUnit'])->group(function(){

@@ -2,10 +2,33 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Lowongan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
-class pendaftaran extends Controller
+class pendaftaranController extends Controller
 {
+    public function formulirPendaftaran(string $idLowongan){
+        $lowongan = DB::table('lowongan')
+                    ->where('id', $idLowongan)
+                    ->where('status', 1)
+                    ->first();
+        if(!$lowongan){
+            abort(404, 'Lowongan tidak ditemukan atau tidak aktif');
+        }
+
+        $fieldFormulir = DB::table('konten_formulir')
+                         ->where('idLowongan', $idLowongan)
+                         ->where('status', 1)
+                         ->orderBy('id')
+                         ->get();
+        if($fieldFormulir->count() === 0){
+            abort(404, 'Formulir belum tersedia');
+        }
+
+        return view('pendaftaran.formulir', compact('lowongan', 'fieldFormulir'));
+
+    }
     /**
      * Display a listing of the resource.
      */

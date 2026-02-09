@@ -14,8 +14,8 @@
         <ul class="navbar-nav">
             @can('role:Mahasiswa')
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->is('/dashboardMahasiswa') || request()->is('dashboardMahasiswa') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
-                        href="{{ url('/dashboardMahasiswa') }}">
+                    <a class="nav-link {{ request()->is('dashboardMahasiswa*') || request()->routeIs('pendaftaran.formulir') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                        href="{{ route('mahasiswa.dashboard') }}">
                         <i class="material-symbols-rounded opacity-5">dashboard</i>
                         <span class="nav-link-text ms-1">Dashboard</span>
                     </a>

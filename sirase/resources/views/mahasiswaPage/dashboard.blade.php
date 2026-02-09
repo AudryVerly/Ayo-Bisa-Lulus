@@ -65,7 +65,7 @@
                                         Detail
                                     </button>
 
-                                    <a href="" class="btn btn-outline-secondary" style="margin-bottom:0px;">
+                                    <a href="{{ route('pendaftaran.formulir',$low->id) }}" class="btn btn-outline-secondary" style="margin-bottom:0px;">
                                         Daftar
                                     </a>
                                 </div>

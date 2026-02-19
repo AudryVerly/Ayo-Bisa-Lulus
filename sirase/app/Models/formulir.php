@@ -13,4 +13,12 @@ class formulir extends Model
     public function lowongan(){
         return $this->belongsTo(Lowongan::class, 'idLowongan');
     }
+
+    public function berkasPendaftaran(){
+        return $this->hasMany(BerkasPendaftaran::class, 'idKontenFormulir');
+    }
+
+    public function jawabanFormulir(){
+        return $this->hasMany(JawabanFormulir::class, 'idKontenFormulir');
+    }
 }

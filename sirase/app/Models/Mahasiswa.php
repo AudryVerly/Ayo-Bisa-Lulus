@@ -13,4 +13,8 @@ class Mahasiswa extends Model
     public function user(){
         return $this->belongsTo(User::class, 'idUser');
     }
+
+    public function pendaftaran(){
+        return $this->hasMany(Pendaftaran::class, 'idMahasiswa');
+    }
 }

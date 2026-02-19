@@ -31,4 +31,8 @@ class Lowongan extends Model
     public function kontenFormulir(){
         return $this->hasMany(formulir::class, 'idLowongan');
     }
+
+    public function pendaftaran(){
+        return $this->hasMany(Pendaftaran::class, 'idLowongan');
+    }
 }

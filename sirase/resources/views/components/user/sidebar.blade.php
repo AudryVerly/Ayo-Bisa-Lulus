@@ -120,6 +120,15 @@
                     </a>
                 </li>
             @endcan
+            @can('role:Mahasiswa')
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('riwayatPendaftaran*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                        href="{{ route('riwayatPendaftaran.list') }}">
+                        <i class="material-symbols-rounded opacity-5">assignment</i>
+                        <span class="nav-link-text ms-1">Riwayat Pendaftaran</span>
+                    </a>
+                </li>
+            @endcan
             <hr class="horizontal dark mt-4 mb-2">
             <li class="nav-item mt-3">
                 <form action="{{ route('logout') }}" method="POST">

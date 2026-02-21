@@ -10,7 +10,7 @@ use App\Models\Pendaftaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class pendaftaranController extends Controller
+class PendaftaranController extends Controller
 {
     public function formulirPendaftaran(string $idLowongan){
         $lowongan = DB::table('lowongan')
@@ -153,4 +153,22 @@ class pendaftaranController extends Controller
         // }
     }
 
+    //ini buat show riwayat lowongan masing-masing mahasiswa
+    public function showRiwayatPendaftaran(){
+        $idMahasiswa = auth()->user()->mahasiswa->id;
+
+        $riwayatPendaftaran = DB::table('pendaftaran as p')
+                              ->join('lowongan as l','p.idLowongan','=','l.id')
+                              ->join('unit as u','l.idUnit','=','u.id')
+                              ->where('idMahasiswa', $idMahasiswa)
+                              ->select('p.*',
+                                        'l.judulLowongan as judul',
+                                        'l.posisiLowongan as posisi',
+                                        'l.mulaiKerja as mulai',
+                                        'l.akhirKerja as akhir',
+                                        'u.name as unitname')
+                              ->get();
+        return view('pendaftaran.riwayatpendaftaran', compact('riwayatPendaftaran'));
+    }
 }
+

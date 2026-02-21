@@ -36,7 +36,8 @@ Route::get('/autoupdate',[lowonganController::class, 'autoUpdate'])->name('lowon
 Route::middleware(['auth','role:Mahasiswa'])->group(function(){
     Route::get('/dashboardMahasiswa', [DashboardMahasiswaController::class,'index'])->name('mahasiswa.dashboard');
     Route::get('/detailLowongan/{id}/lowongan',[DashboardMahasiswaController::class, 'detailLowongan'])->name('mahasiswa.detail');
-    Route::get('/pendaftaran/{id}/studentemployee',[pendaftaranController::class,'formulirPendaftaran'])->name('pendaftaran.formulir');
+    Route::get('/pendaftaran/{idLowongan}/studentemployee',[PendaftaranController::class,'formulirPendaftaran'])->name('pendaftaran.formulir');
+    Route::post('/pendaftaran/{idLowongan}/formulir',[pendaftaranController::class,'inputPendaftaran'])->name('pendaftaran.store');
 });
 
 Route::middleware(['auth','role:AdminUnit'])->group(function(){

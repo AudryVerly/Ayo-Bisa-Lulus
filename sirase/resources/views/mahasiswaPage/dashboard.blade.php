@@ -65,7 +65,8 @@
                                         Detail
                                     </button>
 
-                                    <a href="{{ route('pendaftaran.formulir',$low->id) }}" class="btn btn-outline-secondary" style="margin-bottom:0px;">
+                                    <a href="{{ route('pendaftaran.formulir', $low->id) }}"
+                                        class="btn btn-outline-secondary" style="margin-bottom:0px;">
                                         Daftar
                                     </a>
                                 </div>
@@ -135,6 +136,34 @@
     </div>
 @endpush
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @if (session('error'))
+        <script>
+            $(document).ready(function() {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Pendaftaran Ditolak',
+                    text: '{{ session('error') }}',
+                    showConfirmButton: false,
+                    timer: 2500,
+                });
+            });
+        </script>
+    @endif
+
+    @if (session('successMendaftar'))
+        <script>
+            $(document).ready(function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Pendaftaran Diterima',
+                    text: '{{ session('successMendaftar') }}',
+                    showConfirmButton: false,
+                    timer: 2500,
+                });
+            });
+        </script>
+    @endif
     <script>
         $(document).on('click', '.btndetail', function() {
             let id = $(this).data('idLowongan');
@@ -179,7 +208,7 @@
 
                 let matchUnit = unit === '' || cardUnit.includes(unit)
 
-                if(matchkeyword && matchUnit) {
+                if (matchkeyword && matchUnit) {
                     $(this).show()
                 } else {
                     $(this).hide()

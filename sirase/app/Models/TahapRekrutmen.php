@@ -18,4 +18,8 @@ class TahapRekrutmen extends Model
     public function lowongan(){
         return $this->belongsTo(Lowongan::class, 'idLowongan');
     }
+
+    public function progressTahapanRekrutmen(){
+        return $this->hasMany(ProgressTahapanKandidat::class, 'idTahapRekrutmen');
+    }
 }

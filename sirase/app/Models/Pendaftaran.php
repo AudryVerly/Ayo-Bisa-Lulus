@@ -28,6 +28,10 @@ class Pendaftaran extends Model
     }
 
     public function jawabanFormulir(){
-         return $this->hasMany(JawabanFormulir::class, 'idPendaftaran');
+        return $this->hasMany(JawabanFormulir::class, 'idPendaftaran');
+    }
+
+    public function progressTahapanRekrutmen(){
+        return $this->hasMany(ProgressTahapanKandidat::class, 'idPendaftaran');
     }
 }

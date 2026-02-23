@@ -39,6 +39,7 @@ Route::middleware(['auth','role:Mahasiswa'])->group(function(){
     Route::get('/pendaftaran/{idLowongan}/studentemployee',[PendaftaranController::class,'formulirPendaftaran'])->name('pendaftaran.formulir');
     Route::post('/pendaftaran/{idLowongan}/formulir',[PendaftaranController::class,'inputPendaftaran'])->name('pendaftaran.store');
     Route::get('/riwayatPendaftaran',[PendaftaranController::class, 'showRiwayatPendaftaran'])->name('riwayatPendaftaran.list');
+    Route::get('/riwayatPendaftaran/{id}/detailPendaftaran',[PendaftaranController::class, 'showDetailPendaftaran'])->name('riwayatPendaftaran.detail');
 });
 
 Route::middleware(['auth','role:AdminUnit'])->group(function(){

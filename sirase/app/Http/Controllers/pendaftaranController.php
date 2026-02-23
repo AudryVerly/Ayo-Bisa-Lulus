@@ -170,5 +170,53 @@ class PendaftaranController extends Controller
                               ->get();
         return view('pendaftaran.riwayatpendaftaran', compact('riwayatPendaftaran'));
     }
+
+    //ini buat show detail pendaftaran dari sisi mahasiswa
+    public function showDetailPendaftaran(string $idPendaftaran){
+        $idMahasiswa = auth()->user()->mahasiswa->id;
+
+        //ambil detail pendaftaran dan detail pendukung lainnya
+        $pendaftaran = DB::table('pendaftaran as p')
+                       ->join('lowongan as l','p.idLowongan', '=', 'l.id')
+                       ->join('unit as u', 'l.idUnit', '=', 'u.id')
+                       ->where('p.id',$idPendaftaran)
+                       ->where('p.idMahasiswa', $idMahasiswa)
+                       ->select('p.*',
+                       'l.judulLowongan',
+                       'l.posisiLowongan',
+                       'l.mulaiKerja as mulai',
+                       'l.akhirKerja as akhir',
+                       'l.durasiKerja as durasi',
+                       'u.name as namaUnit'
+                    )
+                    ->first();
+        if (!$pendaftaran) {
+            abort(404, 'Data pendaftaran tidak ditemukan');
+        }
+
+        //ini ambil list tahapan dari lowongan yang di daftar mahasiswan ini
+        $tahapan = DB::table('tahap_rekrutmen')
+                   ->where('idLowongan', $pendaftaran->idLowongan)
+                   ->where('status',1)
+                   ->orderBy('urutan','asc')
+                   ->get();
+        
+        $progress = DB::table('progress_tahapan_kandidat')
+                    ->where('idPendaftaran', $idPendaftaran)
+                    ->get()
+                    ->keyBy('idTahapRekrutmen');
+
+        //jadi ini kita bakal tempelin tahapan yabng ada di lowongan ini dengan progress
+        //yang udah dilakukan sama semua 
+        foreach ($tahapan as $tahap){
+            if(isset($progress[$tahap->id])){
+                $tahap->status = $progress[$tahap->id]->status;
+            }else{
+                $tahap->status = 'Menunggu';
+            }
+        }
+
+        return view('pendaftaran.detailPendaftaran', compact('pendaftaran','tahapan'));
+    }
 }
 

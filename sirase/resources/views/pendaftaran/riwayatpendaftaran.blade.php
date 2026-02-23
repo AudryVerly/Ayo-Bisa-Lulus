@@ -70,10 +70,10 @@
                                                     <div class="d-flex justify-content-center gap-2"
                                                         style="text-align: center;">
                                                         {{-- ini tuh buat modal-> modal adalah kek popup di boostrap --}}
-                                                        <button type="button" class="btn btn-outline-info text-sm"
-                                                            style="text-align: center;">
+                                                        <a href="{{ route('riwayatPendaftaran.detail',$riwayat->id) }}"
+                                                           class="btn btn-outline-info text-sm">
                                                             Detail
-                                                        </button>
+                                                        </a>
                                                     </div>
                                                 </td>
                                             </tr>

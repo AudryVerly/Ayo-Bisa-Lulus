@@ -66,7 +66,13 @@
                         <div class="d-flex flex-column">
                             <small class="text-muted mb-1">Tahapan saat ini</small>
                             <h5 class="fw-bold text-dark mb-0">
-                                {{-- ini nanyi kita isi tahapan --}}
+                                @if ($tahapIni === null)
+                                    <span class="badge bg-secondary">Belum Diproses</span>
+                                @else
+                                    <span class="badge bg-gradient-success">
+                                        {{ $tahapIni }}
+                                    </span>
+                                @endif
                             </h5>
                         </div>
                     </div>
@@ -74,110 +80,76 @@
             </div>
         </div>
         {{-- ini bagian detail --}}
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card p-4 shadow-sm">
+        <div class="row align-items-start">
+            <div class="col-lg-4 md-4">
+                <div class="card p-3 shadow-sm border-0 h-100" style="border-radius: 16px;">
                     <h5 class="fw-bold mb-3">Detail Pendaftaran</h5>
-                    <div class="mb-2 d-flex">
-                        <div style="width:160px;" class="fw-semibold">
-                            Lowongan
-                        </div>
-                        <div class="text-dark fw-bold">
-                            : {{ $pendaftaran->judulLowongan }}
-                        </div>
-                    </div>
-                    <div class="mb-2 d-flex">
-                        <div style="width:160px;" class="fw-semibold">
-                            Posisi Lowongan
-                        </div>
-                        <div class="text-dark fw-bold">
-                            : {{ $pendaftaran->posisiLowongan }}
-                        </div>
-                    </div>
-                    <div class="mb-2 d-flex">
-                        <div style="width:160px;" class="fw-semibold">
-                            Unit Kerja:
-                        </div>
-                        <div class="text-dark fw-bold">
-                            : {{ $pendaftaran->namaUnit }}
-                        </div>
-                    </div>
-                    <div class="mb-2 d-flex">
-                        <div style="width:160px;" class="fw-semibold">
-                            Periode Kerja:
-                        </div>
-                        <div class="text-dark fw-bold">
-                            : {{ \Carbon\Carbon::parse($pendaftaran->mulai)->translatedFormat('d M Y') }}
-                            -
-                            {{ \Carbon\Carbon::parse($pendaftaran->akhir)->translatedFormat('d M Y') }}
-                        </div>
-                    </div>
-                    <div class="mb-2 d-flex">
-                        <div style="width:160px;" class="fw-semibold">
-                            Durasi Kerja:
-                        </div>
-                        <div class="text-dark fw-bold">
-                            : {{ $pendaftaran->durasi }} bulan
-                        </div>
-                    </div>
+                    <span class="detail-label">Lowongan</span>
+                    <span class="detail-value">{{ $pendaftaran->judulLowongan }}</span>
+
+                    <span class="detail-label">Posisi Lowongan</span>
+                    <span class="detail-value">{{ $pendaftaran->posisiLowongan }}</span>
+
+                    <span class="detail-label">Unit Kerja</span>
+                    <span class="detail-value">{{ $pendaftaran->namaUnit }}</span>
+
+                    <span class="detail-label">Periode Kerja</span>
+                    <span class="detail-value">
+                        {{ \Carbon\Carbon::parse($pendaftaran->mulai)->translatedFormat('d M Y') }} -
+                        {{ \Carbon\Carbon::parse($pendaftaran->akhir)->translatedFormat('d M Y') }}
+                    </span>
+
+                    <span class="detail-label">Durasi Kerja</span>
+                    <span class="detail-value">{{ $pendaftaran->durasi }} Bulan</span>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="card p-4 shadow-sm border-0 " style="border-radius: 16px;">
-                    <h5 class="fw-bold mb-4">Progress Tahapan Seleksi</h5>
+            <div class="col-lg-8 mb-4">
+                <div class="card shadow-sm border-0 p-4" style="border-radius: 16px;">
+                    <div class="mb-4">
+                        <h5 class="fw-bold mb-1">Progress Tahapan Seleksi</h5>
+                        <p class="text-muted small">Pantau terus perkembangan lamaran magang kamu di sini.</p>
+                    </div>
+
                     <div class="timeline-pro">
-                        @foreach ($tahapan as $index => $tahap)
+                        @foreach ($tahapan as $tahap)
                             <div class="timeline-item-pro">
-                                <div class="circle 
-                                @if ($tahap->status == 'Lulus') circle-success
-                                @elseif($tahap->status == 'Gagal')
-                                    circle-danger
-                                @elseif($tahap->status == 'Proses')
-                                    circle-warning
-                                @else
-                                    circle-waiting @endif
-                                ">
-                                    <i class="material-symbols-rounded" style="font-size:16px;">
-                                        @if ($tahap->status == 'Lulus')
-                                            check
-                                        @elseif($tahap->status == 'Gagal')
-                                            close
-                                        @elseif($tahap->status == 'Proses')
-                                            schedule
-                                        @else
-                                            hourglass_empty
-                                        @endif
-                                    </i>
+                                <div
+                                    class="bullet-pro 
+                                @if ($tahap->status == 'Lulus') bullet-success 
+                                @elseif($tahap->status == 'Gagal') bullet-danger 
+                                @elseif($tahap->status == 'Proses') bullet-warning 
+                                @else bullet-waiting @endif">
                                 </div>
-                                {{-- nanti aku pikirkan lagi tambahin catatan gak --}}
+
                                 <div class="timeline-content">
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <h6 class="fw-bold mb-1">
-                                            Tahap{{ $index + 1 }} - {{ $tahap->name }}
-                                        </h6>
+                                        <div>
+                                            <h6 class="fw-bold mb-1" style="font-size: 15px; color: #252f40;">
+                                                {{ $tahap->name }}</h6>
+                                            <p class="text-muted mb-0" style="font-size: 13px;">
+                                                @if ($tahap->status == 'Lulus')
+                                                    Selamat! Kamu lolos tahap ini.
+                                                @elseif($tahap->status == 'Gagal')
+                                                    Mohon maaf, kamu belum bisa lanjut.
+                                                @elseif($tahap->status == 'Proses')
+                                                    Sedang dalam peninjauan oleh tim terkait.
+                                                @else
+                                                    Menunggu Proses Rekrutmen
+                                                @endif
+                                            </p>
+                                        </div>
 
                                         @if ($tahap->status == 'Lulus')
-                                            <span class="badge bg-success">Lulus</span>
+                                            <span class="badge bg-gradient-success" style="font-size: 10px;">LULUS</span>
                                         @elseif($tahap->status == 'Gagal')
-                                            <span class="badge bg-danger">Gagal</span>
+                                            <span class="badge bg-gradient-danger" style="font-size: 10px;">GAGAL</span>
                                         @elseif($tahap->status == 'Proses')
-                                            <span class="badge bg-warning text-dark">Diproses</span>
+                                            <span class="badge bg-gradient-warning" style="font-size: 10px;">DIPROSES</span>
                                         @else
-                                            <span class="badge bg-secondary">Menunggu</span>
+                                            <span class="badge bg-light text-secondary border"
+                                                style="font-size: 10px;">BELUM</span>
                                         @endif
                                     </div>
-
-                                    <small class="text-muted">
-                                        @if ($tahap->status == 'Lulus')
-                                            Kamu telah lolos pada tahap ini
-                                        @elseif($tahap->status == 'Gagal')
-                                            Kamu tidak lolos pada tahap ini
-                                        @elseif($tahap->status == 'Proses')
-                                            Tahap ini sedang diproses oleh unit
-                                        @else
-                                            Menunggu proses seleksi dari unit
-                                        @endif
-                                    </small>
                                 </div>
                             </div>
                         @endforeach

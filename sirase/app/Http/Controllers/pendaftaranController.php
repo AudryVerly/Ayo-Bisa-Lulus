@@ -216,7 +216,28 @@ class PendaftaranController extends Controller
             }
         }
 
-        return view('pendaftaran.detailPendaftaran', compact('pendaftaran','tahapan'));
+        //kita pakai ini karena kan di progress kandidat  itu perline
+        $tahapIni = null;
+        $tahapanBerprogress = false;
+
+        foreach($tahapan as $tahap){
+            if(isset($progress[$tahap->id])){
+                $tahapanBerprogress = true;
+            }
+
+            if($tahap->status === 'Proses'){
+                $tahapIni = $tahap->name;
+            }elseif($tahap->status === 'Lulus' || $tahap->status === 'Gagal'){
+                $tahapIni = $tahap->name;
+            }
+        }
+
+        if(!$tahapanBerprogress){
+            $tahapIni = null;
+        }
+
+
+        return view('pendaftaran.detailPendaftaran', compact('pendaftaran','tahapan','tahapIni'));
     }
 }
 

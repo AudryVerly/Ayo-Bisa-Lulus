@@ -120,6 +120,15 @@
                     </a>
                 </li>
             @endcan
+            @can('role:AdminUnit')
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('kandidat*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                        href="{{ route('kandidat.listLowongan') }}">
+                        <i class="material-symbols-rounded opacity-5">groups_2</i>
+                        <span class="nav-link-text ms-1">Kandidat</span>
+                    </a>
+                </li>
+            @endcan
             @can('role:Mahasiswa')
                 <li class="nav-item">
                     <a class="nav-link {{ request()->is('riwayatPendaftaran*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"

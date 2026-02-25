@@ -206,27 +206,26 @@ class PendaftaranController extends Controller
                     ->get()
                     ->keyBy('idTahapRekrutmen');
 
-        //jadi ini kita bakal tempelin tahapan yabng ada di lowongan ini dengan progress
-        //yang udah dilakukan sama semua 
-        foreach ($tahapan as $tahap){
-            if(isset($progress[$tahap->id])){
-                $tahap->status = $progress[$tahap->id]->status;
-            }else{
-                $tahap->status = 'Menunggu';
-            }
-        }
-
         //kita pakai ini karena kan di progress kandidat  itu perline
         $tahapIni = null;
         $tahapanBerprogress = false;
 
         foreach($tahapan as $tahap){
+            //jadi ini kita bakal tempelin tahapan yabng ada di lowongan ini dengan progress
+            //yang udah dilakukan sama semua 
+            if(isset($progress[$tahap->id])){
+                $tahap->status = $progress[$tahap->id]->status;
+            }else{
+                $tahap->status = 'Menunggu';
+            }
+
             if(isset($progress[$tahap->id])){
                 $tahapanBerprogress = true;
             }
 
             if($tahap->status === 'Proses'){
                 $tahapIni = $tahap->name;
+                break;
             }elseif($tahap->status === 'Lulus' || $tahap->status === 'Gagal'){
                 $tahapIni = $tahap->name;
             }

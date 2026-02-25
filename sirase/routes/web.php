@@ -3,6 +3,8 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardMahasiswaController;
 use App\Http\Controllers\FormulirController;
+use App\Http\Controllers\KandidatPendaftaran;
+use App\Http\Controllers\KandidatPendaftaranController;
 use App\Http\Controllers\lowonganController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\pendaftaranController;
@@ -75,6 +77,8 @@ Route::middleware(['auth','role:AdminUnit'])->group(function(){
   Route::get('/show-staffEdit', [TimPenilaiController::class, 'showStaffUnitEdit'])->name('timPenilai.showstaffedit');
   Route::post('/penilaian/{id}/update',[TimPenilaiController::class, 'update'])->name('timPenilai.update');
   Route::post('/penilaian/{id}/toggle',[TimPenilaiController::class, 'toggle'])->name('timPenilai.toggle');
+
+  Route::get('/kandidat', [KandidatPendaftaranController::class, 'index'])->name('kandidat.listLowongan');
 });
 
 Route::middleware(['auth','role:StaffUnit'])->group(function(){

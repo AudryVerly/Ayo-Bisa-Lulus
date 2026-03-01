@@ -30,6 +30,7 @@ class TahapRekrutmenController extends Controller
     {
         $request ->validate([
             'name' => 'required|string',
+            'tipe_tahap' => 'required|string',
             //ini ada supaya dapat idlowongannya dan bisa tau urutan terakhir drimana
             'idLowongan' => 'required|exists:lowongan,id'
         ]);
@@ -44,7 +45,8 @@ class TahapRekrutmenController extends Controller
             'idLowongan' => $idLowongan,
             'name' => $request->name,
             'status' => 1,
-            'urutan' => $urutanterkahir + 1
+            'urutan' => $urutanterkahir + 1,
+            'tipe_tahap' => $request->tipe_tahap
         ]);
 
         return redirect()->back()->with('success','Field berhasil diubah');
@@ -144,6 +146,7 @@ class TahapRekrutmenController extends Controller
             'name' => 'required|string',
             //cuman bisa update sampai batas jumlahnya jadi gak ada yang input misalny jumlahnya 11 ubah sampai 12
             'urutan' => 'required|integer|min:1|max: '. $totalAktif,
+            'tipe_tahap' => 'required|string'
         ]);
 
         //pakai db transaction karena banyak upadate dan lainnya kalau pakai ini lebih safety
@@ -179,6 +182,7 @@ class TahapRekrutmenController extends Controller
             $tahapan->update([
                 'name' => $request->name,
                 'urutan' => $urutanBaru,
+                'tipe_tahap' =>$request->tipe_tahap
             ]);
         });
         return redirect()->back()->with('success','Field berhasil diubah');

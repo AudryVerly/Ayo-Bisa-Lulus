@@ -12,6 +12,7 @@ class TahapRekrutmen extends Model
         'idLowongan',
         'name',
         'urutan',
+        'tipe_tahap',
         'status'
     ];
 

@@ -46,6 +46,9 @@
                                                             <strong style="font-size: 0.95rem;" class="tahapname">
                                                                 {{ $tahap->name }}
                                                             </strong>
+                                                            <small class="text-info fw-semibold">
+                                                                Tipe: {{ $tahap->tipe_tahap }}
+                                                            </small>
                                                             @if ($tahap->status == 1)
                                                                 <small class="text-secondary d-block">
                                                                     Aktif
@@ -69,7 +72,8 @@
                                                         <button type="button" class="btnedit btn btn-secondary btn-sm"
                                                             data-id-tahapan="{{ $tahap->id }}"
                                                             data-name="{{ $tahap->name }}"
-                                                            data-urutan = "{{ $tahap->urutan }}"
+                                                            data-urutan="{{ $tahap->urutan }}"
+                                                            data-tipe="{{ $tahap->tipe_tahap }}"
                                                             style="width:45px;height:45px;border-radius:12px;font-size:18px;"
                                                             data-bs-toggle="modal" data-bs-target="#modaledittahap">
                                                             <i class="material-symbols-rounded text-sm">edit</i>
@@ -154,6 +158,18 @@
                                     <div class="text-danger" id="errorUrutan">{{ $message }}</div>
                                 @enderror --}}
                             </div>
+                            <div class = "form-group mb-2">
+                                <label for="edit_tipe" class="form-label fw-bold text-secondary">
+                                    Tipe Tahapan
+                                </label>
+                                <select name="tipe_tahap" id="edit_tipe"
+                                    class="form-select shadow-sm border rounded-3 px-3 py-2">
+                                    <option value="Seleksi">Seleksi</option>
+                                    <option value="Wawancara">Wawancara</option>
+                                    <option value="Final">Final</option>
+                                </select>
+                                <div class="text-danger" id="errorTipe"></div>
+                            </div>
                         </div>
 
                         <div class="modal-footer">
@@ -179,12 +195,26 @@
                     <div class="modal-body">
                         <input type="hidden" name="idLowongan" id="idLowongan">
                         <div class="form-group mb-1">
-                            <label for="name" class="form-label fw-bold text-secondary">Nama Urutan</label>
+                            <label for="name" class="form-label fw-bold text-secondary">Urutan</label>
                             <input type="text" class="form-control shadow-sm border rounded-3 px-3 py-2"
                                 name="name" id="namaUrutan" placeholder="Masukkan Nama urutan"
                                 value="{{ old('name') }}">
                             @error('name')
                                 <div class="text-danger" id="errorName">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="form-group mb-2">
+                            <label for="tipe_tahap" class="form-label fw-bold text-secondary">Tipe Tahapan</label>
+                            <select name="tipe_tahap" class="form-select shadow-sm border rounded-3 px-3 py-2">
+                                <option value="" disabled selected>Pilih Tipe</option>
+                                <option value="Seleksi" {{ old('tipe_tahap') == 'Seleksi' ? 'selected' : '' }}>Seleksi
+                                </option>
+                                <option value="Wawancara" {{ old('tipe_tahap') == 'Wawancara' ? 'selected' : '' }}>
+                                    Wawancara</option>
+                                <option value="Final" {{ old('tipe_tahap') == 'Final' ? 'selected' : '' }}>Final</option>
+                            </select>
+                            @error('tipe_tahap')
+                                <div class="text-danger" id="errorTipe">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
@@ -224,7 +254,7 @@
                 $('#previewList').html(htmlkanan);
             });
 
-            $.get(`/tahapan/${idLowongan}/previewkanan`, function(data) {
+            $.get(`/tahapan/${idLowongan}/previewkiri`, function(data) {
                 let htmlkiri = '';
 
                 data.forEach(function(tahapan) {
@@ -236,6 +266,7 @@
                                             data-id-tahapan="${tahapan.id}"
                                             data-name="${tahapan.name}"
                                             data-urutan ="${tahapan.urutan}"
+                                            data-tipe = "${tahapan.tipe_tahap}"
                                             style="width:45px;height:45px;border-radius:12px;font-size:18px;"
                                             data-bs-toggle="modal" data-bs-target="#modaledittahap">
                                             <i class="material-symbols-rounded text-sm">edit</i>
@@ -253,6 +284,9 @@
                                             <strong style="font-size: 0.95rem;" class="tahapname">
                                                     ${tahapan.name }
                                             </strong>
+                                            <small class="text-info fw-semibold">
+                                                        Tipe: ${tahapan.tipe_tahap }
+                                            </small>
                                             <small class="text-secondary d-block">
                                                 ${tahapan.status == 1 ? 'Aktif' : 'Non-Aktif'}
                                             </small>
@@ -346,12 +380,15 @@
             let id = $(this).data('idTahapan');
             let name = $(this).data('name');
             let urutan = $(this).data('urutan');
+            let tipe = $(this).data('tipe')
 
             $('#idTahapan').val(id);
             $('#edit_namaUrutan').val(name);
             $('#edit_urutan').val(urutan);
+            $('#edit_tipe').val(tipe);
             $('#errorName').text('');
             $('#errorUrutan').text('');
+            $('#errorTipe').text('');
 
             // $('#formeditPenilaian').attr('action', '/tahapan/' + id + '/update');
         });
@@ -364,11 +401,13 @@
             let id = $('#idTahapan').val();
             let name = $('#edit_namaUrutan').val();
             let urutan = $('#edit_urutan').val();
+            let tipe_tahap = $('#edit_tipe').val();
 
             $.post(`/tahapan/${id}/update`, {
                 _token: '{{ csrf_token() }}',
                 name,
-                urutan
+                urutan,
+                tipe_tahap
             }, function(response) {
                 Swal.fire({
                     icon: 'success',
@@ -384,6 +423,7 @@
                 let errors = xhr.responseJSON?.errors || {};
                 $('#errorName').text(errors.name ? errors.name[0] : '');
                 $('#errorUrutan').text(errors.urutan ? errors.urutan[0] : '');
+                $('#errorTipe').text(errors.tipe_tahap ? errors.tipe_tahap[0] : '');
             });
 
         });

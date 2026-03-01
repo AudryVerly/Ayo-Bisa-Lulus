@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('idLowongan');
             $table->string('name');
             $table->integer('urutan');
+            $table->enum('tipe_tahap',['Seleksi','Wawancara','Final']);
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
 

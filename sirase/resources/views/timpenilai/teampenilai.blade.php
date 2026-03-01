@@ -84,7 +84,7 @@
                         <div class="form-group mb-2">
                             <label class="form-label fw-bold text-secondary">Pilih Staff: </label>
                             <select name="idStaffUnit" id="staffDropdown"
-                                class= "form-select shadow-sm border rounded-3 px-3 py-2">
+                                class="form-select shadow-sm border rounded-3 px-3 py-2">
                                 <option value="" disabled selected>Pilih Staff</option>
                             </select>
                             @error('idStaffUnit')

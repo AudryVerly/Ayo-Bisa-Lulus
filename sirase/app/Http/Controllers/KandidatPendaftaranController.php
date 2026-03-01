@@ -37,7 +37,7 @@ class KandidatPendaftaranController extends Controller
                         'u.name as namaKandidat',
                         'u.email as kandidatEmail',
                         'm.nrp as nrp',
-                        'P.status as statusPendaftaran',
+                        'p.statusPendaftaran as statusPendaftaran',
                         'p.tanggal_daftar as tanggalDaftar',
                         'p.id as idPendaftaran'
                     )
@@ -55,33 +55,34 @@ class KandidatPendaftaranController extends Controller
                                 ->where('idPendaftaran', $item->idPendaftaran)
                                 ->get();
         
-            $tahapIni = null;
-            $tahapanBerprogress = false;
+            $tahapIni = 'Belum diMulai';
 
+            //kita harus cek tahap per tahapan setiap mahasiswa
             foreach ($tahapan as $tahap){
-                if(isset($progressKandidat[$tahap->id])){
-                    $tahap->status = $progressKandidat[$tahap->id]->status;
-                }else{
-                    $tahap->status = 'Menunggu';
+                //kemudian kita cari tahapan yang sesuai sama kandidat saat ini
+                $statusTahap = 'Menunggu';
+
+                //ini kita loop untuk mencocokan tahapann sama progress kandidat saat ini
+                foreach($progressKandidat as $progress){
+                    if($progress->idTahapanRekrutmen == $tahap->id){
+                        $statusTahap = $progress->status;
+                        break;
+                    }
                 }
 
-                if(isset($progressKandidat[$tahap->id])){
-                    $tahapanBerprogress = true;
-                }
-
-                if($tahap->status === 'Proses'){
+                if($statusTahap === 'Proses'){
                     $tahapIni = $tahap->name;
-                }elseif($tahap->status === 'Lulus' || $tahap->status === 'Gagal'){
+                    break;
+                }
+               
+                if($tahap->status === 'Lulus' || $tahap->status === 'Gagal'){
                     $tahapIni = $tahap->name;
                 }
 
             }
-
-            if(!$tahapanBerprogress){
-                $tahapIni = null;
-            }
+            $item->tahapIni = $tahapIni;
         }
 
-        return view('kandidatPendaftaran.listkandidat',compact('kandidat','tahapIni'));
+        return view('kandidatPendaftaran.listkandidat',compact('kandidat'));
     }
 }

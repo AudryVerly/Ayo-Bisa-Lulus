@@ -16,29 +16,60 @@
                         <div class="table-responsive p-0">
                             <table id="tableListKandidat" class="table align-items-center mb-0">
                                 <thead class="bg-light">
-                                    <table id="tableListKandidat" class="table align-items-center mb-0">
-                                        <thead class="bg-light">
-                                            <tr>
-                                                <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
-                                                    style="text-align: center;">No</th>
-                                                <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
-                                                    style="text-align: center;">Kandidat</th>
-                                                <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
-                                                    style="text-align: center;">NRP</th>
-                                                <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
-                                                    style="text-align: center;">Tanggal Daftar</th>
-                                                <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
-                                                    style="text-align: center;">Status Pendaftaran</th>
-                                                <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
-                                                    style="text-align: center;">Tahapan</th>
-                                                <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
-                                                    style="text-align: center;">Aksi</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
+                                    <tr>
+                                        <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
+                                            style="text-align: center;">No</th>
+                                        <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
+                                            style="text-align: center;">Kandidat</th>
+                                        <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
+                                            style="text-align: center;">NRP</th>
+                                        <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
+                                            style="text-align: center;">Tanggal Daftar</th>
+                                        <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
+                                            style="text-align: center;">Status Pendaftaran</th>
+                                        <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
+                                            style="text-align: center;">Tahapan</th>
+                                        <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
+                                            style="text-align: center;">Aksi</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                    
+                                    @foreach ($kandidat as $index => $kan)
+                                        <tr>
+                                            <td class="text-sm" style="text-align: center;">{{ $index + 1 }}</td>
+                                            <td class="text-sm" style="text-align: center;">{{ $kan->namaKandidat }} <br>
+                                                <small class="text-muted">{{ $kan->kandidatEmail }}</small>
+                                            </td>
+                                            <td class="text-sm" style="text-align: center;">{{ $kan->nrp }}</td>
+                                            <td class="text-sm" style="text-align: center;">{{ $kan->tanggalDaftar }}</td>
+                                            <td>
+                                                <div class="d-flex justify-content-center align-items-center ">
+                                                    @if ($kan->statusPendaftaran == 'terdaftar')
+                                                        <span
+                                                            class="badge bg-gradient-secondary text-white px-3 py-2">Terdaftar</span>
+                                                    @elseif ($kan->statusPendaftaran == 'diproses')
+                                                        <span class="badge bg-gradient-warning text-white px-3 py-2">Sedang
+                                                            Diproses</span>
+                                                    @elseif ($kan->statusPendaftaran == 'diterima')
+                                                        <span
+                                                            class="badge bg-gradient-success text-white px-3 py-2">DiTerima</span>
+                                                    @elseif ($kan > statusPendaftaran == 'ditolak')
+                                                        <span
+                                                            class="badge bg-gradient-danger text-white px-3 py-2">DiTolak</span>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                            <td class="text-sm" style="text-align: center;">{{ $kan->tahapIni }}</td>
+                                            <td>
+                                                <div class="d-flex justify-content-center gap-2">
+                                                    <a href=" "
+                                                        class="btn bg-gradient-info btn-sm text-white">
+                                                        Detail Kandidat
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>

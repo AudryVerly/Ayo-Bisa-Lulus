@@ -79,6 +79,7 @@ Route::middleware(['auth','role:AdminUnit'])->group(function(){
   Route::post('/penilaian/{id}/toggle',[TimPenilaiController::class, 'toggle'])->name('timPenilai.toggle');
 
   Route::get('/kandidat', [KandidatPendaftaranController::class, 'index'])->name('kandidat.listLowongan');
+  Route::get('/kandidat/{idLowongan}/ListKandidat', [KandidatPendaftaranController::class,'kandidatList'])->name('kandidat.listKandidat');
 });
 
 Route::middleware(['auth','role:StaffUnit'])->group(function(){

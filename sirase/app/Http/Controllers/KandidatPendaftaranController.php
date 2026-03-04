@@ -8,6 +8,7 @@ use App\Models\TahapRekrutmen;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Laravel\Prompts\Progress;
 
 class KandidatPendaftaranController extends Controller
 {
@@ -178,5 +179,75 @@ class KandidatPendaftaranController extends Controller
 
         return back()->with('successProses', 'Proses Kandidat dimulai');
 
+    }
+
+    public function lulusTahapan( Request $request, string $idProgress){
+       
+        DB::transaction(function () use ($idProgress, $request){
+            $progress = ProgressTahapanKandidat:: findorFail($idProgress);
+            $request->validate([
+                'catatan' => 'required|string',
+            ]);
+
+            $progress ->update([
+                'status' =>'Lulus',
+                'catatan' => $request->catatan
+            ]);
+
+            $pendaftaran = $progress->pendaftaran;
+            $tahapSekarang = $progress->tahapRekrutmen;
+
+            //ini buat buka tahap selanjunya
+            $tahapBerikutnya = TahapRekrutmen::where('idLowongan', $pendaftaran->idLowongan)
+                                ->where('urutan', '>', $tahapSekarang->urutan)
+                                ->orderBy('urutan', 'asc')
+                                ->first();
+
+            if($tahapBerikutnya){
+                $exists = ProgressTahapanKandidat::where('idTahapRekrutmen', $tahapBerikutnya->id)
+                           ->where('idPendaftaran', $pendaftaran->id)
+                           ->exists();
+
+                if(!$exists){
+                    ProgressTahapanKandidat::create([
+                        'idTahapRekrutmen' => $tahapBerikutnya->id,
+                        'idPendaftaran' => $pendaftaran->id,
+                        'status' => 'Proses',
+                        'catatan' => '',
+                    ]);
+                }
+            }else{
+                //kalau dah habis urutannya
+                //ini harus dicek setelah selsai semua
+                $pendaftaran->update([
+                    'statusPendaftaran' => 'diterima'
+                ]);
+            }
+
+        });
+
+        return back()->with('success','Tahap telah dianggap lulus');
+    }
+
+    public function gagalTahapan(Request $request, string $idProgress){
+        DB::transaction(function () use ($request, $idProgress){
+            $progress = ProgressTahapanKandidat:: findorFail($idProgress);
+
+            $request->validate([
+                'catatan' => 'required|string',
+            ]);
+
+            $progress ->update([
+                'status' =>'Gagal',
+                'catatan' => $request->catatan
+            ]);
+
+            $progress->pendaftaran->update([
+                'statusPendaftaran' => 'ditolak'
+            ]);
+
+        });
+
+        return back()->with('success', 'Kandidat dinyatakan gagal');
     }
 }

@@ -161,28 +161,34 @@
                                     @endif
 
                                     @if ($tahap->status == 'Proses')
-                                        <div class="mt-3 d-flex gap-2">
-                                            <form action="" method="POST">
+                                        <div class="mt-2">
+                                            <form method="POST" class="mb-0">
                                                 @csrf
-                                                <textarea name="catatan" class="form-control mb-2" placeholder="Masukkan catatan (opsional untuk lulus)..."></textarea>
-                                                <button class="btn btn-success btn-sm rounde-pill">
-                                                    Lulus
-                                                </button>
-                                            </form>
+                                                <div class="mb-2">
+                                                    <strong class="text-dark">Catatan: </strong>
+                                                    <textarea name="catatan" class="form-control rounded-4 shadow-sm" rows="2"
+                                                        placeholder="Masukkan catatan untuk tahap ini..."></textarea>
+                                                </div>
+                                                <div class="d-flex gap-2 flex-wrap">
+                                                    <button type="button" class="btn btn-success btn-sm px-3 btn-confirm"
+                                                        data-url="{{ route('kandidat.lulus', $tahap->id) }}"
+                                                        data-type="lulus">
+                                                        Lulus
+                                                    </button>
 
-                                            <form action="" method="POST">
-                                                @csrf
-                                                <textarea name="catatan" class="form-control mb-2" placeholder="Masukkan alasan di Tolak" required></textarea>
-                                                <button class="btn btn-danger btn-sm rounde-pill">
-                                                    Gagal
-                                                </button>
-                                            </form>
+                                                    <button type="button" class="btn btn-danger btn-sm px-3 btn-confirm"
+                                                        data-url="{{ route('kandidat.gagal', $tahap->id) }}"
+                                                        data-type="gagal">
+                                                        Gagal
+                                                    </button>
 
-                                            {{-- @if ($tahap->tahapRekrutmen->tipe_tahap == 'Wawancara')
-                                                <button class="btn btn-info btn-sm rounded-pill mt-2">
-                                                    Set Wawancara
-                                                </button>
-                                            @endif --}}
+                                                    @if ($tahap->tipe_tahap == 'Wawancara')
+                                                        <button class="btn btn-info btn-sm px-3">
+                                                            Set Wawancara
+                                                        </button>
+                                                    @endif
+                                                </div>
+                                            </form>
                                         </div>
                                     @endif
                                 </div>
@@ -209,4 +215,35 @@
             });
         </script>
     @endif
+
+    <script>
+        $(document).on('click', '.btn-confirm', function(e) {
+            e.preventDefault();
+
+            let button = $(this);
+            let form = button.closest('form');
+            let url = button.data('url');
+            let type = button.data('type');
+
+            let titleText = (type === 'lulus') ? 'Yakin ingin meluluskan tahap ini?' :
+                'Yakin ingin menggagalkan tahap ini?';
+            Swal.fire({
+                title: titleText,
+                text: "Tindakan ini tidak dapat dibatalkan.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, lanjutkan!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+
+                if (result.isConfirmed) {
+                    form.attr('action', url);
+                    form.submit();
+                }
+
+            });
+        });
+    </script>
 @endpush

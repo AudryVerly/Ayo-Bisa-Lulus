@@ -29556,8 +29556,12 @@ body.modal-open .sidenav {
 /* Item */
 .timeline-item-pro-unit {
     position: relative;
-    margin-bottom: 25px;
-    padding-bottom: 10px
+    margin-bottom: 10px !important;
+    padding-bottom: 5px
+}
+
+.timeline-item-pro-unit form {
+    margin-bottom: 0;
 }
 
 

@@ -82,6 +82,8 @@ Route::middleware(['auth','role:AdminUnit'])->group(function(){
   Route::get('/kandidat/{idLowongan}/ListKandidat', [KandidatPendaftaranController::class,'kandidatList'])->name('kandidat.listKandidat');
   Route::get('/kandidat/{idPendaftaran}/DetailKandidat',[KandidatPendaftaranController::class, 'showDetailKandidat'])->name('kandidat.detailKandidat');
   Route::post('/kandidat/{idPendaftaran}',[KandidatPendaftaranController::class, 'updateStatusDaftar'])->name('kandidat.proses');
+  Route::post('/kandidat/lulus/{idPendaftaran}',[KandidatPendaftaranController::class,'lulusTahapan'])->name('kandidat.lulus');
+  Route::post('/kandidat/gagal/{idPendaftaran}',[KandidatPendaftaranController::class,'gagalTahapan'])->name('kandidat.gagal');
 });
 
 Route::middleware(['auth','role:StaffUnit'])->group(function(){

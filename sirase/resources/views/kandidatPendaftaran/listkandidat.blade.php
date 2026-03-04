@@ -79,3 +79,30 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#tableListKandidat').DataTable({
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json",
+                    paginate: {
+                        previous: "<",
+                        next: ">",
+                    }
+                },
+                lengthMenu: [5, 10, 25, 50, 100],
+                columnDefs: [
+                    //ini supaya tabel index terakhir gak bisa disort
+                    {
+                        orderable: false,
+                        targets: -1
+                    }
+                ]
+            })
+        });
+    </script>
+@endpush

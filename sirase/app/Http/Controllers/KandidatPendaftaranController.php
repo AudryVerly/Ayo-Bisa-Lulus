@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pendaftaran;
+use App\Models\ProgressTahapanKandidat;
+use App\Models\TahapRekrutmen;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -55,7 +58,7 @@ class KandidatPendaftaranController extends Controller
                                 ->where('idPendaftaran', $item->idPendaftaran)
                                 ->get();
         
-            $tahapIni = 'Belum diMulai';
+            $tahapIni = 'Menunggu';
 
             //kita harus cek tahap per tahapan setiap mahasiswa
             foreach ($tahapan as $tahap){
@@ -64,7 +67,7 @@ class KandidatPendaftaranController extends Controller
 
                 //ini kita loop untuk mencocokan tahapann sama progress kandidat saat ini
                 foreach($progressKandidat as $progress){
-                    if($progress->idTahapanRekrutmen == $tahap->id){
+                    if($progress->idTahapRekrutmen == $tahap->id){
                         $statusTahap = $progress->status;
                         break;
                     }
@@ -132,7 +135,7 @@ class KandidatPendaftaranController extends Controller
         //kita akan menempelkan status dari tahapan untuk pendaftaran ini
         foreach($tahapan as $tahap){
             if(isset($progress[$tahap->id])){
-                $tahap->status = strtolower($progress[$tahap->id]->status);
+                $tahap->status = $progress[$tahap->id]->status;
                 $tahap->catatan = $progress[$tahap->id]->catatan;
                 $tahap->updated_at = $progress[$tahap->id]->updated_at;
             }else{
@@ -143,5 +146,37 @@ class KandidatPendaftaranController extends Controller
         }
 
         return view('kandidatPendaftaran.detailProgressKandidat',compact('detailKandidat','jawabanFormulir','berkasPendaftaran','tahapan'));
+    }
+
+    //jadi ini bakal update status dari pendaftaran
+    //juga bakal insert progress kandidat
+    public function updateStatusDaftar(string $idPendaftaran){
+        //ini harus pakai transaction karena dia ada 2 kasus sekaligus
+        DB::transaction(function() use ($idPendaftaran){
+
+            $pendaftaran = Pendaftaran::findOrFail($idPendaftaran);
+
+            $pendaftaran->update([
+                'statusPendaftaran' => 'diproses'
+            ]);
+
+            //kita harus ambil tahapan di urutan pertama
+            $tahapPertama = TahapRekrutmen::where('idLowongan', $pendaftaran->idLowongan)
+                            ->orderBy('urutan', 'asc')
+                            ->first();
+
+            if($tahapPertama){
+                ProgressTahapanKandidat::create([
+                    'idTahapRekrutmen' => $tahapPertama->id,
+                    'idPendaftaran' => $idPendaftaran,
+                    'status' => 'Proses',
+                    'catatan' => '',
+                ]);
+            }
+            
+        });
+
+        return back()->with('successProses', 'Proses Kandidat dimulai');
+
     }
 }

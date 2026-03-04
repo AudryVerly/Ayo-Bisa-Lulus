@@ -123,12 +123,14 @@
                         <div class="card-header bg-white py-2" style="border-bottom: 1px solid #e2e8f0;">
                             <h6 class="mb-0 fw-semibold">Progress Tahap Rekrutmen</h6>
                         </div>
-
-                        <div class="mb-2 py-2">
-                            <a href="" class="btn btn-primary w-100 rounded-pill py-2">
-                                Mulai Proses Kandidat
-                            </a>
-                        </div>
+                        @if ($detailKandidat->statusPendaftaran == 'terdaftar')
+                            <form action="{{ route('kandidat.proses', $detailKandidat->idPendaftaran) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-primary w-100 rounded-pill py-2">
+                                    Mulai Proses Kandidat
+                                </button>
+                            </form>
+                        @endif
 
                         <div class="timeline-pro-unit">
                             @foreach ($tahapan as $tahap)
@@ -157,6 +159,32 @@
                                             Catatan: {{ $tahap->catatan }}
                                         </div>
                                     @endif
+
+                                    @if ($tahap->status == 'Proses')
+                                        <div class="mt-3 d-flex gap-2">
+                                            <form action="" method="POST">
+                                                @csrf
+                                                <textarea name="catatan" class="form-control mb-2" placeholder="Masukkan catatan (opsional untuk lulus)..."></textarea>
+                                                <button class="btn btn-success btn-sm rounde-pill">
+                                                    Lulus
+                                                </button>
+                                            </form>
+
+                                            <form action="" method="POST">
+                                                @csrf
+                                                <textarea name="catatan" class="form-control mb-2" placeholder="Masukkan alasan di Tolak" required></textarea>
+                                                <button class="btn btn-danger btn-sm rounde-pill">
+                                                    Gagal
+                                                </button>
+                                            </form>
+
+                                            {{-- @if ($tahap->tahapRekrutmen->tipe_tahap == 'Wawancara')
+                                                <button class="btn btn-info btn-sm rounded-pill mt-2">
+                                                    Set Wawancara
+                                                </button>
+                                            @endif --}}
+                                        </div>
+                                    @endif
                                 </div>
                             @endforeach
                         </div>
@@ -166,3 +194,19 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @if (session('successProses'))
+        <script>
+            $(document).ready(function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Pendaftaran Diterima',
+                    text: '{{ session('successProses') }}',
+                    showConfirmButton: true,
+                    timer: 2500,
+                });
+            });
+        </script>
+    @endif
+@endpush

@@ -98,10 +98,12 @@ class KandidatPendaftaranController extends Controller
                             'u.name as namaMahasiswa',
                             'm.nrp as nrp',
                             'm.fakultas as fakultas',
-                            'l.judulLowongan as judulLowongan'
+                            'l.judulLowongan as judulLowongan',
+                            'l.id as idLowongan'
                         )
                         ->where('p.id', $idPendaftaran)
                         ->first();
+
         $jawabanFormulir = DB::table('jawaban_formulir as jf')
                            ->join('konten_formulir as k','k.id','=','jf.idKontenFormulir')
                            ->join('pendaftaran as p', 'p.id','=','jf.idPendaftaran')
@@ -110,11 +112,36 @@ class KandidatPendaftaranController extends Controller
                            ->select('k.namaField','jf.jawaban')
                            ->orderBy('k.id')
                            ->get();
+
         $berkasPendaftaran = DB::table('berkas_pendaftaran as b')
                             ->join('konten_formulir as kf', 'kf.id','=', 'b.id')
                             ->where('b.idPendaftaran', $idPendaftaran)
                             ->select('kf.namaField','b.namaFile','b.filePath')
                             ->get();
-        return view('kandidatPendaftaran.detailProgressKandidat',compact('detailKandidat','jawabanFormulir','berkasPendaftaran'));
+
+        $tahapan = DB::table('tahap_rekrutmen')
+                   ->where('idLowongan',$detailKandidat->idLowongan)
+                   ->where('status',1)
+                   ->orderBy('urutan','asc')
+                   ->get();
+
+        $progress = DB::table('progress_tahapan_kandidat')
+                    ->where('idPendaftaran', $idPendaftaran)
+                    ->get()
+                    ->keyBy('idTahapRekrutmen');
+        //kita akan menempelkan status dari tahapan untuk pendaftaran ini
+        foreach($tahapan as $tahap){
+            if(isset($progress[$tahap->id])){
+                $tahap->status = strtolower($progress[$tahap->id]->status);
+                $tahap->catatan = $progress[$tahap->id]->catatan;
+                $tahap->updated_at = $progress[$tahap->id]->updated_at;
+            }else{
+                $tahap->status = 'Menunggu';
+                $tahap->catatan = null;
+                $tahap->updated_at = null;
+            }
+        }
+
+        return view('kandidatPendaftaran.detailProgressKandidat',compact('detailKandidat','jawabanFormulir','berkasPendaftaran','tahapan'));
     }
 }

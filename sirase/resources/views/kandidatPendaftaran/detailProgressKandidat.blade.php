@@ -10,9 +10,9 @@
             </span>
         </div>
         {{-- ini untuk detail kandidat (kiri) --}}
-        <div class="row mb-3">
+        <div class="row">
             <div class="col-lg-6">
-                <div class="card shadow-sm border-0">
+                <div class="card shadow-sm border-0 mb-3">
                     <div class="card-header bg-white py-2" style="border-bottom: 1px solid #e2e8f0;">
                         <h6 class="mb-0 fw-semibold">Informasi Kandidat</h6>
                     </div>
@@ -66,12 +66,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        {{-- jawaban formulir --}}
-        <div class="row mb-3">
-            <div class="col-lg-6">
-                <div class="card shadow-sm border-0">
+                {{-- jawaban formulir --}}
+                <div class="card shadow-sm border-0 mb-3">
                     <div class="card-header bg-white py-2" style="border-bottom: 1px solid #e2e8f0;">
                         <h6 class="mb-0 fw-semibold">Jawaban Formulir</h6>
                     </div>
@@ -93,12 +89,8 @@
                         @endforelse
                     </div>
                 </div>
-            </div>
-        </div>
-        {{-- berkas pendaftaran --}}
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="card shadow-sm border-0">
+                {{-- berkas pendaftaran --}}
+                <div class="card shadow-sm border-0 mb-3">
                     <div class="card-header bg-white py-2" style="border-bottom: 1px solid #e2e8f0;">
                         <h6 class="mb-0 fw-semibold">Berkas Pendaftaran</h6>
                     </div>
@@ -121,6 +113,53 @@
                                 Tidak ada berkas yang diupload
                             </div>
                         @endforelse
+                    </div>
+                </div>
+            </div>
+            {{-- ini buat progress tahapan ->kanan --}}
+            <div class="col-lg-6">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body p-4">
+                        <div class="card-header bg-white py-2" style="border-bottom: 1px solid #e2e8f0;">
+                            <h6 class="mb-0 fw-semibold">Progress Tahap Rekrutmen</h6>
+                        </div>
+
+                        <div class="mb-2 py-2">
+                            <a href="" class="btn btn-primary w-100 rounded-pill py-2">
+                                Mulai Proses Kandidat
+                            </a>
+                        </div>
+
+                        <div class="timeline-pro-unit">
+                            @foreach ($tahapan as $tahap)
+                                <div class="timeline-item-pro-unit">
+                                    <span
+                                        class="bullet-pro-unit
+                                                @if ($tahap->status == 'Lulus') bullet-success
+                                                @elseif ($tahap->status == 'Gagal') bullet-danger
+                                                @elseif ($tahap->status == 'Proses') bullet-warning
+                                                @else bullet-waiting @endif"></span>
+
+                                    <h6 class="fw-bold mb-1">
+                                        {{ $tahap->name }}
+                                    </h6>
+
+                                    <small class="text-muted">
+                                        Status: {{ $tahap->status }}
+
+                                        @if ($tahap->updated_at)
+                                            • {{ \Carbon\Carbon::parse($tahap->updated_at)->translatedFormat('d M Y') }}
+                                        @endif
+                                    </small>
+
+                                    @if ($tahap->catatan)
+                                        <div class="mt-2 small text-muted">
+                                            Catatan: {{ $tahap->catatan }}
+                                        </div>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
             </div>

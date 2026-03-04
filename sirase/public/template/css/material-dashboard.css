@@ -29508,7 +29508,6 @@ body.modal-open .sidenav {
   box-shadow: 0 0 0 2px #e9ecef;
 }
 
-
 .timeline-content h6 {
   font-size: 15px !important;
   margin-bottom: 4px !important;
@@ -29524,6 +29523,10 @@ body.modal-open .sidenav {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   border-color: #e9ecef;
   transform: translateX(5px);
+}
+
+.file-link:hover {
+  text-decoration: underline;
 }
 
 /*# sourceMappingURL=dashboard-free.css.map */

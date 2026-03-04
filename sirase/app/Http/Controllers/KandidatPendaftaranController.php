@@ -85,4 +85,36 @@ class KandidatPendaftaranController extends Controller
 
         return view('kandidatPendaftaran.listkandidat',compact('kandidat'));
     }
+
+    public function showDetailKandidat(string $idPendaftaran){ 
+        $detailKandidat = DB::table('pendaftaran as p')
+                          ->join('mahasiswa as m', 'm.id','=', 'p.idMahasiswa')
+                          ->join('lowongan as l','l.id',"=",'p.idLowongan')
+                          ->join('users as u','u.id','=','m.idUser')
+                          ->select(
+                            'p.id as idPendaftaran',
+                            'p.tanggal_daftar as tanggalDaftar',
+                            'p.statusPendaftaran as statusPendaftaran',
+                            'u.name as namaMahasiswa',
+                            'm.nrp as nrp',
+                            'm.fakultas as fakultas',
+                            'l.judulLowongan as judulLowongan'
+                        )
+                        ->where('p.id', $idPendaftaran)
+                        ->first();
+        $jawabanFormulir = DB::table('jawaban_formulir as jf')
+                           ->join('konten_formulir as k','k.id','=','jf.idKontenFormulir')
+                           ->join('pendaftaran as p', 'p.id','=','jf.idPendaftaran')
+                           ->where('jf.idPendaftaran', $idPendaftaran)
+                           ->whereColumn('k.idLowongan','p.idLowongan')
+                           ->select('k.namaField','jf.jawaban')
+                           ->orderBy('k.id')
+                           ->get();
+        $berkasPendaftaran = DB::table('berkas_pendaftaran as b')
+                            ->join('konten_formulir as kf', 'kf.id','=', 'b.id')
+                            ->where('b.idPendaftaran', $idPendaftaran)
+                            ->select('kf.namaField','b.namaFile','b.filePath')
+                            ->get();
+        return view('kandidatPendaftaran.detailProgressKandidat',compact('detailKandidat','jawabanFormulir','berkasPendaftaran'));
+    }
 }

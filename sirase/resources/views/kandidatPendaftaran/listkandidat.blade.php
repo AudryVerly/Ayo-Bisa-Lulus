@@ -62,7 +62,7 @@
                                             <td class="text-sm" style="text-align: center;">{{ $kan->tahapIni }}</td>
                                             <td>
                                                 <div class="d-flex justify-content-center gap-2">
-                                                    <a href=" "
+                                                    <a href="{{ route('kandidat.detailKandidat', $kan->idPendaftaran) }} "
                                                         class="btn bg-gradient-info btn-sm text-white">
                                                         Detail Kandidat
                                                     </a>

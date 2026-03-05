@@ -34,4 +34,8 @@ class Pendaftaran extends Model
     public function progressTahapanRekrutmen(){
         return $this->hasMany(ProgressTahapanKandidat::class, 'idPendaftaran');
     }
+
+    public function jadwalWawancara(){
+        return $this->hasMany(PenjadwalanWawancara::class, 'idPendaftaran');
+    }
 }

@@ -23,4 +23,8 @@ class timPenilai extends Model
     public function staffUnit(){
         return $this->belongsTo(StaffUnit::class, 'idStaffUnit');
     }
+
+    public function jadwalWawancara(){
+        return $this->belongsToMany(PenjadwalanWawancara::class,'tim_penilai_wawancara','idJadwalWawancara','idTimPenilai');
+    }
 }

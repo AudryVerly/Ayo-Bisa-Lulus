@@ -22,4 +22,8 @@ class ProgressTahapanKandidat extends Model
     public function tahapRekrutmen(){
         return $this->belongsTo(TahapRekrutmen::class,'idTahapRekrutmen');
     }
+
+    public function jadwalWawancara(){
+        return $this->hasMany(PenjadwalanWawancara::class, 'idProgressTahapan');
+    }
 }

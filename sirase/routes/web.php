@@ -13,6 +13,7 @@ use App\Http\Controllers\TahapRekrutmenController;
 use App\Http\Controllers\TimPenilaiController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WawancaraController;
 use App\Models\Lowongan;
 use App\Models\Mahasiswa;
 use App\Models\StaffUnit;
@@ -84,6 +85,7 @@ Route::middleware(['auth','role:AdminUnit'])->group(function(){
   Route::post('/kandidat/{idPendaftaran}',[KandidatPendaftaranController::class, 'updateStatusDaftar'])->name('kandidat.proses');
   Route::post('/kandidat/lulus/{idPendaftaran}',[KandidatPendaftaranController::class,'lulusTahapan'])->name('kandidat.lulus');
   Route::post('/kandidat/gagal/{idPendaftaran}',[KandidatPendaftaranController::class,'gagalTahapan'])->name('kandidat.gagal');
+  Route::get('/kandidat/setWawancara',[WawancaraController::class,'index'])->name('kandidat.wawancara');
 });
 
 Route::middleware(['auth','role:StaffUnit'])->group(function(){

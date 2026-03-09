@@ -29564,6 +29564,13 @@ body.modal-open .sidenav {
     margin-bottom: 0;
 }
 
+#calendar{
+  max-width:100%;
+}
 
-
+.fc-event{
+  border-radius: 20px;
+  padding:3px 8px;
+  font-size:12px;
+}
 /*# sourceMappingURL=dashboard-free.css.map */

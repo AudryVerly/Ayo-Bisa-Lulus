@@ -183,9 +183,9 @@
                                                     </button>
 
                                                     @if ($tahap->tipe_tahap == 'Wawancara')
-                                                        <button class="btn btn-info btn-sm px-3">
-                                                            Set Wawancara
-                                                        </button>
+                                                        <a href="{{ route('kandidat.wawancara') }}" class="btn btn-info btn-sm px-3">
+                                                            Set Wawancara 
+                                                        </a>
                                                     @endif
                                                 </div>
                                             </form>

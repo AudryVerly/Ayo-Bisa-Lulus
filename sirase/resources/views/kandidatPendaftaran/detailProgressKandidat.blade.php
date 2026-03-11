@@ -183,8 +183,10 @@
                                                     </button>
 
                                                     @if ($tahap->tipe_tahap == 'Wawancara')
-                                                        <a href="{{ route('kandidat.wawancara') }}" class="btn btn-info btn-sm px-3">
-                                                            Set Wawancara 
+                                                        <a href="{{ route('kandidat.wawancara',
+                                                            ['idProgressTahapan' => $tahap->id, 'idPendaftaran' => $detailKandidat->idPendaftaran]) }}"
+                                                            class="btn btn-info btn-sm px-3">
+                                                            Set Wawancara
                                                         </a>
                                                     @endif
                                                 </div>

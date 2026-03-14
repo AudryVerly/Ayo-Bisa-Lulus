@@ -33,6 +33,8 @@
                                         <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
                                             style="text-align: center;">No</th>
                                         <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
+                                            style="text-align: center;">Poster</th>
+                                        <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
                                             style="text-align: center;">Judul</th>
                                         <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
                                             style="text-align: center;">Posisi Lowongan</th>
@@ -54,6 +56,18 @@
                                     @foreach ($lowongan as $index => $lowongans)
                                         <tr class={{ $lowongans->status == 0 ? 'table-secondary' : '' }}>
                                             <td class="text-sm" style="text-align: center;">{{ $index + 1 }}</td>
+                                            <td class="text-sm" style="text-align: center;">
+                                                @if ($lowongans->poster)
+                                                    <img src="{{ asset('storage/' . $lowongans->poster) }}" width="60"
+                                                        class="rounded shadow-sm poster-click" style="cursor:pointer"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#posterModal{{ $lowongans->id }}">
+                                                @else
+                                                    <img src="{{ asset('template/img/noimage.jpg') }}" width="60"
+                                                        class="rounded shadow-sm" style="opacity:.6">
+                                                @endif
+
+                                            </td>
                                             <td class="text-sm" style="text-align: center;">
                                                 {{ $lowongans->judulLowongan }}</td>
                                             <td class="text-sm" style="text-align: center;">
@@ -209,6 +223,26 @@
                                                                         class="align-middle">&nbsp;&nbsp;Edit Lowongan</span>
                                                                 </a>
                                                             </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endpush
+
+                                        @push('modals')
+                                            <div class="modal fade" id="posterModal{{ $lowongans->id }}" tabindex="-1">
+                                                <div class="modal-dialog modal-dialog-centered modal-lg">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header border-0">
+                                                            <h6 class="text-white">Poster Lowongan</h6>
+                                                            <button type="button" class="btn-close btn-close-white"
+                                                                data-bs-dismiss="modal"></button>
+                                                        </div>
+
+                                                        <div class="modal-body text-center">
+
+                                                            <img src="{{ asset('storage/' . $lowongans->poster) }}"
+                                                                class="img-fluid rounded shadow">
                                                         </div>
                                                     </div>
                                                 </div>

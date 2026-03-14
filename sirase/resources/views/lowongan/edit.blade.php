@@ -6,16 +6,13 @@
         <div class="row justify-content-center">
             <div class="col-lg-8 col-md-10">
                 <div class="card shadow-sm border-0 rounded-3">
-                    <form action="{{ route('lowongans.update', $lowongan->id) }}" method="POST">
+                    <form action="{{ route('lowongans.update', $lowongan->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div
                             class ="card-header bg-gradient-dark text-white d-flex justify-content-between align-items-center">
                             <h5 class="mb-0  text-white d-flex align-items-center"><i
                                     class="material-symbols-rounded text-sm text-white">edit</i>&nbsp;&nbsp;Edit Lowongan
                             </h5>
-                            <a href="{{ route('lowongans.index') }}" class="btn btn-light btn-sm d-flex align-items-center">
-                                <i class="material-symbols-rounded text-sm">arrow_back</i>&nbsp;&nbsp;Kembali
-                            </a>
                         </div>
 
                         <div class="card-body">
@@ -75,9 +72,9 @@
                             <div class="form-group mb-2">
                                 <label for="durasi" class="form-label fw-bold text-secondary">Durasi Kerja (bulan)</label>
                                 <input type="text" id="durasiKerja" name="durasiKerja"
-                                    class="form-control shadow-sm border rounded-3 px-3 py-2"
-                                    placeholder="Masukkan judul lowongan"
-                                    value="{{ old('durasi', $lowongan->durasiKerja) }}">
+                                    class="form-control shadow-sm border rounded-3 px-3 py-2 text-dark"
+                                    style="background-color: #e0e0e0; color: #6e757b;" readonly
+                                    value="{{ old('durasiKerja', $lowongan->durasiKerja) }}">
                                 @error('durasiKerja')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -120,6 +117,27 @@
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
+                            {{-- <div class="form-group mb-3 text-center">
+                                <img id="posterPreview"
+                                    src="{{ $lowongan->poster ? asset('storage/' . $lowongan->poster) : asset('template/img/noimage.jpg') }}"
+                                    width="180"
+                                    class="rounded shadow-sm mb-2">
+                            </div> --}}
+
+                            <div class="form-group mb-2">
+                                <label for="poster" class="form-label fw-bold text-secondary">Poster</label>
+                                <div class="form-group mb-3">
+                                    <img id="posterPreview"
+                                        src="{{ $lowongan->poster ? asset('storage/' . $lowongan->poster) : asset('template/img/noimage.jpg') }}"
+                                        width="250" class="rounded shadow-sm mb-2">
+                                </div>
+                                <input type="file" id="poster" name="poster"
+                                    class="form-control shadow-sm border rounded-3 px-3 py-2"
+                                    accept="image/jpeg,image/jpg,image/png">
+                                @error('poster')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
 
                             <div class="text-end mt-4">
                                 <button type="submit" class="btn bg-gradient-success text-white px-4">
@@ -127,8 +145,7 @@
                                         class="align-middle">&nbsp;&nbsp;Simpan
                                         Perubahan</span>
                                 </button>
-                                <a href="{{ route('lowongans.index') }}"
-                                    class="btn bg-gradient-secondary text-white px-4">
+                                <a href="{{ route('lowongans.index') }}" class="btn bg-danger text-white px-4">
                                     <i class="material-symbols-rounded text-sm">close</i><span
                                         class="align-middle">&nbsp;&nbsp;batal</span>
                                 </a>
@@ -139,3 +156,53 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+    <script>
+        $(document).ready(function() {
+            $('#poster').change(function(e) {
+                let file = e.target.files[0];
+
+                if (file) {
+                    let reader = new FileReader();
+
+                    reader.onload = function(event) {
+                        $('#posterPreview').attr('src', event.target.result);
+                    }
+
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+        function hitungDurasi() {
+            let mulai = $('#mulaiKerja').val()
+            let akhir = $('#akhirKerja').val();
+
+            if (mulai && akhir) {
+                let tglMulai = new Date(mulai)
+                let tglAkhir = new Date(akhir)
+
+                if (tglAkhir >= tglMulai) {
+                    let bulan = (tglAkhir.getFullYear() - tglMulai.getFullYear()) * 12 +
+                        (tglAkhir.getMonth() - tglMulai.getMonth())
+
+                    let hari = tglAkhir.getDate() - tglMulai.getDate()
+
+                    let durasi = bulan + (hari / 30)
+
+                    $('#durasiKerja').val(durasi.toFixed(1))
+                } else {
+                    $('#durasiKerja').val('')
+                }
+            }
+        }
+
+        $(document).ready(function() {
+
+            hitungDurasi()
+
+            $('#mulaiKerja, #akhirKerja').on('change', hitungDurasi)
+
+        })
+    </script>
+@endpush

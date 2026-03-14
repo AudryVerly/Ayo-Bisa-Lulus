@@ -72,8 +72,8 @@ class PendaftaranController extends Controller
                     $attributes[$inputFormulir] = $field->namaField;
 
                     if($field->tipeField === 'file'){
-                        //ini supaya tipe filenya bisa pdf,jpg,jpeg atau png dengan maksimal 10 MB
-                        $rules[$inputFormulir] = ($field->required ? 'required|' : '') . 'file|mimes:pdf,jpg,jpeg|max:10240';
+                        //ini supaya tipe filenya bisa pdf,jpg,jpeg atau png dengan maksimal 20 MB
+                        $rules[$inputFormulir] = ($field->required ? 'required|' : '') . 'file|mimes:pdf,jpg,jpeg|max:20480';
                     }else{
                         $rules[$inputFormulir] = $field->required ? 'required' : 'nullable';
                     }
@@ -82,7 +82,7 @@ class PendaftaranController extends Controller
                 //validasi semua input
                 $request->validate($rules,[
                     'required' => ':attribute wajib diisi.',
-                    'file.max' => 'Ukuran file maksimal 10 MB.',
+                    'file.max' => 'Ukuran file maksimal 20 MB.',
                     'file.mimes' => 'File harus pdf, jpg, atau jpeg.'
                 ], $attributes);
                 

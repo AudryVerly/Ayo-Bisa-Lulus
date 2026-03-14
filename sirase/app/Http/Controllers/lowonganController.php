@@ -6,6 +6,7 @@ use App\Models\Lowongan;
 use App\Models\StaffUnit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
 class lowonganController extends Controller
@@ -68,16 +69,17 @@ class lowonganController extends Controller
                 'deskripsi'       => 'required|string',
                 'kualifikasi'     => 'required|string',
                 'posisiLowongan'  => 'required|string|max:255',
-                'durasiKerja'     => 'required|integer|min:1',
+                'durasiKerja'     => 'required|numeric|min:1',
                 'awalPendaftaran' => 'required|date',
                 'batasPendaftaran'=> 'required|date|after_or_equal:awalPendaftaran',
                 'mulaiKerja'      => 'required|date|after_or_equal:batasPendaftaran',
                 'akhirKerja'      => 'required|date|after_or_equal:mulaiKerja',
+                'poster'          => 'nullable|file|mimes:jpg,jpeg,png|max:20480'
             ]);
 
             $request['kualifikasi'] = trim(preg_replace('/\r\n|\r|\n/', "\n", $request['kualifikasi']));
 
-            Lowongan::create([
+            $lowongan = Lowongan::create([
                 'idUnit' => $idUnit,
                 'judulLowongan'   => $request->judulLowongan,
                 'deskripsi'       => $request->deskripsi,
@@ -88,7 +90,26 @@ class lowonganController extends Controller
                 'batasPendaftaran'=> $request->batasPendaftaran,
                 'mulaiKerja'      => $request->mulaiKerja,
                 'akhirKerja'      => $request->akhirKerja,
+                'poster'          => ' '
             ]);
+
+            if($request->hasFile('poster')){
+                $file = $request->file('poster');
+                $namaLowongan = str_replace(' ','_', $request->judulLowongan);
+                $extension = $file->getClientOriginalExtension();
+                $namaFile = $namaLowongan . '_' . time() . '.' . $extension;
+
+                $posterPath = $file->storeAs( 'poster_lowongan/'. $lowongan->id, $namaFile, 'public');
+
+                $lowongan->update(['poster' => $posterPath]);
+            }
+
+            $today = Carbon::today('Asia/Jakarta')->toDateString();
+            if($today >= $lowongan->awalPendaftaran && $today <= $lowongan->batasPendaftaran){
+                $lowongan->update(['status' => 1]);
+            } else {
+                $lowongan->update(['status' => 0]);
+            }
             return redirect()->route('lowongans.index')->with('success', 'Lowongan berhasil ditambahkan.');
     }
 
@@ -113,15 +134,51 @@ class lowonganController extends Controller
             'deskripsi'       => 'required|string',
             'kualifikasi'     => 'required|string',
             'posisiLowongan'  => 'required|string|max:255',
-            'durasiKerja'     => 'required|integer|min:1',
+            'durasiKerja'     => 'required|numeric|min:1',
             'awalPendaftaran' => 'required|date',
             'batasPendaftaran'=> 'required|date|after_or_equal:awalPendaftaran',
             'mulaiKerja'      => 'required|date|after_or_equal:batasPendaftaran',
             'akhirKerja'      => 'required|date|after_or_equal:mulaiKerja',
+            'poster'          => 'nullable|file|mimes:jpg,jpeg,png|max:20480'
         ]);
 
             //ini supaya dia bisa memsiahkan spasi, whitespace dan koma
         $request['kualifikasi'] = trim(preg_replace('/\r\n|\r|\n/', "\n", $request['kualifikasi']));
+        
+        // $mulai = Carbon::parse($request->mulaiKerja);
+        // $akhir = Carbon::parse($request->akhirKerja);
+
+        // $bulan = ($akhir->year - $mulai->year) * 12 + ($akhir->month - $mulai->month);
+
+        // // hitung sisa hari
+        // $hari = $akhir->day - $mulai->day;
+
+        // // jika sisa hari negatif, kurangi 1 bulan dan hitung ulang sisa hari
+        // if ($hari < 0) {
+        //     $bulan -= 1;
+        //     // jumlah hari di bulan akhir setelah dikurangi bulan
+        //     $hari = $akhir->copy()->subMonths(1)->daysInMonth + $akhir->day - $mulai->day;
+        // }
+
+        // // durasi akhir sama seperti JS
+        // $durasiKerja = round($bulan + ($hari / 30), 1);
+
+        //ini path poster lama
+        $posterPath = $lowongan->poster;
+
+        // ini kalau mau tambah poster baru
+        if($request->hasFile('poster')){
+            if($lowongan->poster && Storage::disk('public')->exists($lowongan->poster)){
+                Storage::disk('public')->delete($lowongan->poster);
+            }
+
+            $file = $request->file('poster');
+            $namaLowongan = str_replace(' ','_', $request->judulLowongan);
+            $extension = $file->getClientOriginalExtension();
+            $namaFile = $namaLowongan . '_' . time() . '.' . $extension;
+
+            $posterPath = $file->storeAs( 'poster_lowongan/'. $lowongan->id, $namaFile, 'public');
+        }
 
         $lowongan->update([
             'judulLowongan'   => $request->judulLowongan,
@@ -133,7 +190,15 @@ class lowonganController extends Controller
             'batasPendaftaran'=> $request->batasPendaftaran,
             'mulaiKerja'      => $request->mulaiKerja,
             'akhirKerja'      => $request->akhirKerja,
+            'poster'          => $posterPath,
         ]);
+
+        $today = Carbon::today('Asia/Jakarta')->toDateString();
+        if($today >= $lowongan->awalPendaftaran && $today <= $lowongan->batasPendaftaran){
+            $lowongan->update(['status' => 1]);
+        } else {
+            $lowongan->update(['status' => 0]);
+        }
         return redirect()->route('lowongans.index')->with('success', 'Informasi Lowongan berhasil diperbarui');
 
     }

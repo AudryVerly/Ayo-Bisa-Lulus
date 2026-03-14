@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('deskripsi');
             $table->text('kualifikasi');
             $table->string('posisiLowongan');
-            $table->unsignedInteger('durasiKerja');
+            $table->double('durasiKerja');
             $table->date('awalPendaftaran');
             $table->date('batasPendaftaran');
             $table->date('mulaiKerja');

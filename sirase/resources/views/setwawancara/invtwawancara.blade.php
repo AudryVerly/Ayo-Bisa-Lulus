@@ -36,9 +36,9 @@
                         </div>
                         <div class="form-group">
                             <label for="timPenilai" class="form-label fw-bold text-secondary d-flex align-items-center mt-1">Penilai
-                                <i class="material-symbols-rounded text-secondary ms-1" data-bs-toggle="tooltip"
+                                <i class="material-symbols-rounded text-secondary ms-1" data-bs-toggle="tooltip" data-bs-placement="top"
                                     title="Penilai wajib diisi boleh memilih lebih dari 1"
-                                    style="font-size: 1rem; cursor: help; line-height:1;">
+                                    style="font-size: 1rem; cursor: help;">
                                     info
                                 </i>
                             </label>

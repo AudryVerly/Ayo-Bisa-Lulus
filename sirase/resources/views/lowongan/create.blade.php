@@ -146,7 +146,7 @@
                                         Perubahan</span>
                                 </button>
                                 <a href="{{ route('lowongans.index') }}"
-                                    class="btn bg-gradient-secondary text-white px-4">
+                                    class="btn bg-gradient-danger text-white px-4">
                                     <i class="material-symbols-rounded text-sm">close</i><span
                                         class="align-middle">&nbsp;&nbsp;batal</span>
                                 </a>

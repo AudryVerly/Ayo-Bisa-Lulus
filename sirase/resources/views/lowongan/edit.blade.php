@@ -145,9 +145,9 @@
                                         class="align-middle">&nbsp;&nbsp;Simpan
                                         Perubahan</span>
                                 </button>
-                                <a href="{{ route('lowongans.index') }}" class="btn bg-danger text-white px-4">
+                                <a href="{{ route('lowongans.index') }}" class="btn bg-gradient-danger text-white px-4">
                                     <i class="material-symbols-rounded text-sm">close</i><span
-                                        class="align-middle">&nbsp;&nbsp;batal</span>
+                                        class="align-middle">&nbsp;&nbsp;Batal</span>
                                 </a>
                             </div>
                     </form>

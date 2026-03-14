@@ -12,10 +12,10 @@
                             <i class="material-symbols-rounded text-sm text-white">school</i>&nbsp;Detail Mahasiswa
                         </h5>
                         <div class="d-flex align-items-center">
-                            <a href="{{ route('mahasiswa.index') }}"
+                            {{-- <a href="{{ route('mahasiswa.index') }}"
                                 class="btn btn-light btn-sm d-flex align-items-center me-2">
                                 <i class="material-symbols-rounded text-sm">arrow_back</i>&nbsp;Kembali
-                            </a>
+                            </a> --}}
                             <a href="" class="btn btn-warning btn-sm d-flex align-items-center">
                                 <i class="material-symbols-rounded text-sm">edit</i>&nbsp;Edit
                             </a>

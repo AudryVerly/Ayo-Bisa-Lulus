@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
-class lowonganController extends Controller
+class LowonganController extends Controller
 {
     /**
      * Display a listing of the resource.

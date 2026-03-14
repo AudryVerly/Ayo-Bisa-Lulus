@@ -12,9 +12,9 @@
                                 class="material-symbols-rounded text-sm text-white">corporate_fare</i>&nbsp;&nbsp;Detail Unit
                         </h5>
                         <div class = "d-flex align-items-center">
-                            <a href="{{ route('staff.index') }}" class="btn btn-light btn-sm d-flex align-items-center me-2">
+                            {{-- <a href="{{ route('staff.index') }}" class="btn btn-light btn-sm d-flex align-items-center me-2">
                                 <i class="material-symbols-rounded text-sm">arrow_back</i>&nbsp;&nbsp;Kembali
-                            </a>
+                            </a> --}}
                             <a href="{{ route('staff.edit', $staff->id) }}"
                                 class="btn  btn-warning btn-sm d-flex align-items-center">
                                 <i class="material-symbols-rounded text-sm">edit</i>&nbsp;&nbsp;Edit

@@ -15,10 +15,10 @@
                                     class="material-symbols-rounded text-sm text-white ">contract</i>&nbsp;&nbsp; Formulir
                                 Lowongan {{ $lowongan->judulLowongan }}
                             </h5>
-                            <a href="{{ route('mahasiswa.dashboard') }}"
+                            {{-- <a href="{{ route('mahasiswa.dashboard') }}"
                                 class="btn btn-light btn-sm d-flex align-items-center">
                                 <i class="material-symbols-rounded text-sm">arrow_back</i>&nbsp;&nbsp;Kembali
-                            </a>
+                            </a> --}}
                         </div>
                         @if (session('success'))
                             <div id ="alert-message" class="alert alert-success alert-dismissible text-white"
@@ -150,10 +150,14 @@
                             @endforeach
                             {{-- submit --}}
                             <div class="text-end mt-4">
-                                <button type="submit" class="btn bg-gradient-dark">
+                                <button type="submit" class="btn bg-gradient-success">
                                     <i class="material-symbols-rounded text-sm">send</i>
                                     Kirim Pendaftaran
                                 </button>
+                                <a href="{{ route('.index') }}" class="btn bg-gradient-danger text-white px-4">
+                                    <i class="material-symbols-rounded text-sm">close</i><span
+                                        class="align-middle">&nbsp;&nbsp;Batal</span>
+                                </a>
                             </div>
                         </div>
                     </form>

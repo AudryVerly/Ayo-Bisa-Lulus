@@ -14,10 +14,13 @@
 
         {{-- filter search --}}
         <div class="row mb-4 g-3">
+            <div class="col-md-3 ">
+                <input type="text" id="searchLowongan" placeholder="Cari Lowongan"
+                    class="form-control border rounded-3 shadow-sm px-3 py-2">
+            </div>
             <div class="col-md-3">
-                <div class="input-group input-group-outline">
-                    <input type="text" class="form-control" id="searchLowongan" placeholder="Cari Lowongan">
-                </div>
+                <input type="text" class="form-control border rounded-3 shadow-sm px-3 py-2" id="searchKualifikasi"
+                    placeholder="Cari Kualifikasi">
             </div>
             <div class="col-md-3">
                 <div class="input-group input-group-outline">
@@ -34,7 +37,8 @@
         <div class="row g-4">
             @if ($lowongan->count() > 0)
                 @foreach ($lowongan as $low)
-                    <div class="col-lg-4 col-md-6 col-sm-12 lowongan-item">
+                    <div class="col-lg-4 col-md-6 col-sm-12 lowongan-item"
+                        data-kualifikasi="{{ $low->kualifikasi }}">
                         <div class="card job-card shadow-sm border-0 h-100">
                             <div class="card-body d-flex flex-column">
                                 @if ($low->status === 1)
@@ -66,7 +70,7 @@
                                     </button>
 
                                     <a href="{{ route('pendaftaran.formulir', $low->id) }}"
-                                        class="btn btn-outline-secondary" style="margin-bottom:0px;">
+                                        class="btn btn-outline-success" style="margin-bottom:0px;">
                                         Daftar
                                     </a>
                                 </div>
@@ -197,18 +201,21 @@
         function filterLowongan() {
             let keyword = $('#searchLowongan').val().toLowerCase()
             let unit = $('#filterUnit').val().toLowerCase()
+            let kualifikasiKeyword = $('#searchKualifikasi').val().toLowerCase()
+
 
             $('.lowongan-item').each(function() {
                 //ini yang dipakai di keyword
                 let judul = $(this).find('.judul-lowongan').text().toLowerCase()
                 let cardUnit = $(this).find('.unit-lowongan').text().toLowerCase()
+                let kualifikasi = $(this).data('kualifikasi').toLowerCase() || ''
 
                 //ini biar apakah dari lowongan ini ada kareba kita pakai nama lowongan
                 let matchkeyword = judul.includes(keyword) || cardUnit.includes(keyword)
-
+                let matchKualifikasi = kualifikasi.includes(kualifikasiKeyword)
                 let matchUnit = unit === '' || cardUnit.includes(unit)
 
-                if (matchkeyword && matchUnit) {
+                if (matchkeyword && matchUnit && matchKualifikasi) {
                     $(this).show()
                 } else {
                     $(this).hide()
@@ -219,5 +226,6 @@
 
         $('#searchLowongan').on('keyup', filterLowongan)
         $('#filterUnit').on('change', filterLowongan)
+        $('#searchKualifikasi').on('keyup', filterLowongan)
     </script>
 @endpush

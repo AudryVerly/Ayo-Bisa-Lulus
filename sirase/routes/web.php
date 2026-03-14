@@ -5,7 +5,7 @@ use App\Http\Controllers\DashboardMahasiswaController;
 use App\Http\Controllers\FormulirController;
 use App\Http\Controllers\KandidatPendaftaran;
 use App\Http\Controllers\KandidatPendaftaranController;
-use App\Http\Controllers\lowonganController;
+use App\Http\Controllers\LowonganController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\pendaftaranController;
 use App\Http\Controllers\StaffUnitController;
@@ -31,7 +31,7 @@ Route::middleware('guest')->group(function(){
 });
 
 Route::post('/logout',[AuthController::class, 'logout'])->name('logout');
-Route::get('/autoupdate',[lowonganController::class, 'autoUpdate'])->name('lowongan.autoupdate');
+Route::get('/autoupdate',[LowonganController::class, 'autoUpdate'])->name('lowongan.autoupdate');
 
 
 // Route::get('/dashboard', function () {return view('dashboard');})->name('superadmin.dashboard')->middleware('role:SuperAdmin');
@@ -47,13 +47,13 @@ Route::middleware(['auth','role:Mahasiswa'])->group(function(){
 
 Route::middleware(['auth','role:AdminUnit'])->group(function(){
    Route::get('/dashboardAdminUnit', function () {return view('adminUnitPage.dashboard');})->name('adminunit.dashboard');
-   Route::get('/lowongans',[lowonganController::class,'index'])->name('lowongans.index');
-   Route::get('/lowongans/{id}/edit', [lowonganController::class, 'edit'])->name('lowongans.edit');
-   Route::post('/lowongans/{id}',[lowonganController::class, 'update'])->name('lowongans.update');
-   Route::get('/lowongans/create',[lowonganController::class, 'create'])->name('lowongans.create');
-   Route::post('/lowongans',[lowonganController::class, 'store'])->name('lowongans.store');
-   Route::post('/lowongan{id}', [lowonganController::class, 'publish'])->name('lowongan.publish');
-   Route::post('/lowongan/{id}', [lowonganController::class, 'unpublish'])->name('lowongan.unpublish');
+   Route::get('/lowongans',[LowonganController::class,'index'])->name('lowongans.index');
+   Route::get('/lowongans/{id}/edit', [LowonganController::class, 'edit'])->name('lowongans.edit');
+   Route::post('/lowongans/{id}',[LowonganController::class, 'update'])->name('lowongans.update');
+   Route::get('/lowongans/create',[LowonganController::class, 'create'])->name('lowongans.create');
+   Route::post('/lowongans',[LowonganController::class, 'store'])->name('lowongans.store');
+   Route::post('/lowongan{id}', [LowonganController::class, 'publish'])->name('lowongan.publish');
+   Route::post('/lowongan/{id}', [LowonganController::class, 'unpublish'])->name('lowongan.unpublish');
    
    Route::get('/formulir', [FormulirController::class, 'index'])->name('formulir.utama');
    Route::get('/formulir/{id}/manage', [FormulirController::class, 'show'])->name('formulir.manage');

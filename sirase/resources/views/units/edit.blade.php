@@ -12,9 +12,9 @@
                             class ="card-header bg-gradient-dark text-white d-flex justify-content-between align-items-center">
                             <h5 class="mb-0  text-white d-flex align-items-center"><i
                                     class="material-symbols-rounded text-sm text-white">edit</i>&nbsp;&nbsp;Edit Unit</h5>
-                            <a href="{{ route('units.index') }}" class="btn btn-light btn-sm d-flex align-items-center">
+                            {{-- <a href="{{ route('units.index') }}" class="btn btn-light btn-sm d-flex align-items-center">
                                 <i class="material-symbols-rounded text-sm">arrow_back</i>&nbsp;&nbsp;Kembali
-                            </a>
+                            </a> --}}
                         </div>
                         <div class="card-body">
                             {{-- @if ($errors->any())
@@ -77,7 +77,7 @@
                                         class="align-middle">&nbsp;&nbsp;Simpan
                                         Perubahan</span>
                                 </button>
-                                <a href="{{ route('units.index') }}" class="btn bg-gradient-secondary text-white px-4">
+                                <a href="{{ route('units.index') }}" class="btn bg-gradient-danger text-white px-4">
                                     <i class="material-symbols-rounded text-sm">close</i><span
                                         class="align-middle">&nbsp;&nbsp;batal</span>
                                 </a>

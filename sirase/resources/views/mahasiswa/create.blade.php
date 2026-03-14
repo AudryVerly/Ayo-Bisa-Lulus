@@ -12,9 +12,9 @@
                                     class="material-symbols-rounded text-sm text-white ">person_add</i>&nbsp;&nbsp;Add
                                 Mahasiswa
                             </h5>
-                            <a href="{{ route('mahasiswa.index') }}" class="btn btn-light btn-sm d-flex align-items-center">
+                            {{-- <a href="{{ route('mahasiswa.index') }}" class="btn btn-light btn-sm d-flex align-items-center">
                                 <i class="material-symbols-rounded text-sm">arrow_back</i>&nbsp;&nbsp;Kembali
-                            </a>
+                            </a> --}}
                         </div>
                         <div class="card-body">
                             {{-- @if ($errors->any())
@@ -138,7 +138,7 @@
                                         Perubahan</span>
                                 </button>
                                 <a href="{{ route('mahasiswa.index') }}"
-                                    class="btn bg-gradient-secondary text-white px-4">
+                                    class="btn bg-gradient-danger text-white px-4">
                                     <i class="material-symbols-rounded text-sm">close</i><span
                                         class="align-middle">&nbsp;&nbsp;batal</span>
                                 </a>

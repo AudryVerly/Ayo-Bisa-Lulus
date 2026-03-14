@@ -188,7 +188,7 @@
                                                                         action="{{ route('lowongan.publish', $lowongans->id) }}"
                                                                         method="POST">
                                                                         @csrf
-                                                                        <button class="btn bg-gradient-primary btn-publish"
+                                                                        <button class="btn bg-gradient-success btn-publish"
                                                                             data-id={{ $lowongans->id }}
                                                                             data-awal={{ $lowongans->awalPendaftaran }}
                                                                             data-akhir={{ $lowongans->batasPendaftaran }}
@@ -205,7 +205,7 @@
                                                                         method="POST">
                                                                         @csrf
                                                                         <button id="btn-unpublish"
-                                                                            class="btn bg-gradient-warning btn-unpublish"
+                                                                            class="btn bg-gradient-danger btn-unpublish"
                                                                             data-id={{ $lowongans->id }}
                                                                             data-awal={{ $lowongans->awalPendaftaran }}
                                                                             data-akhir={{ $lowongans->batasPendaftaran }}

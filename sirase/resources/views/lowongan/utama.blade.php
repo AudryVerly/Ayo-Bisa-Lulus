@@ -231,7 +231,7 @@
 
                                         @push('modals')
                                             <div class="modal fade" id="posterModal{{ $lowongans->id }}" tabindex="-1">
-                                                <div class="modal-dialog modal-dialog-centered modal-lg">
+                                                <div class="modal-dialog modal-dialog-centered" style="max-width: 450px;">
                                                     <div class="modal-content">
                                                         <div class="modal-header border-0">
                                                             <h6 class="text-white">Poster Lowongan</h6>

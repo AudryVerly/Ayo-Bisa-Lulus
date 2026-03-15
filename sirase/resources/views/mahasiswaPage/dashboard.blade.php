@@ -37,9 +37,43 @@
         <div class="row g-4">
             @if ($lowongan->count() > 0)
                 @foreach ($lowongan as $low)
-                    <div class="col-lg-4 col-md-6 col-sm-12 lowongan-item"
-                        data-kualifikasi="{{ $low->kualifikasi }}">
+                    <div class="col-lg-4 col-md-6 col-sm-12 lowongan-item" data-kualifikasi="{{ $low->kualifikasi }}">
                         <div class="card job-card shadow-sm border-0 h-100">
+                            {{-- ini buat poster
+                            @if ($low->poster)
+                                <img src="{{ asset('storage/' . $low->poster) }}" class="card-img-top"
+                                    style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;"
+                                    onmouseover="this.style.transform='scale(1.05)'"
+                                    onmouseout="this.style.transform='scale(1)'">
+                            @else
+                                {{-- <img src="{{ asset('template/img/noimage.jpg') }}" class="card-img-top"
+                                    style="aspect-ratio: 16/9; object-fit: cover; width: 100%;"> --}}
+                            {{-- <div class="card-img-top d-flex align-items-center justify-content-center bg-light"
+                                    style="height: 170px; background: linear-gradient(45deg, #f3f4f7, #e2e5e9);">
+                                    <i class="ni ni-image text-secondary opacity-5" style="font-size: 3rem;"></i>
+                                </div> --}}
+                            {{-- @endif --}}
+                            <div class="position-relative"
+                                style="height: 250px; overflow: hidden; background-color: #f8f9fa;" data-bs-toggle="modal"
+                                data-bs-target="#posterModal{{ $low->id }}">
+                                @if ($low->poster)
+                                    <div
+                                        style="background-image: url('{{ asset('storage/' . $low->poster) }}'); 
+                                    background-size: cover; background-position: center; 
+                                    filter: blur(15px); opacity: 0.3; position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
+                                    </div>
+
+                                    <div class="d-flex align-items-center justify-content-center h-100 position-relative">
+                                        <img src="{{ asset('storage/' . $low->poster) }}"
+                                            style="max-height: 110%; max-width: 110%; object-fit: contain; transform: scale(1.3); box-shadow: 0 4px 10px rgba(0,0,0,0.1); cursor: pointer;">
+                                    </div>
+                                @else
+                                    <div
+                                        class="d-flex flex-column align-items-center justify-content-center h-100 text-muted opacity-5">
+                                        <small class="fw-bold">NO POSTER AVAILABLE</small>
+                                    </div>
+                                @endif
+                            </div>
                             <div class="card-body d-flex flex-column">
                                 @if ($low->status === 1)
                                     <span class="badge bg-success align-self-start mb-2">
@@ -69,14 +103,31 @@
                                         Detail
                                     </button>
 
-                                    <a href="{{ route('pendaftaran.formulir', $low->id) }}"
-                                        class="btn btn-outline-success" style="margin-bottom:0px;">
+                                    <a href="{{ route('pendaftaran.formulir', $low->id) }}" class="btn btn-outline-success"
+                                        style="margin-bottom:0px;">
                                         Daftar
                                     </a>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    @if ($low->poster)
+                        <div class="modal fade" id="posterModal{{ $low->id }}" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered" style="max-width: 450px;">
+                                <div class="modal-content">
+                                    <div class="modal-header border-0">
+                                        <h6 class="text-white">Poster Lowongan</h6>
+                                        <button type="button" class="btn-close btn-close-white"
+                                            data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body text-center p-0">
+                                        <img src="{{ asset('storage/' . $low->poster) }}" class="img-fluid rounded shadow">
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 @endforeach
             @else
                 <div class="col-12">
@@ -101,6 +152,10 @@
                 </div>
 
                 <div class="modal-body">
+                    {{-- <div class="mb-3 text-center">
+                        <img id="modalPoster" src="" class="img-fluid rounded shadow-sm"
+                            style="max-height:250px; object-fit:contain; display:none;">
+                    </div> --}}
                     <div class="mb-2">
                         <strong>Posisi: </strong>
                         <span id="modalPosisi"></span>
@@ -193,6 +248,13 @@
                 } else {
                     $('#modalKualifikasi').append('<li>-</li>')
                 }
+
+                // if(response.poster){
+                //     $('#modalPoster').attr('src','/storage/' + response.poster )
+                //     $('#modalPoster').show()
+                // }else{
+                //     $('#modalPoster').hide()
+                // }
             });
         });
     </script>

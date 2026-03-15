@@ -81,7 +81,7 @@ class PendaftaranController extends Controller
 
                 //validasi semua input
                 $request->validate($rules,[
-                    'required' => ':attribute wajib diisi.',
+                    'required' => 'Bagian :attribute wajib diisi.',
                     'file.max' => 'Ukuran file maksimal 20 MB.',
                     'file.mimes' => 'File harus pdf, jpg, atau jpeg.'
                 ], $attributes);

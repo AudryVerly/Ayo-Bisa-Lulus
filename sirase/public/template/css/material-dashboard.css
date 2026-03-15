@@ -29648,4 +29648,11 @@ body.modal-open .sidenav {
     visibility: visible;
 }
 
+.job-card img {
+    padding: 10px;
+    background-color: #f8f9fa;
+    object-fit: contain; /* Supaya isi poster tidak terpotong */
+    height: 180px;
+}
+
 /*# sourceMappingURL=dashboard-free.css.map */

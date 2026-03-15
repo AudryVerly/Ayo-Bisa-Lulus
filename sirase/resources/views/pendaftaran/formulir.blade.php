@@ -154,7 +154,7 @@
                                     <i class="material-symbols-rounded text-sm">send</i>
                                     Kirim Pendaftaran
                                 </button>
-                                <a href="{{ route('.index') }}" class="btn bg-gradient-danger text-white px-4">
+                                <a href="{{ route('mahasiswa.dashboard') }}" class="btn bg-gradient-danger text-white px-4">
                                     <i class="material-symbols-rounded text-sm">close</i><span
                                         class="align-middle">&nbsp;&nbsp;Batal</span>
                                 </a>

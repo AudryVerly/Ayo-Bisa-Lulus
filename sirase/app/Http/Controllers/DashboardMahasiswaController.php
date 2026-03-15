@@ -54,6 +54,7 @@ class DashboardMahasiswaController extends Controller
             'akhirKerja' => $detailLowongan->akhirKerja
                 ? Carbon::parse($detailLowongan->akhirKerja)->translatedFormat('d F Y')
                 : '-',
+            'poster' => $detailLowongan->poster
         ]);
     }
 

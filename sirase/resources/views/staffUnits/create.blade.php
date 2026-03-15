@@ -9,7 +9,8 @@
                         @csrf
                         <div class ="card-header bg-gradient-dark d-flex justify-content-between align-items-center">
                             <h5 class="mb-0 text-white d-flex align-items-center"><i
-                                    class="material-symbols-rounded text-sm text-white ">person_add</i>&nbsp;&nbsp;Add Staff
+                                    class="material-symbols-rounded text-sm text-white ">person_add</i>&nbsp;&nbsp;Tambah
+                                Staff
                                 Unit
                             </h5>
                             {{-- <a href="{{ route('staff.index') }}" class="btn btn-light btn-sm d-flex align-items-center">
@@ -28,8 +29,14 @@
                             @endif --}}
                             <div class="form-group mb-2">
                                 <label for="idUser" class="form-label fw-bold text-secondary">Nama Staff</label>
+                                <i class="material-symbols-rounded text-secondary ms-0" data-bs-toggle="tooltip"
+                                    data-bs-placement="top"
+                                    title="Pilih nama staff unit untuk masing-masing unit, wajib diisi"
+                                    style="font-size: 1rem; cursor: help;">
+                                    info
+                                </i>
                                 <select name="idUser" id="idUser"
-                                    class="form-select shadow-sm border rounded-3 px-3 py-2">
+                                    class="form-select  border rounded-3 px-3 py-2">
                                     <option value="">Pilih User</option>
                                     <optgroup label="Admin Unit">
                                         @foreach ($users->where('role', 'AdminUnit') as $user)
@@ -38,7 +45,6 @@
                                             </option>
                                         @endforeach
                                     </optgroup>
-
                                     <optgroup label="Staff Unit">
                                         @foreach ($users->where('role', 'StaffUnit') as $user)
                                             <option value="{{ $user->id }}"
@@ -52,11 +58,15 @@
                                 @enderror
                             </div>
                             <div class="form-group mb-2">
-                                <label for="idUnit"
-                                    class="idunit"class="form-label fw-bold text-secondary">Masukkan
+                                <label for="idUnit" class="idunit"class="form-label fw-bold text-secondary">Nama
                                     Unit</label>
+                                <i class="material-symbols-rounded text-secondary ms-0" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Pilih unit untuk masing-masing staff, wajib diisi"
+                                    style="font-size: 1rem; cursor: help;">
+                                    info
+                                </i>
                                 <select name="idUnit" id="idUnit"
-                                    class="form-select shadow-sm border rounded-3 px-3 py-2 @error('idUnit') is-invalid @enderror">
+                                    class="form-select  border rounded-3 px-3 py-2 @error('idUnit') is-invalid @enderror">
                                     <option value="">Pilih Unit</option>
                                     @foreach ($units as $unit)
                                         <option value="{{ $unit->id }}"
@@ -72,17 +82,28 @@
                                 <label for="jabatan" name="Jabatan" class="form-label fw-bold text-secondary">Masukkan
                                     Jabatan Staff
                                 </label>
+                                <i class="material-symbols-rounded text-secondary ms-0" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Isi dengan benar jabatan staff tersebut, Wajib disii"
+                                    style="font-size: 1rem; cursor: help;">
+                                    info
+                                </i>
                                 <input type="text" id="jabatan" name="jabatan"
-                                    class="form-control shadow-sm border rounded-3 px-3 py-2"
-                                    placeholder="Masukkan Jabatan User" value="{{ old('jabatan') }}">
+                                    class="form-control  border rounded-3 px-3 py-2"
+                                     value="{{ old('jabatan') }}">
                                 @error('jabatan')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="form-group mb-2">
                                 <label for="status" class="form-label fw-bold text-secondary">Status Unit</label>
+                                <i class="material-symbols-rounded text-secondary ms-0" data-bs-toggle="tooltip"
+                                    data-bs-placement="top"
+                                    title="Tentukan status staff aktif atau non aktif,Wajib dipilih"
+                                    style="font-size: 1rem; cursor: help;">
+                                    info
+                                </i>
                                 <select name="status" id="status"
-                                    class="form-select shadow-sm border rounded-3 px-3 py-2">
+                                    class="form-select  border rounded-3 px-3 py-2">
                                     <option value="" disabled {{ old('status') ? '' : 'selected' }}>Status Akun
                                     </option>
                                     <option value="1" {{ old('status') == '1' ? 'selected' : '' }}>Aktif</option>
@@ -95,12 +116,11 @@
                             <div class="text-end mt-4">
                                 <button type="submit" class="btn bg-gradient-success text-white px-4">
                                     <i class="material-symbols-rounded text-sm">save</i><span
-                                        class="align-middle">&nbsp;&nbsp;Simpan
-                                        Perubahan</span>
+                                        class="align-middle">&nbsp;&nbsp;Simpan</span>
                                 </button>
                                 <a href="{{ route('staff.index') }}" class="btn bg-gradient-danger text-white px-4">
                                     <i class="material-symbols-rounded text-sm">close</i><span
-                                        class="align-middle">&nbsp;&nbsp;batal</span>
+                                        class="align-middle">&nbsp;&nbsp;Batal</span>
                                 </a>
                             </div>
                         </div>

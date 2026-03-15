@@ -47,8 +47,17 @@ class StaffUnitController extends Controller
             'idUnit' => 'required|exists:unit,id',
             'jabatan' => 'required',
             'status'  => 'required|boolean',
+        ],[
+            'required' => 'Bagian :attribute Wajib diisi',
+            'idUser.exists'   => 'User yang dipilih sudah ada diunit.',
+            'idUnit.exists'   => 'Unit sudah memiliki user ini',
+            'status.boolean'  => 'Status tidak valid.',
+        ],[
+            'idUser' => 'user',
+            'idUnit' => 'unit',
+            'jabatan' => 'jabatan',
+            'status' => 'status',
         ]);
-
 
         // ini buat ngecek apaka user ini ada di unit apa enggak
         //karena 1 user bisa di banyak staffunit dan 1 unit bisa punya banyak staffunit
@@ -107,6 +116,14 @@ class StaffUnitController extends Controller
             'idUser' => 'required|exists:users,id',
             'idUnit' => 'required|exists:unit,id',
             'jabatan'=> 'required',
+        ],[
+            'required' => 'Bagian :attribute Wajib diisi',
+            'idUser.exists'   => 'User yang dipilih sudah ada diunit.',
+            'idUnit.exists'   => 'Unit sudah memiliki user ini',
+        ],[
+            'idUser' => 'user',
+            'idUnit' => 'unit',
+            'jabatan' => 'jabatan',
         ]);
             
         //ini supaya gak keinput double di unit yang sama dengan nama yang sama 

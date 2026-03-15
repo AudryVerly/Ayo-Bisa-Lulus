@@ -11,8 +11,10 @@
                         @csrf
                         {{-- ini untuk menandakan kalau ini digunakaan untuk update data --}}
                         {{-- @method('PUT') --}}
-                        <div class ="card-header bg-gradient-dark text-white d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0  text-white d-flex align-items-center"><i class="material-symbols-rounded text-sm text-white">edit</i>&nbsp;&nbsp;Edit User</h5>
+                        <div
+                            class ="card-header bg-gradient-dark text-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0  text-white d-flex align-items-center"><i
+                                    class="material-symbols-rounded text-sm text-white">edit</i>&nbsp;&nbsp;Edit User</h5>
                             {{-- <a href="{{ route('users.index') }}" class="btn btn-light btn-sm d-flex align-items-center">
                                 <i class="material-symbols-rounded text-sm">arrow_back</i>&nbsp;&nbsp;Kembali
                             </a> --}}
@@ -29,37 +31,59 @@
                             @endif --}}
                             <div class="form-group mb-2">
                                 <label for="name" class="form-label fw-bold text-secondary">Nama Lengkap</label>
-                                <input type="text" id="name" name="name" class="form-control shadow-sm border rounded-3 px-3 py-2"
-                                    placeholder="Masukkan nama Lengkap" value="{{ old('name', $user->name) }}" >
+                                <i class="material-symbols-rounded text-secondary ms-0" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Nama Lengkap user wajib diisi"
+                                    style="font-size: 1rem; cursor: help;">
+                                    info
+                                </i>
+                                <input type="text" id="name" name="name"
+                                    class="form-control  border rounded-3 px-3 py-2"
+                                   value="{{ old('name', $user->name) }}">
                                 @error('name')
-                                    <div class="text-danger">{{$message}}</div>
+                                    <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class = "form-group mb-2">
                                 <label for="email" class="form-label fw-bold text-secondary">Email</label>
-                                <input type="text" id="email" name="email" class="form-control shadow-sm border rounded-3 px-3 py-2"
-                                    placeholder="Masukkan email anda" value="{{ old('email',$user->email) }}">
-                                 @error('email')
-                                    <div class="text-danger">{{$message}}</div>
+                                <i class="material-symbols-rounded text-secondary ms-0" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Email wajib diisi, harus format email yang valid, dan belum digunakan oleh akun lain."
+                                    style="font-size: 1rem; cursor: help;">
+                                    info
+                                </i>
+                                <input type="text" id="email" name="email"
+                                    class="form-control  border rounded-3 px-3 py-2"
+                                    value="{{ old('email', $user->email) }}">
+                                @error('email')
+                                    <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="form-group mb-2">
                                 <label for="role" class="form-label fw-bold text-secondary">Role User</label>
-                                <select name="role" id="role" class="form-select shadow-sm border rounded-3 px-3 py-2">
-                                    <option value="SuperAdmin" {{old('role',$user->role) == 'SuperAdmin' ? 'selected' : '' }}>Super
+                                <i class="material-symbols-rounded text-secondary ms-0" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Pilih peran pengguna. Ini menentukan hak akses akun ini."
+                                    style="font-size: 1rem; cursor: help;">
+                                    info
+                                </i>
+                                <select name="role" id="role"
+                                    class="form-select  border rounded-3 px-3 py-2">
+                                    <option value="SuperAdmin"
+                                        {{ old('role', $user->role) == 'SuperAdmin' ? 'selected' : '' }}>Super
                                         Admin
                                     </option>
-                                    <option value="AdminUnit" {{ old('role',$user->role) == 'AdminUnit' ? 'selected' : '' }}>Admin Unit
+                                    <option value="AdminUnit"
+                                        {{ old('role', $user->role) == 'AdminUnit' ? 'selected' : '' }}>Admin Unit
                                     </option>
-                                    <option value="StaffUnit" {{ old('role',$user->role) == 'StaffUnit' ? 'selected' : '' }}>Staff Unit
+                                    <option value="StaffUnit"
+                                        {{ old('role', $user->role) == 'StaffUnit' ? 'selected' : '' }}>Staff Unit
                                     </option>
-                                    <option value="Mahasiswa" {{ old('role',$user->role) == 'Mahasiswa' ? 'selected' : '' }}>Mahasiswa
+                                    <option value="Mahasiswa"
+                                        {{ old('role', $user->role) == 'Mahasiswa' ? 'selected' : '' }}>Mahasiswa
                                     </option>
                                 </select>
                             </div>
                             {{-- <div class="form-group mb-2">
                                 <label for="status" class="form-label fw-bold text-secondary">Status Akun</label>
-                                <select name="status" id="status" class="form-select shadow-sm border rounded-3 px-3 py-2" required>
+                                <select name="status" id="status" class="form-select  border rounded-3 px-3 py-2" required>
                                     <option value="1" {{ $user->status == '1' ? 'selected' : '' }}>Aktif</option>
                                     <option value="0" {{ $user->status == '0' ? 'selected' : '' }}>Non-Aktif</option>
                                 </select>
@@ -68,11 +92,13 @@
                             {{-- ini button buat simpan dan kalau gak mau kembali --}}
                             <div class="text-end mt-4">
                                 <button type="submit" class="btn bg-gradient-success text-white px-4">
-                                    <i class="material-symbols-rounded text-sm">save</i><span class="align-middle">&nbsp;&nbsp;Simpan
+                                    <i class="material-symbols-rounded text-sm">save</i><span
+                                        class="align-middle">&nbsp;&nbsp;Simpan
                                         Perubahan</span>
                                 </button>
                                 <a href="{{ route('users.index') }}" class="btn bg-gradient-danger text-white px-4">
-                                    <i class="material-symbols-rounded text-sm">close</i><span class="align-middle">&nbsp;&nbsp;batal</span>
+                                    <i class="material-symbols-rounded text-sm">close</i><span
+                                        class="align-middle">&nbsp;&nbsp;batal</span>
                                 </a>
                             </div>
                         </div>

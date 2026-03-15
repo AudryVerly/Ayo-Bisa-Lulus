@@ -40,6 +40,14 @@ class UserController extends Controller
             //'password' => 'required|min:8',
             'role' => 'required',
             'status' => 'required|boolean'
+        ],[
+            'required' => 'Bagian :attribute wajib diisi.',
+            'email'     => ':attribute wajib mengguna format email yang valid.'
+        ],[
+            'name' => 'nama user',
+            'email' => 'email',
+            'role' => 'role user',
+            'status' => 'Status User'
         ]);
         $plain = $request->password ?? 'password';
         //kalau di laravel kalau mau buat baru tinggal pakai ini saja
@@ -84,6 +92,15 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email,'. $user->id . ',id',
             'role' => 'required',
                 //'status' => 'required|boolean'
+        ],[
+            'required' => 'Bagian :attribute wajib diisi.',
+            'email'     => ':attribute wajib mengguna format email yang valid.',
+            'unique'     => ':attribute tidak boleh sama dengan user yang sudah terdaftar',
+            'role.required' => 'Pilih role user untuk menentukan hak akses akun ini.',
+        ],[
+            'name' => 'nama user',
+            'email' => 'email',
+            'role' => 'role user',
         ]);
 
         $user ->update([

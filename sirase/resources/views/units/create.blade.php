@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('breadcrumb', 'Create Unit')
+@section('breadcrumb', 'Tambah Unit')
 
 @section('content')
     <div class="container-fluid py-4">
@@ -10,7 +10,7 @@
                         @csrf
                         <div class ="card-header bg-gradient-dark d-flex justify-content-between align-items-center">
                             <h5 class="mb-0 text-white d-flex align-items-center"><i
-                                    class="material-symbols-rounded text-sm text-white ">add_home</i>&nbsp;&nbsp;Add Unit
+                                    class="material-symbols-rounded text-sm text-white ">add_home</i>&nbsp;&nbsp;Tambah Unit
                             </h5>
                             {{-- <a href="{{ route('units.index') }}" class="btn btn-light btn-sm d-flex align-items-center">
                                 <i class="material-symbols-rounded text-sm">arrow_back</i>&nbsp;&nbsp;Kembali
@@ -27,18 +27,27 @@
                                 </div>
                             @endif --}}
                             <div class="form-group mb-2">
-                                <label for="name" class="form-label fw-bold text-secondary">Nama Unit</label>
+                                <label for="name" class="form-label fw-bold text-secondary">Nama Unit </label>
+                                <i class="material-symbols-rounded text-secondary ms-0" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Nama unit yang terdapat di Universitas Surabaya, Wajib diisi"
+                                    style="font-size: 1rem; cursor: help;">
+                                    info
+                                </i>
                                 <input type="text" id="name" name="name"
-                                    class="form-control shadow-sm border rounded-3 px-3 py-2"
-                                    placeholder="Masukkan nama Unit" value="{{ old('name') }}">
+                                    class="form-control  border rounded-3 px-3 py-2" value="{{ old('name') }}">
                                 @error('name')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="form-group mb-2">
                                 <label for="deskripsi" class="form-label fw-bold text-secondary">Deskripsi Unit</label>
-                                <textarea id="deskripsi" name="deskripsi" class="form-control shadow-sm border rounded-3 px-3 py-2" rows="4"
-                                    placeholder="Masukkan deskripsi unit secara lengkap" value="{{ old('deskripsi') }}">
+                                <i class="material-symbols-rounded text-secondary ms-0" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Deskripsi yang menggambarkan unit secara lengkap, Wajib diisi"
+                                    style="font-size: 1rem; cursor: help;">
+                                    info
+                                </i>
+                                <textarea id="deskripsi" name="deskripsi" class="form-control  border rounded-3 px-3 py-2" rows="4"
+                                    value="{{ old('deskripsi') }}">
                                 </textarea>
                                 @error('deskripsi')
                                     <div class="text-danger">{{ $message }}</div>
@@ -46,8 +55,13 @@
                             </div>
                             <div class="form-group mb-2">
                                 <label for="lokasi" class="form-label fw-bold text-secondary">Lokasi Unit</label>
-                                <textarea id="lokasi" name="lokasi" class="form-control shadow-sm border rounded-3 px-3 py-2" rows="2"
-                                    placeholder="Masukkan alamat unit secara lengkap" value ="{{ old('lokasi') }}">
+                                <i class="material-symbols-rounded text-secondary ms-0" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Lokasi Unit tersebut berada, Wajib diisi"
+                                    style="font-size: 1rem; cursor: help;">
+                                    info
+                                </i>
+                                <textarea id="lokasi" name="lokasi" class="form-control border rounded-3 px-3 py-2" rows="2"
+                                    value ="{{ old('lokasi') }}">
                                 </textarea>
                                 @error('lokasi')
                                     <div class="text-danger">{{ $message }}</div>
@@ -55,32 +69,47 @@
                             </div>
                             <div class="form-group mb-2">
                                 <label for="kontak" class="form-label fw-bold text-secondary">Kontak Unit</label>
+                                <i class="material-symbols-rounded text-secondary ms-0" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Masukkan Kontak Unit yang dapat dihubungi, Wajib Diisi"
+                                    style="font-size: 1rem; cursor: help;">
+                                    info
+                                </i>
                                 <input type="text" id="kontak" name="kontak"
-                                    class="form-control shadow-sm border rounded-3 px-3 py-2"
-                                    placeholder="Masukkan Kontak Unit" value="{{ old('kontak') }}">
+                                    class="form-control  border rounded-3 px-3 py-2" value="{{ old('kontak') }}">
                                 @error('kontak')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="form-group mb-2">
                                 <label for="emailUnit" class="form-label fw-bold text-secondary">Email Unit</label>
+                                <i class="material-symbols-rounded text-secondary ms-0" data-bs-toggle="tooltip"
+                                    data-bs-placement="top"
+                                    title="Masukkan Email Unit yang aktif,gunakan format email yang valid, Wajib diisi"
+                                    style="font-size: 1rem; cursor: help;">
+                                    info
+                                </i>
                                 <input type="text" id="emailUnit" name="emailUnit"
-                                    class="form-control shadow-sm border rounded-3 px-3 py-2"
-                                    placeholder="Email Unit secara lengkap" value="{{ old('emailUnit') }}">
-
+                                    class="form-control  border rounded-3 px-3 py-2"
+                                    value="{{ old('emailUnit') }}">
                                 @error('emailUnit')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="form-group mb-2">
                                 <label for="status" class="form-label fw-bold text-secondary">Status Unit</label>
+                                <i class="material-symbols-rounded text-secondary ms-0" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Status Wajib di pilih, pilih status yang tertera, Wajib diisi"
+                                    style="font-size: 1rem; cursor: help;">
+                                    info
+                                </i>
                                 <select name="status" id="status"
-                                    class="form-select shadow-sm border rounded-3 px-3 py-2">
-                                    <option value="" disabled {{ old('status') ? '' : 'selected'}}>Status Akun</option>
+                                    class="form-select  border rounded-3 px-3 py-2">
+                                    <option value="" disabled {{ old('status') ? '' : 'selected' }}>Status Akun
+                                    </option>
                                     <option value="1" {{ old('status') == '1' ? 'selected' : '' }}>Aktif</option>
                                     <option value="0" {{ old('status') == '0' ? 'selected' : '' }}>NonAktif</option>
                                 </select>
-                                 @error('status')
+                                @error('status')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -93,7 +122,7 @@
                                 </button>
                                 <a href="{{ route('units.index') }}" class="btn bg-gradient-danger text-white px-4">
                                     <i class="material-symbols-rounded text-sm">close</i><span
-                                        class="align-middle">&nbsp;&nbsp;batal</span>
+                                        class="align-middle">&nbsp;&nbsp;Batal</span>
                                 </a>
                             </div>
                         </div>

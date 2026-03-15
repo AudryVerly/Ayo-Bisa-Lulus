@@ -28,8 +28,13 @@
                             @endif --}}
                             <div class="form-group mb-2">
                                 <label for="name" class="form-label fw-bold text-secondary">Nama Mahasiswa</label>
+                                <i class="material-symbols-rounded text-secondary ms-0" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Pilih nama mahasiswa yang tertera, wajib diisi"
+                                    style="font-size: 1rem; cursor: help;">
+                                    info
+                                </i>
                                 <select name="idUser" id="idUser"
-                                    class="form-select shadow-sm border rounded-3 px-3 py-2">
+                                    class="form-select  border rounded-3 px-3 py-2">
                                     <option value="">Pilih User</option>
                                     @foreach ($user as $users)
                                         <option value="{{ $users->id }}"
@@ -43,9 +48,13 @@
                             </div>
                             <div class="form-group mb-2">
                                 <label for="nrp" name="nrp" class="form-label fw-bold text-secondary">NRP</label>
+                                <i class="material-symbols-rounded text-secondary ms-0" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Masukkan nama NRP dengan benar, wajib diisi"
+                                    style="font-size: 1rem; cursor: help;">
+                                    info
+                                </i>
                                 <input type="number" id="nrp" name="nrp"
-                                    class="form-control shadow-sm border rounded-3 px-3 py-2"
-                                    placeholder="Masukkan Nrp Mahasiswa" value="{{ old('nrp') }}">
+                                    class="form-control  border rounded-3 px-3 py-2" value="{{ old('nrp') }}">
                                 @error('nrp')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -53,8 +62,13 @@
                             <div class="form-group mb-2">
                                 <label for="fakultas" name="fakultas"
                                     class="form-label fw-bold text-secondary">Fakultas</label>
+                                <i class="material-symbols-rounded text-secondary ms-0" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Pilih sesuai fakultas yang tertera, wajib diisi"
+                                    style="font-size: 1rem; cursor: help;">
+                                    info
+                                </i>
                                 <select name="fakultas" id="fakultas"
-                                    class="form-select shadow-sm border rounded-3 px-3 py-2">
+                                    class="form-select  border rounded-3 px-3 py-2">
                                     <option value="" disabled {{ old('fakultas') ? '' : 'selected' }}>Fakultas
                                         Mahasiswa</option>
 
@@ -89,9 +103,14 @@
                             <div class="form-group mb-2">
                                 <label for="jurusan" name="jurusan"
                                     class="form-label fw-bold text-secondary">Jurusan</label>
+                                <i class="material-symbols-rounded text-secondary ms-0" data-bs-toggle="tooltip"
+                                    data-bs-placement="top"
+                                    title="Masukkan jurusan yang terdapat di Universitas Surabaya, wajib diisi"
+                                    style="font-size: 1rem; cursor: help;">
+                                    info
+                                </i>
                                 <input type="text" id="jurusan" name="jurusan"
-                                    class="form-control shadow-sm border rounded-3 px-3 py-2"
-                                    placeholder="Masukkan jurusan Mahasiswa" value="{{ old('jurusan') }}">
+                                    class="form-control  border rounded-3 px-3 py-2" value="{{ old('jurusan') }}">
                                 @error('jurusan')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -99,8 +118,13 @@
                             <div class="form-group mb-2">
                                 <label for="tahunMasuk" name="tahunMasuk" class="form-label fw-bold text-secondary">Tahun
                                     Masuk</label>
+                                <i class="material-symbols-rounded text-secondary ms-0" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Masukkan Tahun Masuk (contoh: 2022),Wajib diisi"
+                                    style="font-size: 1rem; cursor: help;">
+                                    info
+                                </i>
                                 <input type="year" id="tahunMasuk" name="tahunMasuk"
-                                    class="form-control shadow-sm border rounded-3 px-3 py-2"
+                                    class="form-control  border rounded-3 px-3 py-2"
                                     placeholder="Masukkan Tahun Masuk (contoh: 2022)" min="1900"
                                     max="{{ date('Y') }}" value="{{ old('tahunMasuk') }}">
                                 @error('tahunMasuk')
@@ -110,9 +134,13 @@
                             <div class="form-group mb-2">
                                 <label for="noTelepon" name="noTelepon" class="form-label fw-bold text-secondary">Nomor
                                     Telepon</label>
+                                <i class="material-symbols-rounded text-secondary ms-0" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Masukkan No Telepon Mahasiswa (contoh: 085xxxxxxxxxx),wajib diisi"
+                                    style="font-size: 1rem; cursor: help;">
+                                    info
+                                </i>
                                 <input type="text" id="noTelepon" name="noTelepon"
-                                    class="form-control shadow-sm border rounded-3 px-3 py-2"
-                                    placeholder="Masukkan jurusan Mahasiswa (contoh: 085xxxxxxxxxx)"
+                                    class="form-control  border rounded-3 px-3 py-2"
                                     value="{{ old('noTelepon') }}">
                                 @error('noTelepon')
                                     <div class="text-danger">{{ $message }}</div>
@@ -120,8 +148,13 @@
                             </div>
                             <div class="form-group mb-2">
                                 <label for="status" class="form-label fw-bold text-secondary">Status Unit</label>
+                                <i class="material-symbols-rounded text-secondary ms-0" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Pilih Status aktif/nonaktif mahasiswa, wajib diisi"
+                                    style="font-size: 1rem; cursor: help;">
+                                    info
+                                </i>
                                 <select name="status" id="status"
-                                    class="form-select shadow-sm border rounded-3 px-3 py-2">
+                                    class="form-select  border rounded-3 px-3 py-2">
                                     <option value="" disabled {{ old('status') ? '' : 'selected' }}>Status Akun
                                     </option>
                                     <option value="1" {{ old('status') == '1' ? 'selected' : '' }}>Aktif</option>
@@ -134,13 +167,11 @@
                             <div class="text-end mt-4">
                                 <button type="submit" class="btn bg-gradient-success text-white px-4">
                                     <i class="material-symbols-rounded text-sm">save</i><span
-                                        class="align-middle">&nbsp;&nbsp;Simpan
-                                        Perubahan</span>
+                                        class="align-middle">&nbsp;&nbsp;Simpan</span>
                                 </button>
-                                <a href="{{ route('mahasiswa.index') }}"
-                                    class="btn bg-gradient-danger text-white px-4">
+                                <a href="{{ route('mahasiswa.index') }}" class="btn bg-gradient-danger text-white px-4">
                                     <i class="material-symbols-rounded text-sm">close</i><span
-                                        class="align-middle">&nbsp;&nbsp;batal</span>
+                                        class="align-middle">&nbsp;&nbsp;Batal</span>
                                 </a>
                             </div>
                         </div>

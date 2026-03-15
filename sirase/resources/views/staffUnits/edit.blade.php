@@ -29,8 +29,14 @@
 
                             <div class="form-group mb-2">
                                 <label for="name" class="form-label fw-bold text-secondary">Nama Lengkap</label>
+                                <i class="material-symbols-rounded text-secondary ms-0" data-bs-toggle="tooltip"
+                                    data-bs-placement="top"
+                                    title="Pilih nama staff unit untuk masing-masing unit, wajib diisi"
+                                    style="font-size: 1rem; cursor: help;">
+                                    info
+                                </i>
                                 <select name="idUser" id="idUser"
-                                    class="form-select shadow-sm border rounded-3 px-3 py-2">
+                                    class="form-select  border rounded-3 px-3 py-2">
                                     @foreach ($users as $user)
                                         <option value="{{ $user->id }}"
                                             {{ old('idUser', $staff->idUser) == $user->id ? 'selected' : '' }}>
@@ -44,8 +50,13 @@
                             </div>
                             <div class="form-group mb-2">
                                 <label for="Unit" class="form-label fw-bold text-secondary">Nama Unit </label>
+                                <i class="material-symbols-rounded text-secondary ms-0" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Pilih unit untuk masing-masing staff, wajib diisi"
+                                    style="font-size: 1rem; cursor: help;">
+                                    info
+                                </i>
                                 <select name="idUnit" id="idUnit"
-                                    class="form-select shadow-sm border rounded-3 px-3 py-2">
+                                    class="form-select  border rounded-3 px-3 py-2">
                                     @foreach ($units as $unit)
                                         <option value="{{ $unit->id }}"
                                             {{ old('idUnit', $staff->idUnit) == $unit->id ? 'selected' : '' }}>
@@ -59,22 +70,26 @@
                             </div>
                             <div class = "form-group mb-2">
                                 <label for="jabatan" class="form-label fw-bold text-secondary">Jabatan</label>
+                                <i class="material-symbols-rounded text-secondary ms-0" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Isi dengan benar jabatan staff tersebut, Wajib disii"
+                                    style="font-size: 1rem; cursor: help;">
+                                    info
+                                </i>
                                 <input type="text" id="jabatan" name="jabatan"
-                                    class="form-control shadow-sm border rounded-3 px-3 py-2"
-                                    placeholder="Masukkan jabatan anda" value="{{ old('jabatan', $staff->jabatan) }}">
+                                    class="form-control  border rounded-3 px-3 py-2"
+                                    value="{{ old('jabatan', $staff->jabatan) }}">
                             </div>
-                             @error('jabatan')
-                                    <div class="text-danger">{{ $message }}</div>
-                                @enderror
+                            @error('jabatan')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
                             <div class="text-end mt-4">
                                 <button type="submit" class="btn bg-gradient-success text-white px-4">
                                     <i class="material-symbols-rounded text-sm">save</i><span
-                                        class="align-middle">&nbsp;&nbsp;Simpan
-                                        Perubahan</span>
+                                        class="align-middle">&nbsp;&nbsp;Simpan</span>
                                 </button>
                                 <a href="{{ route('staff.index') }}" class="btn bg-gradient-danger text-white px-4">
                                     <i class="material-symbols-rounded text-sm">close</i><span
-                                        class="align-middle">&nbsp;&nbsp;batal</span>
+                                        class="align-middle">&nbsp;&nbsp;Batal</span>
                                 </a>
                             </div>
                         </div>

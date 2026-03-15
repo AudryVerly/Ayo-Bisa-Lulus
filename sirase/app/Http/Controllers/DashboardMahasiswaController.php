@@ -23,6 +23,7 @@ class DashboardMahasiswaController extends Controller
                    ->get();
         $units = DB::table('unit')
                  ->orderBy('name')
+                 ->where('status',1)
                  ->get();
 
        return view('mahasiswaPage.dashboard', compact('lowongan', 'units'));

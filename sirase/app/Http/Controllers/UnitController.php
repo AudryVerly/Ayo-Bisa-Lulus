@@ -38,6 +38,17 @@ class UnitController extends Controller
             'kontak'=>'required',
             'emailUnit'=> 'required|email|unique:unit',
             'status'=> 'required|boolean'
+        ],[
+            'required' => 'Bagian :attribute wajib diisi.',
+            'email'     => ':attribute wajib mengguna format email yang valid.',
+            'unique'     => ':attribute tidak boleh sama dengan email unit yang sudah terdaftar',
+        ],[
+            'name' => 'nama unit',
+            'deskripsi' => 'deskripsi unit',
+            'lokasi' => 'lokasi unit',
+            'kontak' => 'kontak unit',
+            'emailUnit' => 'email unit',
+            'status' => 'Status Unit'
         ]);
         Unit::create([
             'name'=>$request->name,
@@ -81,6 +92,16 @@ class UnitController extends Controller
             'kontak'=>'required',
             'emailUnit'=> 'required|email|unique:unit,emailUnit,' . $unit->id . ',id',
 
+        ],[
+            'required' => 'Bagian :attribute wajib diisi.',
+            'email'     => ':attribute wajib mengguna format email yang valid.',
+            'unique'     => ':attribute tidak boleh sama dengan email unit yang sudah terdaftar',
+        ],[
+            'name' => 'nama unit',
+            'deskripsi' => 'deskripsi unit',
+            'lokasi' => 'lokasi unit',
+            'kontak' => 'kontak unit',
+            'emailUnit' => 'email unit',
         ]);
 
         $unit->update([

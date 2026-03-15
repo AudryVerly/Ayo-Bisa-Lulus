@@ -38,13 +38,28 @@ class MahasiswaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'idUser' => 'required:exists:users,id',
+            'idUser' => 'requiredexists:users,id',
             'nrp' => 'required|integer',
             'fakultas' => 'required',
             'jurusan' => 'required',
             'tahunMasuk' => 'required|digits:4|integer|min:1900|max:' . date('Y'),
             'noTelepon' => 'required',
             'status' => 'required|boolean',
+        ],[
+            'required' => 'Bagian :attribute wajib diisi.',
+            'idUser.exists'   => 'User yang dipilih tidak valid.',
+            'tahunMasuk.digits'   => 'Tahun masuk harus 4 digit.',
+            'tahunMasuk.integer'  => 'Tahun masuk harus berupa angka.',
+            'tahunMasuk.min'      => 'Tahun masuk minimal 1900.',
+            'tahunMasuk.max'      => 'Tahun masuk tidak boleh lebih dari tahun sekarang.',
+        ],[
+            'idUser' => 'user',
+            'nrp' => 'NRP',
+            'fakultas' => 'fakultas',
+            'jurusan' => 'jurusan',
+            'tahunMasuk' => 'tahun masuk',
+            'noTelepon' => 'nomor telepon',
+            'status' => 'status',
         ]);
 
             // simpan ke tabel mahasiswa
@@ -100,6 +115,19 @@ class MahasiswaController extends Controller
             'jurusan' => 'required',
             'tahunMasuk' => 'required|digits:4|integer|min:1900|max:' . date('Y'),
             'noTelepon' => 'required',
+        ],[
+            'required' => 'Bagian :attribute wajib diisi.',
+            'idUser.exists'   => 'User yang dipilih tidak valid.',
+            'tahunMasuk.digits'   => 'Tahun masuk harus 4 digit.',
+            'tahunMasuk.integer'  => 'Tahun masuk harus berupa angka.',
+            'tahunMasuk.min'      => 'Tahun masuk minimal 1900.',
+            'tahunMasuk.max'      => 'Tahun masuk tidak boleh lebih dari tahun sekarang.',
+        ],[
+            'nrp' => 'NRP',
+            'fakultas' => 'fakultas',
+            'jurusan' => 'jurusan',
+            'tahunMasuk' => 'tahun masuk',
+            'noTelepon' => 'nomor telepon',
         ]);
 
             // simpan ke tabel mahasiswa

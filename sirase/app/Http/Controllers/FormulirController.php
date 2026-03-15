@@ -33,7 +33,16 @@ class FormulirController extends Controller
         $request->validate([
             'namaField' =>'required|string',
             'tipeField' => 'required|string',
+            'opsi_field' => 'required_if:tipeField,select,checkbox,radio',
             'required'   => 'required',
+        ],[
+            'required' => 'Bagian :attribute wajib diisi.',
+            'string'   => 'Bagian :attribute harus berupa teks.',
+            'opsi_field.required_if' => 'Opsi wajib diisi untuk tipe pilihan.'
+        ],[
+            'namaField' => 'Nama Field',
+            'tipe Field' => 'Tipe Field',
+            'required'  => 'Penanda Required'
         ]);
 
         formulir::create([
@@ -71,6 +80,15 @@ class FormulirController extends Controller
             'namaField' =>'required|string',
             'tipeField' => 'required|string',
             'required'   => 'required',
+            'opsi_field' => 'required_if:tipeField,select,checkbox,radio',
+        ],[
+            'required' => 'Bagian :attribute wajib diisi.',
+            'string'   => 'Bagian :attribute harus berupa teks.',
+            'opsi_field.required_if' => 'Opsi wajib diisi untuk tipe pilihan.'
+        ],[
+            'namaField' => 'Nama Field',
+            'tipe Field' => 'Tipe Field',
+            'required'  => 'Penanda Required'
         ]);
 
         $formulir->update([

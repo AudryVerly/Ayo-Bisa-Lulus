@@ -33,6 +33,14 @@ class TahapRekrutmenController extends Controller
             'tipe_tahap' => 'required|string',
             //ini ada supaya dapat idlowongannya dan bisa tau urutan terakhir drimana
             'idLowongan' => 'required|exists:lowongan,id'
+        ],[
+            'required' => 'Bagian :attribute wajib diisi.',
+            'idLowongan.exists' =>  'idLowongan wajib ada.',
+            'string' => 'Bagian :attribute harus dalam bentuk string.'
+        ],[
+            'name' => 'nama Tahapan',
+            'tipe_tahap' => 'Tipe tahapan',
+            'idLowongan' => 'idLowongan'
         ]);
 
         $idLowongan = $request->idLowongan;
@@ -147,6 +155,17 @@ class TahapRekrutmenController extends Controller
             //cuman bisa update sampai batas jumlahnya jadi gak ada yang input misalny jumlahnya 11 ubah sampai 12
             'urutan' => 'required|integer|min:1|max: '. $totalAktif,
             'tipe_tahap' => 'required|string'
+        ],[
+            'required' => 'Bagian :attribute wajib diisi.',
+            'idLowongan.exists' =>  'idLowongan wajib ada.',
+            'string' => 'Bagian :attribute harus dalam bentuk string.',
+            'urutan.max' => 'Urutan sudah melebihi.',
+            'urutan.min' => 'Urutan harus minimal 1',
+            'integer' => 'Bagian :attribute harus dalam bentuk angka'
+        ],[
+            'name' => 'nama Tahapan',
+            'tipe_tahap' => 'Tipe tahapan',
+            'urutan' => 'urutan tahapan'
         ]);
 
         //pakai db transaction karena banyak upadate dan lainnya kalau pakai ini lebih safety

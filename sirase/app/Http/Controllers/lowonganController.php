@@ -63,8 +63,8 @@ class LowonganController extends Controller
      */
     public function store(Request $request)
     {
-            $idUnit = Auth::user()->staffUnit()->pluck('idUnit')->first();
-             $request->validate([
+        $idUnit = Auth::user()->staffUnit()->pluck('idUnit')->first();
+        $request->validate([
                 'judulLowongan'   => 'required|string|max:255',
                 'deskripsi'       => 'required|string',
                 'kualifikasi'     => 'required|string',
@@ -72,9 +72,34 @@ class LowonganController extends Controller
                 'durasiKerja'     => 'required|numeric|min:1',
                 'awalPendaftaran' => 'required|date',
                 'batasPendaftaran'=> 'required|date|after_or_equal:awalPendaftaran',
-                'mulaiKerja'      => 'required|date|after_or_equal:batasPendaftaran',
-                'akhirKerja'      => 'required|date|after_or_equal:mulaiKerja',
+                //ini karena supaya semua proses administrasi bisa berjalan lancar
+                'mulaiKerja'      => 'required|date|after_or_equal:' . Carbon::parse($request->batasPendaftaran)->addDays(14)->format('Y-m-d'),
+                //pastinya gak mungkin kerja cuman 1 hari 2 hari kan
+                'akhirKerja'      => 'required|date|after_or_equal: '. Carbon::parse($request->mulaiKerja)->addMonth()->format('Y-m-d'),
                 'poster'          => 'nullable|file|mimes:jpg,jpeg,png|max:20480'
+            ],[
+                'required' => 'Bagian :attribute wajib diisi.',
+                'string'   => 'Bagian :attribute harus berupa teks.',
+                'numeric'  => 'Bagian :attribute harus berupa angka.',
+                'date'     => 'Bagian :attribute harus berupa tanggal yang valid.',
+                'min'      => 'Bagian :attribute minimal bernilai :min bulan.',
+                'max'      => 'Bagian :attribute maksimal :max karakter.',
+                'after_or_equal' => 'Tanggal :attribute tidak sesuai dengan ketentuan periode lowongan.',
+                'mulaiKerja.after_or_equal' => 'Tanggal mulai kerja setidaknya harus 14 hari setelah batas pendaftaran',
+                'mulaiKerja.after_or_equal' => 'Tanggal akhir kerja setidaknya harus 1 bulan setelah mulai bekerja',
+                'poster.mimes' => 'Poster harus berformat JPG, JPEG, atau PNG.',
+                'poster.max'   => 'Ukuran poster maksimal 20MB.',
+            ],[
+                'judulLowongan'   => 'judul lowongan',
+                'deskripsi'       => 'deskripsi lowongan',
+                'kualifikasi'     => 'kualifikasi',
+                'posisiLowongan'  => 'posisi lowongan',
+                'durasiKerja'     => 'durasi kerja',
+                'awalPendaftaran' => 'tanggal awal pendaftaran',
+                'batasPendaftaran'=> 'tanggal batas pendaftaran',
+                'mulaiKerja'      => 'tanggal mulai kerja',
+                'akhirKerja'      => 'tanggal akhir kerja',
+                'poster'          => 'poster lowongan',
             ]);
 
             $request['kualifikasi'] = trim(preg_replace('/\r\n|\r|\n/', "\n", $request['kualifikasi']));
@@ -137,12 +162,37 @@ class LowonganController extends Controller
             'durasiKerja'     => 'required|numeric|min:1',
             'awalPendaftaran' => 'required|date',
             'batasPendaftaran'=> 'required|date|after_or_equal:awalPendaftaran',
-            'mulaiKerja'      => 'required|date|after_or_equal:batasPendaftaran',
-            'akhirKerja'      => 'required|date|after_or_equal:mulaiKerja',
+            //ini karena supaya semua proses administrasi bisa berjalan lancar
+            'mulaiKerja'      => 'required|date|after_or_equal:' . Carbon::parse($request->batasPendaftaran)->addDays(14)->format('Y-m-d'),
+            //pastinya gak mungkin kerja cuman 1 hari 2 hari kan
+            'akhirKerja'      => 'required|date|after_or_equal: '. Carbon::parse($request->mulaiKerja)->addMonth()->format('Y-m-d'),
             'poster'          => 'nullable|file|mimes:jpg,jpeg,png|max:20480'
+        ],[
+            'required' => 'Bagian :attribute wajib diisi.',
+            'string'   => 'Bagian :attribute harus berupa teks.',
+            'numeric'  => 'Bagian :attribute harus berupa angka.',
+            'date'     => 'Bagian :attribute harus berupa tanggal yang valid.',
+            'min'      => 'Bagian :attribute minimal bernilai :min.',
+            'max'      => 'Bagian :attribute maksimal :max karakter.',
+            'after_or_equal' => 'Tanggal :attribute tidak sesuai dengan ketentuan periode lowongan.',
+            'mulaiKerja.after_or_equal' => 'Tanggal mulai kerja setidaknya harus 14 hari setelah batas pendaftaran',
+            'mulaiKerja.after_or_equal' => 'Tanggal akhir kerja setidaknya harus 1 bulan setelah mulai bekerja',
+            'poster.mimes' => 'Poster harus berformat JPG, JPEG, atau PNG.',
+            'poster.max'   => 'Ukuran poster maksimal 20MB.',
+        ],[
+            'judulLowongan'   => 'judul lowongan',
+            'deskripsi'       => 'deskripsi lowongan',
+            'kualifikasi'     => 'kualifikasi',
+            'posisiLowongan'  => 'posisi lowongan',
+            'durasiKerja'     => 'durasi kerja',
+            'awalPendaftaran' => 'tanggal awal pendaftaran',
+            'batasPendaftaran'=> 'tanggal batas pendaftaran',
+            'mulaiKerja'      => 'tanggal mulai kerja',
+            'akhirKerja'      => 'tanggal akhir kerja',
+            'poster'          => 'poster lowongan',
         ]);
 
-            //ini supaya dia bisa memsiahkan spasi, whitespace dan koma
+        //ini supaya dia bisa memsiahkan spasi, whitespace dan koma
         $request['kualifikasi'] = trim(preg_replace('/\r\n|\r|\n/', "\n", $request['kualifikasi']));
         
         // $mulai = Carbon::parse($request->mulaiKerja);

@@ -138,6 +138,10 @@
                             <input type="hidden" name="idTahapan" id="idTahapan">
                             <div class="form-group mb-2">
                                 <label for="nameTahapan" class="form-label fw-bold text-secondary">Nama Tahapan</label>
+                                <div class="custom-tooltip" data-title="Masukkan nama field, wajib diisi">
+                                    <i class="material-symbols-rounded text-secondary ms-1"
+                                        style="font-size: 1rem;">info</i>
+                                </div>
                                 <input type="text" class="form-control shadow-sm border rounded-3 px-3 py-2"
                                     name="name" id="edit_namaUrutan" placeholder= "Masukkan Tahapan Rekrutmen"
                                     value="{{ old('name') }}">
@@ -148,7 +152,13 @@
                             </div>
 
                             <div class="form-group mb-2">
-                                <label for="urutanTahapan" class="form-label fw-bold text-secondary">Urutan Tahapan</label>
+                                <label for="urutanTahapan" class="form-label fw-bold text-secondary">Urutan
+                                    Tahapan</label>
+                                <div class="custom-tooltip"
+                                    data-title="Urutan ini akan menentukan proses tahapan rekrutmen yang akan berjalan, wajib diisi">
+                                    <i class="material-symbols-rounded text-secondary ms-1"
+                                        style="font-size: 1rem;">info</i>
+                                </div>
                                 <input type="number" class="form-control shadow-sm border rounded-3 px-3 py-2"
                                     name="urutan" id="edit_urutan" placeholder= "Masukkan Urutan Rekrutmen"
                                     value="{{ old('urutan') }}">
@@ -162,6 +172,11 @@
                                 <label for="edit_tipe" class="form-label fw-bold text-secondary">
                                     Tipe Tahapan
                                 </label>
+                                <div class="custom-tooltip"
+                                    data-title="Tahapan yang menentukan jenis proses tahapannya, wajib diisi">
+                                    <i class="material-symbols-rounded text-secondary ms-1"
+                                        style="font-size: 1rem;">info</i>
+                                </div>
                                 <select name="tipe_tahap" id="edit_tipe"
                                     class="form-select shadow-sm border rounded-3 px-3 py-2">
                                     <option value="Seleksi">Seleksi</option>
@@ -195,7 +210,10 @@
                     <div class="modal-body">
                         <input type="hidden" name="idLowongan" id="idLowongan">
                         <div class="form-group mb-1">
-                            <label for="name" class="form-label fw-bold text-secondary">Urutan</label>
+                            <label for="name" class="form-label fw-bold text-secondary">Nama</label>
+                            <div class="custom-tooltip" data-title="Masukkan nama field, wajib diisi">
+                                <i class="material-symbols-rounded text-secondary ms-1" style="font-size: 1rem;">info</i>
+                            </div>
                             <input type="text" class="form-control shadow-sm border rounded-3 px-3 py-2"
                                 name="name" id="namaUrutan" placeholder="Masukkan Nama urutan"
                                 value="{{ old('name') }}">
@@ -205,6 +223,10 @@
                         </div>
                         <div class="form-group mb-2">
                             <label for="tipe_tahap" class="form-label fw-bold text-secondary">Tipe Tahapan</label>
+                            <div class="custom-tooltip"
+                                data-title="Tahapan yang menentukan jenis proses tahapannya, wajib diisi">
+                                <i class="material-symbols-rounded text-secondary ms-1" style="font-size: 1rem;">info</i>
+                            </div>
                             <select name="tipe_tahap" class="form-select shadow-sm border rounded-3 px-3 py-2">
                                 <option value="" disabled selected>Pilih Tipe</option>
                                 <option value="Seleksi" {{ old('tipe_tahap') == 'Seleksi' ? 'selected' : '' }}>Seleksi
@@ -220,8 +242,8 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
                         <button type="submit" class="btn btn-success">Simpan</button>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
                     </div>
                 </form>
             </div>

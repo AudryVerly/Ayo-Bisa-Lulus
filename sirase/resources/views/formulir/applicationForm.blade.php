@@ -12,7 +12,8 @@
             </div>
             <div class="card-body bg-light" style="border-radius: 0 0 12px 12px;">
                 @foreach ($field as $f)
-                    <div class="field-card p-3 mb-3 shadow-sm border rounded d-flex align-items-center gap-3 justify-content-between {{ $f->status == 0 ? 'field-disabled text-muted' : 'bg-white' }}">
+                    <div
+                        class="field-card p-3 mb-3 shadow-sm border rounded d-flex align-items-center gap-3 justify-content-between {{ $f->status == 0 ? 'field-disabled text-muted' : 'bg-white' }}">
                         <div class="d-flex align-items-center gap-3 flex-grow-1">
                             <div class="bg-dark text-white d-flex justify-content-center align-items-center"
                                 style="width:45px;height:45px;border-radius:12px;font-size:18px;">
@@ -63,7 +64,8 @@
                         </div>
 
                         <div class="text-end d-flex align-items-center gap-2">
-                            <button type ="button" class="btnedit btn btn-secondary btn-sm d-flex justify-content-center align-items-center {{ $f->status == 1 ? '' : 'd-none' }}"
+                            <button type ="button"
+                                class="btnedit btn btn-secondary btn-sm d-flex justify-content-center align-items-center {{ $f->status == 1 ? '' : 'd-none' }}"
                                 style="width:45px;height:45px;border-radius:12px;font-size:18px;"
                                 data-id-field="{{ $f->id }}" data-nama="{{ $f->namaField }}"
                                 data-tipe="{{ $f->tipeField }}" data-opsi="{{ $f->opsi_field }}"
@@ -108,9 +110,12 @@
                                         <div class="form-group mb-2">
                                             <label for="namaField" class="form-label fw-bold text-secondary"> Nama
                                                 Field</label>
-                                            <input type="text" class="form-control shadow-sm border rounded-3 px-3 py-2"
-                                                name="namaField" id="namaField" placeholder="Masukkan Nama Field"
-                                                value="{{ old('namaField') }}">
+                                            <div class="custom-tooltip" data-title="Masukkan nama field, wajib diisi">
+                                                <i class="material-symbols-rounded text-secondary ms-1"
+                                                    style="font-size: 1rem;">info</i>
+                                            </div>
+                                            <input type="text" class="form-control border rounded-3 px-3 py-2"
+                                                name="namaField" id="namaField" value="{{ old('namaField') }}">
                                             @error('namaField')
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -119,8 +124,12 @@
                                         <div class="form-group mb-2">
                                             <label for="tipeField" class="form-label fw-bold text-secondary"> Tipe
                                                 Field</label>
+                                            <div class="custom-tooltip" data-title="Pilih Tipe Field yang sesuai, wajib diisi">
+                                                <i class="material-symbols-rounded text-secondary ms-1"
+                                                    style="font-size: 1rem;">info</i>
+                                            </div>
                                             <select name="tipeField" id="tipeField"
-                                                class="form-select shadow-sm border rounded-3 px-3 py-2">
+                                                class="form-select border rounded-3 px-3 py-2">
                                                 <option value="" disabled {{ old('tipeField') ? '' : 'selected' }}>
                                                     Tipe Field</option>
                                                 <option value="text" {{ old('tipeField') == 'text' ? 'selected' : '' }}>
@@ -153,10 +162,13 @@
                                         <div class="form-group mb-2" id="opsiWrap" style="display:none">
                                             <label for="opsiField" class="form-label fw-bold text-secondary"> Opsi
                                                 Field</label>
-                                            <input type="text" name="opsi_field" id="opsi_field"
-                                                class="form-control shadow-sm border rounded-3 px-3 py-2" name="opsi_field"
-                                                id="opsi_field" placeholder="contoh:opsi1, opsi2, opsi3"
-                                                value="{{ old('opsi_field') }}">
+                                            <div class="custom-tooltip"
+                                                data-title="Opsi untuk tipe field RadioButton, Checkbox, dan dropdwon,cara menulisnya adalah opsi1,opsi2,opsi3 ,Wajib diisi">
+                                                <i class="material-symbols-rounded text-secondary ms-1"
+                                                    style="font-size: 1rem;">info</i>
+                                            </div>
+                                            <input type="text" class="form-control border rounded-3 px-3 py-2"
+                                                name="opsi_field" id="opsi_field" value="{{ old('opsi_field') }}">
                                             @error('opsi_field')
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -178,9 +190,8 @@
                                     </div>
 
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-danger"
-                                            data-bs-dismiss="modal">Batal</button>
                                         <button type="submit" class="btn btn-success">Simpan</button>
+                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
                                     </div>
                                 </form>
                             </div>
@@ -206,9 +217,13 @@
                                             <div class="form-group mb-2">
                                                 <label for="namaField" class="form-label fw-bold text-secondary"> Nama
                                                     Field</label>
+                                                <div class="custom-tooltip" data-title="Masukkan nama field, wajib diisi">
+                                                    <i class="material-symbols-rounded text-secondary ms-1"
+                                                        style="font-size: 1rem;">info</i>
+                                                </div>
                                                 <input type="text"
                                                     class="form-control shadow-sm border rounded-3 px-3 py-2" name="namaField"
-                                                    id="edit_namaField" placeholder="Masukkan Nama Field"
+                                                    id="edit_namaField"
                                                     value="{{ old('namaField') }}">
 
                                                 @error('namaField')
@@ -219,6 +234,11 @@
                                             <div class="form-group mb-2">
                                                 <label for="tipeField" class="form-label fw-bold text-secondary"> Tipe
                                                     Field</label>
+                                                <div class="custom-tooltip"
+                                                    data-title="Pilih Tipe Field yang sesuai, wajib diisi">
+                                                    <i class="material-symbols-rounded text-secondary ms-1"
+                                                        style="font-size: 1rem;">info</i>
+                                                </div>
                                                 <select name="tipeField" id="edit_tipeField"
                                                     class="form-select shadow-sm border rounded-3 px-3 py-2">
                                                     <option value="" disabled {{ old('tipeField') ? '' : 'selected' }}>
@@ -257,9 +277,14 @@
                                             <div class="form-group mb-2" id="edit_opsiWrap" style="display:none">
                                                 <label for="opsiField" class="form-label fw-bold text-secondary"> Opsi
                                                     Field</label>
+                                                <div class="custom-tooltip"
+                                                    data-title="Opsi untuk tipe field RadioButton, Checkbox, dan dropdwon,cara menulisnya adalah opsi1,opsi2,opsi3 ,Wajib diisi">
+                                                    <i class="material-symbols-rounded text-secondary ms-1"
+                                                        style="font-size: 1rem;">info</i>
+                                                </div>
                                                 <input type="text" name="opsi_field" id="edit_opsi_field"
                                                     class="form-control shadow-sm border rounded-3 px-3 py-2"
-                                                    placeholder="contoh:opsi1, opsi2, opsi3" value="{{ old('opsi_field') }}">
+                                                    value="{{ old('opsi_field') }}">
                                                 @error('opsi_field')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -282,9 +307,9 @@
                                             </div>
 
                                             <div class="modal-footer">
+                                                <button type="submit" class="btn btn-success">Simpan</button>
                                                 <button type="button" class="btn btn-danger"
                                                     data-bs-dismiss="modal">Batal</button>
-                                                <button type="submit" class="btn btn-success">Simpan</button>
                                             </div>
                                         </div>
                                     </div>
@@ -393,7 +418,7 @@
                         success: function(response) {
 
                             let newStatus = status == 1 ? 0 : 1;
-                            
+
                             status = newStatus;
                             btn.data('status', newStatus);
 
@@ -433,6 +458,39 @@
                 }
             });
 
+        });
+
+        $(document).ready(function() {
+
+            let oldTipe = "{{ old('tipeField') }}";
+
+            if (oldTipe) {
+                $('#tipeField').val(oldTipe);
+            }
+
+            if (['select', 'radio', 'checkbox'].includes(oldTipe)) {
+                $('#opsiWrap').show();
+            }
+
+        });
+
+        $(document).ready(function() {
+            // Fungsi aktifkan tooltip
+            function aktifkanTooltip() {
+                $('[data-bs-toggle="tooltip"]').tooltip({
+                    trigger: 'hover'
+                });
+            }
+
+            // Jalankan di halaman utama
+            aktifkanTooltip();
+
+            // Jalankan ulang saat modal muncul
+            // Ini krusial karena elemen di modal itu 'hidden' saat awal, 
+            // jadi posisinya harus dihitung ulang pas modalnya 'shown' (tampil)
+            $('.modal').on('shown.bs.modal', function() {
+                aktifkanTooltip();
+            });
         });
     </script>
 @endpush

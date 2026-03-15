@@ -29573,4 +29573,79 @@ body.modal-open .sidenav {
   padding:3px 8px;
   font-size:12px;
 }
+
+/* .tooltip {
+    z-index: 1070 !important;
+} */
+
+/* Container utama untuk label dan ikon */
+.label-info-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Container khusus ikon */
+.custom-tooltip {
+    position: relative;
+    display: inline-flex; /* Menjaga ikon tetap sejajar teks */
+    align-items: center;
+    cursor: help;
+    vertical-align: middle;
+    
+}
+
+.custom-tooltip i {
+   transform: translateY(-6px);
+   margin-left: 13px;
+    
+}
+
+/* Kotak Hitam Tooltip */
+.custom-tooltip::after {
+    content: attr(data-title); /* Ambil teks dari atribut data-title */
+    position: absolute;
+    bottom: 160%; /* Jarak melayang di atas ikon kalau mau dibawah ubah jadi top */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px; /* Lebar kotak */
+    padding: 10px 14px;
+    background: rgba(33, 33, 33, 0.95); /* Warna gelap Material */
+    color: #fff;
+    font-size: 14px; /* Font lebih besar sesuai maumu */
+    border-radius: 8px;
+    text-align: center;
+    z-index: 9999; /* Pastikan paling depan di modal */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease-in-out;
+    font-weight: 400;
+    line-height: 1.5;
+    pointer-events: none; /* Supaya tidak mengganggu klik */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+/* Panah Bawah */
+.custom-tooltip::before {
+    content: "";
+    position: absolute;
+    bottom: 63%; /* Pas di bawah kotak hitam */
+    left: 50%;
+    transform: translateX(-50%);
+    border: 8px solid transparent;
+    border-top-color: rgba(33, 33, 33, 0.95); /* Warna harus sama dengan kotak */
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease-in-out;
+    pointer-events: none;
+}
+
+/* Munculkan Tooltip saat Hover */
+.custom-tooltip:hover::after, 
+.custom-tooltip:hover::before {
+    opacity: 1;
+    visibility: visible;
+}
+
 /*# sourceMappingURL=dashboard-free.css.map */

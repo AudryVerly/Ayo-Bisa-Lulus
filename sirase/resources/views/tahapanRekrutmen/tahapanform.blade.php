@@ -12,11 +12,22 @@
                             class="bg-gradient-dark shadow-dark border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center px-4">
                             <h6 class="text-white text-capitalize m-0">{{ $lowongan->judulLowongan }} - Tahapan Rekrutmen
                             </h6>
-                            <button class="btn bg-white text-dark border shadow-sm" data-bs-toggle="modal"
-                                data-bs-target="#modaladdtahapan" data-id-lowongan={{ $lowongan->id }}>
-                                <i class="material-symbols-rounded text-sm align-middle text-success">add</i>
-                                <span class="align-middle fw-bold">Tambah Tahapan</span>
-                            </button>
+                            <div class="d-flex gap-2">
+                                <button class="btn bg-white text-dark border shadow-sm" data-bs-toggle="modal"
+                                    data-bs-target="#modaladdtahapan" data-id-lowongan={{ $lowongan->id }}>
+                                    <i class="material-symbols-rounded text-sm align-middle text-success">add</i>
+                                    <span class="align-middle fw-bold">Tambah Tahapan</span>
+                                </button>
+                                @if ($checkFormulir == 0)
+                                    <a href="{{ route('formulir.manage', $lowongan->id) }}"
+                                        class="btn bg-gradient-info text-white shadow-sm" data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="Set pertanyaan formulir,field formulir belum diset"
+                                        style="font-size: 1rem; cursor: help;">
+                                        <span class="align-middle fw-bold">Tambah formulir</span>
+                                    </a>
+                                @endif
+                            </div>
                         </div>
                     </div>
                     <div class="card-body px-4 pb-2">

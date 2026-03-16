@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\formulir;
 use App\Models\Lowongan;
 use App\Models\StaffUnit;
+use App\Models\TahapRekrutmen;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -34,6 +36,22 @@ class LowonganController extends Controller
         $today = Carbon::today('Asia/Jakarta')->toDateString();
 
         foreach($lowongans as $lowongan){
+            $adaFormulir = formulir::where('idLowongan', $lowongan->id)->exists();
+            $adaTahapan = TahapRekrutmen::where('idLowongan',$lowongan->id)->exists();
+
+            $isReady = ($adaFormulir && $adaTahapan) ? 1 : 0;
+
+            if($lowongan->is_ready != $isReady){
+                $lowongan->update(['is_ready'=>$isReady]);
+            }
+
+            if(!$isReady){
+                if($lowongan->status == 1){
+                    $lowongan->update(['status'=>0]);
+                }
+                continue;
+            }
+
             $awalPendaftaran = Carbon::parse($lowongan->awalPendaftaran)->toDateString();
             $batasPendaftaran = Carbon::parse($lowongan->batasPendaftaran)->toDateString();
 
@@ -115,7 +133,9 @@ class LowonganController extends Controller
                 'batasPendaftaran'=> $request->batasPendaftaran,
                 'mulaiKerja'      => $request->mulaiKerja,
                 'akhirKerja'      => $request->akhirKerja,
-                'poster'          => ' '
+                'poster'          => ' ',
+                'status'          => 0,
+                'is_ready'        => 0
             ]);
 
             if($request->hasFile('poster')){
@@ -129,13 +149,13 @@ class LowonganController extends Controller
                 $lowongan->update(['poster' => $posterPath]);
             }
 
-            $today = Carbon::today('Asia/Jakarta')->toDateString();
-            if($today >= $lowongan->awalPendaftaran && $today <= $lowongan->batasPendaftaran){
-                $lowongan->update(['status' => 1]);
-            } else {
-                $lowongan->update(['status' => 0]);
-            }
-            return redirect()->route('lowongans.index')->with('success', 'Lowongan berhasil ditambahkan.');
+            // $today = Carbon::today('Asia/Jakarta')->toDateString();
+            // if($today >= $lowongan->awalPendaftaran && $today <= $lowongan->batasPendaftaran){
+            //     $lowongan->update(['status' => 1]);
+            // } else {
+            //     $lowongan->update(['status' => 0]);
+            // }
+            return redirect()->route('formulir.manage',$lowongan->id);
     }
 
     /**
@@ -256,6 +276,24 @@ class LowonganController extends Controller
     public function publish(string $id){
     
         $lowongan = Lowongan::findOrfail($id);
+
+        $adaFormulir = formulir::where('idLowongan',$id)->exists();
+        $adaTahapan = TahapRekrutmen::where('idLowongan',$id)->exists();
+
+        if(!$adaFormulir && !$adaTahapan){
+            return back()->with('error','Formulir dan tahapan belum dibuat');
+        }
+
+        if(!$adaFormulir){
+        return redirect()->route('formulir.add',$id)
+            ->with('error','Silakan buat formulir terlebih dahulu');
+        }
+
+        if(!$adaTahapan){
+            return redirect()->route('tahapan.manage',$id)
+                ->with('error','Silakan buat tahapan seleksi terlebih dahulu');
+        }
+
         $today = Carbon::today('Asia/Jakarta')->toDateString();
 
         $awalPendaftaran = Carbon::parse($lowongan->awalPendaftaran)->toDateString();

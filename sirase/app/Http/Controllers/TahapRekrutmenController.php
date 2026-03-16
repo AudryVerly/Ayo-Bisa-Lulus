@@ -57,6 +57,8 @@ class TahapRekrutmenController extends Controller
             'tipe_tahap' => $request->tipe_tahap
         ]);
 
+        $this->checkReady($idLowongan);
+
         return redirect()->back()->with('success','Field berhasil diubah');
 
     }
@@ -90,7 +92,11 @@ class TahapRekrutmenController extends Controller
         $tahapan = TahapRekrutmen::where('idLowongan', $id)
           ->orderBy('urutan','asc')
           ->get();
-        return view('tahapanRekrutmen.tahapanform', compact('lowongan','tahapan'));
+        $checkFormulir = DB::table('konten_formulir')
+                         ->where('idLowongan', $id)
+                         ->where('status',1)
+                         ->count();
+        return view('tahapanRekrutmen.tahapanform', compact('lowongan','tahapan','checkFormulir'));
     }
 
     //ini nuat soft delete tahapan tersebut
@@ -205,5 +211,29 @@ class TahapRekrutmenController extends Controller
             ]);
         });
         return redirect()->back()->with('success','Field berhasil diubah');
+    }
+
+    private function checkReady($idLowongan){
+        $formulir = DB::table('konten_formulir')
+                    ->where('idLowongan', $idLowongan)
+                    ->where('status', 1)
+                    ->count();
+        $tahapan = DB::table('tahap_rekrutmen')
+                   ->where('idLowongan',$idLowongan)
+                   ->where('status',1)
+                   ->count();
+        if($formulir > 0 && $tahapan > 0){
+            DB::table('lowongan')
+                ->where('id', $idLowongan)
+                ->update([
+                    'is_ready' => 1
+                ]);
+        }else{
+            DB::table('lowongan')
+                ->where('id', $idLowongan)
+                ->update([
+                    'is_ready' => 0
+                ]);
+        }
     }
 }

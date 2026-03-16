@@ -17,13 +17,13 @@
                         </div>
                     </div>
 
-                    @if (session('success'))
+                    {{-- @if (session('success'))
                         <div id ="alert-message" class="alert alert-success alert-dismissible text-white" role="alert">
                             {{ session('success') }}</div>
                     @elseif (session('error'))
                         <div id ="alert-message" class="alert alert-danger alert-dismissible text-white" role="alert">
                             {{ session('error') }}</div>
-                    @endif
+                    @endif --}}
 
                     <div class="card-body px-2 pb-2">
                         <div class="table-responsive p-0">
@@ -262,6 +262,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         setTimeout(() => {
@@ -320,4 +321,29 @@
             });
         });
     </script>
+    @if (session('success'))
+        <script>
+            $(document).ready(function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: '{{ session('success') }}',
+                    showConfirmButton: false,
+                    timer: 2500,
+                });
+            });
+        </script>
+    @elseif (session('error'))
+        <script>
+            $(document).ready(function() {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Ditolak',
+                    text: '{{ session('error') }}',
+                    showConfirmButton: false,
+                    timer: 2500,
+                });
+            });
+        </script>
+    @endif
 @endpush

@@ -92,11 +92,20 @@
                         </div>
                     </div>
                 @endforeach
-                <div>
+                <div class="d-flex gap-2">
                     <button class=" btn btn-outline-secondary btn-lg w-100 text-center py-3" data-bs-toggle="modal"
                         data-bs-target="#modaladdfield" data-id-lowongan={{ $lowongan->id }}>
                         <i class="material-symbols-rounded text-dark">add_2</i>
                     </button>
+
+                    @if ($cekTahapan == 0)
+                        <a href="{{ route('tahapan.manage', $lowongan->id) }}"
+                            class="btn btn-warning btn-lg flex-fill py-3" data-bs-toggle="tooltip" data-bs-placement="top"
+                            title="Masukkan tahapan rekrutmen, tahapan rekrutmen belum di set"
+                            style="font-size: 1rem; cursor: help;">
+                            Tambah Tahapan
+                        </a>
+                    @endif
                 </div>
                 @push('modals')
                     <div class="modal fade" id="modaladdfield" tabindex="-1" aria-hidden="true">
@@ -240,9 +249,8 @@
                                                     <i class="material-symbols-rounded text-secondary ms-1"
                                                         style="font-size: 1rem;">info</i>
                                                 </div>
-                                                <input type="text"
-                                                    class="form-control border rounded-3 px-3 py-2" name="namaField"
-                                                    id="edit_namaField" value="{{ old('namaField') }}">
+                                                <input type="text" class="form-control border rounded-3 px-3 py-2"
+                                                    name="namaField" id="edit_namaField" value="{{ old('namaField') }}">
 
                                                 @error('namaField')
                                                     <div class="text-danger">{{ $message }}</div>

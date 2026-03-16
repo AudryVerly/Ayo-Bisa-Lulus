@@ -6,6 +6,7 @@ use App\Models\formulir;
 use App\Models\Lowongan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class FormulirController extends Controller
 {
@@ -59,6 +60,8 @@ class FormulirController extends Controller
             'status' => 1
         ]);
 
+        $this->checkReady($request->idLowongan);
+
         return redirect()->back()->with('success','Field berhasil ditambahkan');
 
     }
@@ -71,7 +74,11 @@ class FormulirController extends Controller
         //ini untuk nyimpan nama lowongan dan munculin tipefield dari lowongan tersebut
         $lowongan = Lowongan::findOrFail($id);
         $field = formulir::where('idLowongan', $id)->get();
-        return view('formulir.applicationForm', compact('lowongan','field'));
+        $cekTahapan = DB::table('tahap_rekrutmen')
+                      ->where('idLowongan',$id)
+                      ->where('status', 1)
+                      ->count();
+        return view('formulir.applicationForm', compact('lowongan','field','cekTahapan'));
     }
 
     /**
@@ -123,5 +130,30 @@ class FormulirController extends Controller
         $formulir->update(['status' => 0]);
 
         return response()->json(['message' => 'Field ini berhasil dinonktifkan']);
+    }
+
+    //ini buat cek misalnya salah satu udah ada atau belum (tahapan atau formulir)
+    private function checkReady($idLowongan){
+        $formulir = DB::table('konten_formulir')
+                    ->where('idLowongan', $idLowongan)
+                    ->where('status', 1)
+                    ->count();
+        $tahapan = DB::table('tahap_rekrutmen')
+                   ->where('idLowongan',$idLowongan)
+                   ->where('status',1)
+                   ->count();
+        if($formulir > 0 && $tahapan > 0){
+            DB::table('lowongan')
+                ->where('id', $idLowongan)
+                ->update([
+                    'is_ready' => 1
+                ]);
+        }else{
+            DB::table('lowongan')
+                ->where('id', $idLowongan)
+                ->update([
+                    'is_ready' => 0
+                ]);
+        }
     }
 }

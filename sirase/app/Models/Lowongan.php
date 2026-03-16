@@ -19,7 +19,8 @@ class Lowongan extends Model
                             'mulaiKerja',
                             'akhirKerja',
                             'status',
-                            'poster'];
+                            'poster',
+                            'is_ready'];
     
     public function unit(){
         return $this->belongsTo(Unit::class, 'idUnit');

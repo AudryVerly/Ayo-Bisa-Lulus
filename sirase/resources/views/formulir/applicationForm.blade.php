@@ -52,8 +52,14 @@
                                             </span>
                                         @endif
                                     </h6>
+
                                     <small class="text-secondary d-block">
                                         {{ strtoupper($f->tipeField) }}
+                                    </small>
+                                    <small class="text-muted d-block fst-italic mb-1">
+                                        <i class="material-symbols-rounded"
+                                            style="font-size:0.9rem; vertical-align:middle;">info</i>
+                                        {{ $f->help_text }}
                                     </small>
 
                                     @if (in_array($f->tipeField, ['select', 'radio', 'checkbox']))
@@ -69,8 +75,8 @@
                                 style="width:45px;height:45px;border-radius:12px;font-size:18px;"
                                 data-id-field="{{ $f->id }}" data-nama="{{ $f->namaField }}"
                                 data-tipe="{{ $f->tipeField }}" data-opsi="{{ $f->opsi_field }}"
-                                data-required="{{ $f->required }}" data-bs-toggle="modal"
-                                data-bs-target="#modaleditfield">
+                                data-required="{{ $f->required }}" data-help ="{{ $f->help_text }}"
+                                data-bs-toggle="modal" data-bs-target="#modaleditfield">
 
                                 <i class="material-symbols-rounded text-sm">edit</i>
                             </button>
@@ -173,6 +179,19 @@
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
                                         </div>
+                                        <div class="form-group mb-2">
+                                            <label for="helpText" class="form-label fw-bold text-secondary">Help Text</label>
+                                            <div class="custom-tooltip"
+                                                data-title="Tuliskan help text untuk setiap field formulir dengan jelas,Wajib diisi (cth:Nama lengkap sesuai ktm)">
+                                                <i class="material-symbols-rounded text-secondary ms-1"
+                                                    style="font-size: 1rem;">info</i>
+                                            </div>
+                                            <input type="text" class="form-control border rounded-3 px-3 py-2"
+                                                name="help_text" id="help_text" value="{{ old('help_text') }}">
+                                            @error('help_text')
+                                                <div class="text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
                                         <div class="form-check mb-2">
                                             <input type="hidden" name="required" value="0">
 
@@ -222,9 +241,8 @@
                                                         style="font-size: 1rem;">info</i>
                                                 </div>
                                                 <input type="text"
-                                                    class="form-control shadow-sm border rounded-3 px-3 py-2" name="namaField"
-                                                    id="edit_namaField"
-                                                    value="{{ old('namaField') }}">
+                                                    class="form-control border rounded-3 px-3 py-2" name="namaField"
+                                                    id="edit_namaField" value="{{ old('namaField') }}">
 
                                                 @error('namaField')
                                                     <div class="text-danger">{{ $message }}</div>
@@ -240,7 +258,7 @@
                                                         style="font-size: 1rem;">info</i>
                                                 </div>
                                                 <select name="tipeField" id="edit_tipeField"
-                                                    class="form-select shadow-sm border rounded-3 px-3 py-2">
+                                                    class="form-select border rounded-3 px-3 py-2">
                                                     <option value="" disabled {{ old('tipeField') ? '' : 'selected' }}>
                                                         Tipe Field</option>
                                                     <option value="text" {{ old('tipeField') == 'text' ? 'selected' : '' }}>
@@ -283,9 +301,25 @@
                                                         style="font-size: 1rem;">info</i>
                                                 </div>
                                                 <input type="text" name="opsi_field" id="edit_opsi_field"
-                                                    class="form-control shadow-sm border rounded-3 px-3 py-2"
+                                                    class="form-control border rounded-3 px-3 py-2"
                                                     value="{{ old('opsi_field') }}">
                                                 @error('opsi_field')
+                                                    <div class="text-danger">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+
+                                            <div class="form-group mb-2">
+                                                <label for="helpText" class="form-label fw-bold text-secondary">Help
+                                                    Text</label>
+                                                <div class="custom-tooltip"
+                                                    data-title="Tuliskan help text untuk setiap field formulir dengan jelas,Wajib diisi (cth:Nama lengkap sesuai ktm)">
+                                                    <i class="material-symbols-rounded text-secondary ms-1"
+                                                        style="font-size: 1rem;">info</i>
+                                                </div>
+                                                <input type="text" class="form-control border rounded-3 px-3 py-2"
+                                                    name="help_text" id="edit_help_text" id="help_text"
+                                                    value="{{ old('help_text') }}">
+                                                @error('help_text')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
@@ -346,6 +380,7 @@
             let tipe = $(this).data('tipe');
             let opsi = $(this).data('opsi');
             let required = $(this).data('required');
+            let helpText = $(this).data('help');
 
             console.log('Edit ID:', id);
             console.log('All data:', $(this).data());
@@ -354,6 +389,8 @@
             $('#edit_namaField').val(nama);
             $('#edit_tipeField').val(tipe);
             $('#edit_opsi_field').val(opsi);
+            $('#edit_help_text').val(helpText);
+
             $('#edit_required').prop('checked', required == '1');
 
             if (['select', 'radio', 'checkbox'].includes(tipe)) {
@@ -472,25 +509,6 @@
                 $('#opsiWrap').show();
             }
 
-        });
-
-        $(document).ready(function() {
-            // Fungsi aktifkan tooltip
-            function aktifkanTooltip() {
-                $('[data-bs-toggle="tooltip"]').tooltip({
-                    trigger: 'hover'
-                });
-            }
-
-            // Jalankan di halaman utama
-            aktifkanTooltip();
-
-            // Jalankan ulang saat modal muncul
-            // Ini krusial karena elemen di modal itu 'hidden' saat awal, 
-            // jadi posisinya harus dihitung ulang pas modalnya 'shown' (tampil)
-            $('.modal').on('shown.bs.modal', function() {
-                aktifkanTooltip();
-            });
         });
     </script>
 @endpush

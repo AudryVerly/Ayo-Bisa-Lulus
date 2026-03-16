@@ -36,6 +36,13 @@
                                         @if ($field->required)
                                             <span class="text-danger">*</span>
                                         @endif
+                                        @if (!empty($field->help_text))
+                                            <i class="material-symbols-rounded text-secondary" data-bs-toggle="tooltip"
+                                                data-bs-placement="top" title="{{ $field->help_text }}"
+                                                style="font-size: 1rem; cursor: help; line-height: 1;">
+                                                info
+                                            </i>
+                                        @endif
                                     </label>
 
                                     @if ($field->tipeField === 'text')
@@ -154,7 +161,8 @@
                                     <i class="material-symbols-rounded text-sm">send</i>
                                     Kirim Pendaftaran
                                 </button>
-                                <a href="{{ route('mahasiswa.dashboard') }}" class="btn bg-gradient-danger text-white px-4">
+                                <a href="{{ route('mahasiswa.dashboard') }}"
+                                    class="btn bg-gradient-danger text-white px-4">
                                     <i class="material-symbols-rounded text-sm">close</i><span
                                         class="align-middle">&nbsp;&nbsp;Batal</span>
                                 </a>

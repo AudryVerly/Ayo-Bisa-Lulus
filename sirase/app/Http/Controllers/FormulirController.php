@@ -35,14 +35,18 @@ class FormulirController extends Controller
             'tipeField' => 'required|string',
             'opsi_field' => 'required_if:tipeField,select,checkbox,radio',
             'required'   => 'required',
+            'help_text' => 'required|string|max:225',
         ],[
             'required' => 'Bagian :attribute wajib diisi.',
             'string'   => 'Bagian :attribute harus berupa teks.',
-            'opsi_field.required_if' => 'Opsi wajib diisi untuk tipe pilihan.'
+            'opsi_field.required_if' => 'Opsi wajib diisi untuk tipe pilihan.',
+            'help_text.string' => 'Help text harus dalam bentuk tulisan.',
+            'help_text.max' => 'Help_text maksimumnya 255 kata.',
         ],[
             'namaField' => 'Nama Field',
             'tipe Field' => 'Tipe Field',
-            'required'  => 'Penanda Required'
+            'required'  => 'Penanda Required',
+            'help_text' => 'Help Text'
         ]);
 
         formulir::create([
@@ -50,9 +54,9 @@ class FormulirController extends Controller
             'namaField' =>$request ->namaField,
             'tipeField' => $request->tipeField,
             'opsi_field' => $request->opsi_field,
+            'help_text' => $request-> help_text,
             'required' => $request->required,
             'status' => 1
-
         ]);
 
         return redirect()->back()->with('success','Field berhasil ditambahkan');
@@ -80,15 +84,19 @@ class FormulirController extends Controller
             'namaField' =>'required|string',
             'tipeField' => 'required|string',
             'required'   => 'required',
+            'help_text' => 'required|string|max:225',
             'opsi_field' => 'required_if:tipeField,select,checkbox,radio',
         ],[
             'required' => 'Bagian :attribute wajib diisi.',
             'string'   => 'Bagian :attribute harus berupa teks.',
-            'opsi_field.required_if' => 'Opsi wajib diisi untuk tipe pilihan.'
+            'opsi_field.required_if' => 'Opsi wajib diisi untuk tipe pilihan.',
+            'help_text.string' => 'Help text harus dalam bentuk tulisan.',
+            'help_text.max' => 'Help_text maksimumnya 255 kata.',
         ],[
             'namaField' => 'Nama Field',
             'tipe Field' => 'Tipe Field',
-            'required'  => 'Penanda Required'
+            'required'  => 'Penanda Required',
+            'help_text' => 'Help text'
         ]);
 
         $formulir->update([
@@ -96,6 +104,7 @@ class FormulirController extends Controller
             'tipeField' => $request->tipeField,
             'opsi_field' => $request->opsi_field,
             'required' => $request->required,
+            'help_text' => $request->help_text
         ]);
 
         return redirect()->back()->with('success','Field berhasil ditambahkan');

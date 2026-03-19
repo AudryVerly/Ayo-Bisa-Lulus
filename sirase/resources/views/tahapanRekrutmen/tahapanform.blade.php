@@ -14,15 +14,15 @@
                             </h6>
                             <div class="d-flex gap-2">
                                 <button class="btn bg-white text-dark border shadow-sm" data-bs-toggle="modal"
-                                    data-bs-target="#modaladdtahapan" data-id-lowongan={{ $lowongan->id }}>
+                                    data-bs-target="#modaladdtahapan" data-id-lowongan="{{ $lowongan->id }}"
+                                    {{ now()->gt($lowongan->batasPendaftaran) ? 'disabled' : '' }}>
                                     <i class="material-symbols-rounded text-sm align-middle text-success">add</i>
                                     <span class="align-middle fw-bold">Tambah Tahapan</span>
                                 </button>
                                 @if ($checkFormulir == 0)
                                     <a href="{{ route('formulir.manage', $lowongan->id) }}"
                                         class="btn bg-gradient-info text-white shadow-sm" data-bs-toggle="tooltip"
-                                        data-bs-placement="top"
-                                        title="Set pertanyaan formulir,field formulir belum diset"
+                                        data-bs-placement="top" title="Set pertanyaan formulir,field formulir belum diset"
                                         style="font-size: 1rem; cursor: help;">
                                         <span class="align-middle fw-bold">Tambah formulir</span>
                                     </a>
@@ -75,16 +75,24 @@
                                                         <div class="tahap-toggle-switch">
                                                             <input type="checkbox" id="toggle-{{ $tahap->id }}"
                                                                 class="tahap-toggle-input" data-id="{{ $tahap->id }}"
-                                                                {{ $tahap->status == 1 ? 'checked' : '' }}>
+                                                                {{ $tahap->status == 1 ? 'checked' : '' }}
+                                                                {{ now()->gt($lowongan->batasPendaftaran) || $isLocked ? 'disabled' : '' }}>
                                                             <label for="toggle-{{ $tahap->id }}"
                                                                 class="tahap-toggle-label"></label>
                                                         </div>
+
+                                                        @php
+                                                            $dipakai = $tahap->progressTahapanRekrutmen->count() > 0;
+                                                            $pendaftaranTutup = now()->gt($lowongan->batasPendaftaran);
+                                                        @endphp
 
                                                         <button type="button" class="btnedit btn btn-secondary btn-sm"
                                                             data-id-tahapan="{{ $tahap->id }}"
                                                             data-name="{{ $tahap->name }}"
                                                             data-urutan="{{ $tahap->urutan }}"
                                                             data-tipe="{{ $tahap->tipe_tahap }}"
+                                                            data-dipakai="{{ $dipakai ? 1 : 0 }}"
+                                                            {{ $pendaftaranTutup ? 'disabled' : '' }}
                                                             style="width:45px;height:45px;border-radius:12px;font-size:18px;"
                                                             data-bs-toggle="modal" data-bs-target="#modaledittahap">
                                                             <i class="material-symbols-rounded text-sm">edit</i>
@@ -300,6 +308,7 @@
                                             data-name="${tahapan.name}"
                                             data-urutan ="${tahapan.urutan}"
                                             data-tipe = "${tahapan.tipe_tahap}"
+                                            data-dipakai="${tahapan.dipakai}"
                                             style="width:45px;height:45px;border-radius:12px;font-size:18px;"
                                             data-bs-toggle="modal" data-bs-target="#modaledittahap">
                                             <i class="material-symbols-rounded text-sm">edit</i>
@@ -410,10 +419,12 @@
 
 
         $(document).on('click', '.btnedit', function() {
-            let id = $(this).data('idTahapan');
+
+            let id = $(this).data('id-tahapan');
             let name = $(this).data('name');
             let urutan = $(this).data('urutan');
             let tipe = $(this).data('tipe')
+            let dipakai = $(this).data('dipakai');
 
             $('#idTahapan').val(id);
             $('#edit_namaUrutan').val(name);
@@ -423,6 +434,11 @@
             $('#errorUrutan').text('');
             $('#errorTipe').text('');
 
+            if (dipakai == 1) {
+                $('#edit_urutan').prop('disabled', true);
+            } else {
+                $('#edit_urutan').prop('disabled', false);
+            }
             // $('#formeditPenilaian').attr('action', '/tahapan/' + id + '/update');
         });
 
@@ -453,10 +469,18 @@
                 refreshTahapan();
                 //kenapa errornya gini karena kita pakai prevent default jadi gak ada reload langsung 
             }).fail(function(xhr) {
-                let errors = xhr.responseJSON?.errors || {};
-                $('#errorName').text(errors.name ? errors.name[0] : '');
-                $('#errorUrutan').text(errors.urutan ? errors.urutan[0] : '');
-                $('#errorTipe').text(errors.tipe_tahap ? errors.tipe_tahap[0] : '');
+                if (xhr.status === 422) {
+                    let errors = xhr.responseJSON?.errors || {};
+                    $('#errorName').text(errors.name ? errors.name[0] : '');
+                    $('#errorUrutan').text(errors.urutan ? errors.urutan[0] : '');
+                    $('#errorTipe').text(errors.tipe_tahap ? errors.tipe_tahap[0] : '');
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Server Error',
+                        text: 'Terjadi kesalahan sistem'
+                    });
+                }
             });
 
         });

@@ -1,6 +1,10 @@
 @extends('layouts.app')
 @section('breadcrumb', 'Detail Kandidat')
 
+@php
+    $penilaianStart = now()->gt($batasPendaftaran);
+@endphp
+
 @section('content')
     <div class="container-fluid py-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -124,12 +128,22 @@
                             <h6 class="mb-0 fw-semibold">Progress Tahap Rekrutmen</h6>
                         </div>
                         @if ($detailKandidat->statusPendaftaran == 'terdaftar')
-                            <form action="{{ route('kandidat.proses', $detailKandidat->idPendaftaran) }}" method="POST">
-                                @csrf
-                                <button type="submit" class="btn btn-primary w-100 rounded-pill py-2">
-                                    Mulai Proses Kandidat
-                                </button>
-                            </form>
+                            @if ($penilaianStart)
+                                <form action="{{ route('kandidat.proses', $detailKandidat->idPendaftaran) }}"
+                                    method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn btn-primary w-100 rounded-pill py-2">
+                                        Mulai Proses Kandidat
+                                    </button>
+                                </form>
+                            @else
+                                <span data-bs-toggle="tooltip"
+                                    title="Penilaian hanya bisa dimulai setelah pendaftaran ditutup">
+                                    <button class="btn btn-secondary w-100 rounded-pill py-2" disabled>
+                                        Mulai Proses Kandidat
+                                    </button>
+                                </span>
+                            @endif
                         @endif
 
                         <div class="timeline-pro-unit">
@@ -167,27 +181,63 @@
                                                 <div class="mb-2">
                                                     <strong class="text-dark">Catatan: </strong>
                                                     <textarea name="catatan" class="form-control rounded-4 shadow-sm" rows="2"
-                                                        placeholder="Masukkan catatan untuk tahap ini..."></textarea>
+                                                        placeholder="Masukkan catatan untuk tahap ini..." {{ !$penilaianStart ? 'disabled' : '' }}></textarea>
                                                 </div>
                                                 <div class="d-flex gap-2 flex-wrap">
-                                                    <button type="button" class="btn btn-success btn-sm px-3 btn-confirm"
-                                                        data-url="{{ route('kandidat.lulus', $tahap->id) }}"
-                                                        data-type="lulus">
-                                                        Lulus
-                                                    </button>
+                                                    @if (!$penilaianStart)
+                                                        <span data-bs-toggle="tooltip"
+                                                            title="Penilaian belum dibuka, karena belum melewati batas pendaftaran">
+                                                            <button type="button"
+                                                                class="btn btn-success btn-sm px-3 btn-confirm" disabled>
+                                                                Lulus
+                                                            </button>
+                                                        </span>
+                                                    @else
+                                                        <button type="button"
+                                                            class="btn btn-success btn-sm px-3 btn-confirm"
+                                                            data-url="{{ route('kandidat.lulus', $tahap->progress_id) }}"
+                                                            data-type="lulus">
+                                                            Lulus
+                                                        </button>
+                                                    @endif
 
-                                                    <button type="button" class="btn btn-danger btn-sm px-3 btn-confirm"
-                                                        data-url="{{ route('kandidat.gagal', $tahap->id) }}"
-                                                        data-type="gagal">
-                                                        Gagal
-                                                    </button>
+                                                    @if (!$penilaianStart)
+                                                        <span data-bs-toggle="tooltip" title="Penilaian belum dibuka">
+
+                                                            <button type="button" class="btn btn-danger btn-sm px-3"
+                                                                disabled>
+                                                                Gagal
+                                                            </button>
+
+                                                        </span>
+                                                    @else
+                                                        <button type="button"
+                                                            class="btn btn-danger btn-sm px-3 btn-confirm"
+                                                            data-url="{{ route('kandidat.gagal', $tahap->progress_id) }}"
+                                                            data-type="gagal">
+                                                            Gagal
+                                                        </button>
+                                                    @endif
 
                                                     @if ($tahap->tipe_tahap == 'Wawancara')
-                                                        <a href="{{ route('kandidat.wawancara',
-                                                            ['idProgressTahapan' => $tahap->id, 'idPendaftaran' => $detailKandidat->idPendaftaran]) }}"
-                                                            class="btn btn-info btn-sm px-3">
-                                                            Set Wawancara
-                                                        </a>
+                                                        @if ($penilaianStart)
+                                                            <a href="{{ route('kandidat.wawancara', [
+                                                                'idProgressTahapan' => $tahap->progress_id,
+                                                                'idPendaftaran' => $detailKandidat->idPendaftaran,
+                                                            ]) }}"
+                                                                class="btn btn-info btn-sm px-3">
+                                                                Set Wawancara
+                                                            </a>
+                                                        @else
+                                                            <span data-bs-toggle="tooltip" data-bs-placement="top"
+                                                                title="Jadwal wawancara hanya bisa dibuat setelah pendaftaran ditutup">
+
+                                                                <button class="btn btn-secondary btn-sm px-3" disabled>
+                                                                    Set Wawancara
+                                                                </button>
+
+                                                            </span>
+                                                        @endif
                                                     @endif
                                                 </div>
                                             </form>

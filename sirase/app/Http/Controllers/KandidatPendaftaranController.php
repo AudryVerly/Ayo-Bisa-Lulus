@@ -107,6 +107,9 @@ class KandidatPendaftaranController extends Controller
                         )
                         ->where('p.id', $idPendaftaran)
                         ->first();
+        $batasPendaftaran = DB::table('lowongan')
+                            ->where('id', $detailKandidat->idLowongan)
+                            ->value('batasPendaftaran');
 
         $jawabanFormulir = DB::table('jawaban_formulir as jf')
                            ->join('konten_formulir as k','k.id','=','jf.idKontenFormulir')
@@ -139,14 +142,16 @@ class KandidatPendaftaranController extends Controller
                 $tahap->status = $progress[$tahap->id]->status;
                 $tahap->catatan = $progress[$tahap->id]->catatan;
                 $tahap->updated_at = $progress[$tahap->id]->updated_at;
+                $tahap->progress_id = $progress[$tahap->id]->id;
             }else{
                 $tahap->status = 'Menunggu';
                 $tahap->catatan = null;
                 $tahap->updated_at = null;
+                $tahap->progress_id = null;
             }
         }
 
-        return view('kandidatPendaftaran.detailProgressKandidat',compact('detailKandidat','jawabanFormulir','berkasPendaftaran','tahapan'));
+        return view('kandidatPendaftaran.detailProgressKandidat',compact('detailKandidat','jawabanFormulir','berkasPendaftaran','tahapan', 'batasPendaftaran'));
     }
 
     //jadi ini bakal update status dari pendaftaran
@@ -157,12 +162,21 @@ class KandidatPendaftaranController extends Controller
 
             $pendaftaran = Pendaftaran::findOrFail($idPendaftaran);
 
+            // $lowongan = DB::table('lowongan')
+            //             ->where('id', $pendaftaran->idLowongan)
+            //             ->first();
+
+            if(!$this->penilaianDimulai($pendaftaran->idLowongan)){
+                return back()->with('error', 'Penilaian belum bisa dimulai sebelum pendaftaran ditutup');
+            }
+
             $pendaftaran->update([
                 'statusPendaftaran' => 'diproses'
             ]);
 
             //kita harus ambil tahapan di urutan pertama
             $tahapPertama = TahapRekrutmen::where('idLowongan', $pendaftaran->idLowongan)
+                            ->where('status',1)
                             ->orderBy('urutan', 'asc')
                             ->first();
 
@@ -182,12 +196,18 @@ class KandidatPendaftaranController extends Controller
     }
 
     public function lulusTahapan( Request $request, string $idProgress){
-       
-        DB::transaction(function () use ($idProgress, $request){
-            $progress = ProgressTahapanKandidat:: findorFail($idProgress);
-            $request->validate([
-                'catatan' => 'required|string',
-            ]);
+
+        $progress = ProgressTahapanKandidat:: findorFail($idProgress);
+
+        if(!$this->penilaianDimulai($progress->pendaftaran->idLowongan)){
+            return back()->with('error','Penilaian belum dibuka');
+        }
+
+        $request->validate([
+            'catatan' => 'required|string',
+        ]);
+
+        DB::transaction(function () use ($progress, $request){
 
             $progress ->update([
                 'status' =>'Lulus',
@@ -230,13 +250,18 @@ class KandidatPendaftaranController extends Controller
     }
 
     public function gagalTahapan(Request $request, string $idProgress){
-        DB::transaction(function () use ($request, $idProgress){
-            $progress = ProgressTahapanKandidat:: findorFail($idProgress);
+        $progress = ProgressTahapanKandidat:: findorFail($idProgress);
 
-            $request->validate([
-                'catatan' => 'required|string',
-            ]);
+        if(!$this->penilaianDimulai($progress->pendaftaran->idLowongan)){
+            return back()->with('error','Penilaian belum dibuka');
+        }
 
+        $request->validate([
+            'catatan' => 'required|string',
+        ]);
+
+        DB::transaction(function () use ($request, $progress){
+        
             $progress ->update([
                 'status' =>'Gagal',
                 'catatan' => $request->catatan
@@ -249,5 +274,16 @@ class KandidatPendaftaranController extends Controller
         });
 
         return back()->with('success', 'Kandidat dinyatakan gagal');
+    }
+
+    public function penilaianDimulai($idLowongan){
+        $batasPendaftaran = DB::table('lowongan')
+                            ->where('id', $idLowongan)
+                            ->value('batasPendaftaran');
+        if(!$batasPendaftaran){
+            return false;
+        }
+
+        return now()->gt($batasPendaftaran);
     }
 }

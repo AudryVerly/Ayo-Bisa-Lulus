@@ -70,33 +70,63 @@
                         </div>
 
                         <div class="text-end d-flex align-items-center gap-2">
-                            <button type ="button"
-                                class="btnedit btn btn-secondary btn-sm d-flex justify-content-center align-items-center {{ $f->status == 1 ? '' : 'd-none' }}"
-                                style="width:45px;height:45px;border-radius:12px;font-size:18px;"
-                                data-id-field="{{ $f->id }}" data-nama="{{ $f->namaField }}"
-                                data-tipe="{{ $f->tipeField }}" data-opsi="{{ $f->opsi_field }}"
-                                data-required="{{ $f->required }}" data-help ="{{ $f->help_text }}"
-                                data-bs-toggle="modal" data-bs-target="#modaleditfield">
+                            @php
+                                $disableEdit = $lowongan->status == 1 || $f->jawabanFormulir()->count() > 0;
+                                $tooltipEdit = $disableEdit
+                                    ? ($lowongan->status == 1
+                                        ? 'Lowongan sudah dibuka, field tidak bisa diedit'
+                                        : 'Field sudah dipakai pelamar, tidak bisa diedit')
+                                    : '';
+                            @endphp
+                            <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $tooltipEdit }}"
+                                style="display:inline-block;">
+                                <button type ="button"
+                                    class="btnedit btn btn-secondary btn-sm d-flex justify-content-center align-items-center {{ $f->status == 1 ? '' : 'd-none' }} {{ $disableEdit ? 'disabled' : '' }}"
+                                    style="width:45px;height:45px;border-radius:12px;font-size:18px;"
+                                    data-id-field="{{ $f->id }}" data-nama="{{ $f->namaField }}"
+                                    data-tipe="{{ $f->tipeField }}" data-opsi="{{ $f->opsi_field }}"
+                                    data-required="{{ $f->required }}" data-help ="{{ $f->help_text }}"
+                                    data-bs-toggle="modal" data-bs-target="#modaleditfield">
 
-                                <i class="material-symbols-rounded text-sm">edit</i>
-                            </button>
+                                    <i class="material-symbols-rounded text-sm">edit</i>
+                                </button>
+                            </span>
+                            @php
+                                $disabledbutton = $lowongan->status == 1 || $f->jawabanFormulir()->count() > 0;
+                                $tooltipText = $disabledbutton
+                                    ? ($lowongan->status == 1
+                                        ? 'Lowongan sudah dibuka, field tidak bisa diubah'
+                                        : 'Field sudah dipakai pelamar, tidak bisa dinonaktifkan')
+                                    : '';
+                            @endphp
+                            <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $tooltipText }}"
+                                style="display: inline-block;">
+                                <button
+                                    class="btn btn-secondary btn-sm btntoggle d-flex justify-content-center align-items-center {{ $disabledbutton ? 'disabled' : '' }}"
+                                    style="width:45px;height:45px;border-radius:12px;font-size:18px;"
+                                    data-id="{{ $f->id }}" data-status="{{ $f->status }}">
 
-                            <button
-                                class="btn btn-secondary btn-sm btntoggle d-flex justify-content-center align-items-center"
-                                style="width:45px;height:45px;border-radius:12px;font-size:18px;"
-                                data-id="{{ $f->id }}" data-status="{{ $f->status }}">
-
-                                <i class= "material-symbols-rounded text-sm align-middle flex-grow-2">
-                                    {{ $f->status == 1 ? 'toggle_on' : 'toggle_off' }}</i>
-                            </button>
+                                    <i class= "material-symbols-rounded text-sm align-middle flex-grow-2">
+                                        {{ $f->status == 1 ? 'toggle_on' : 'toggle_off' }}</i>
+                                </button>
+                            </span>
                         </div>
                     </div>
                 @endforeach
                 <div class="d-flex gap-2">
-                    <button class=" btn btn-outline-secondary btn-lg w-100 text-center py-3" data-bs-toggle="modal"
-                        data-bs-target="#modaladdfield" data-id-lowongan={{ $lowongan->id }}>
-                        <i class="material-symbols-rounded text-dark">add_2</i>
-                    </button>
+                    @php
+                        $disableAdd = $lowongan->status == 1;
+                        $tooltipAdd = $disableAdd ? 'Lowongan sudah dibuka, tidak bisa menambah field' : '';
+                    @endphp
+                    <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $tooltipAdd }}"
+                        style="display:inline-block; width:100%;">
+                        <button class=" btn btn-outline-secondary btn-lg w-100 text-center py-3 {{ $disableAdd ? 'disabled' : '' }}" 
+                        data-bs-toggle="{{$disableAdd ? '' : 'modal'}}"
+                        data-bs-target="{{$disableAdd ? '' : '#modaladdfield'}}" 
+                        data-id-lowongan={{ $lowongan->id }}>
+                            <i class="material-symbols-rounded text-dark">add_2</i>
+                        </button>
+                    </span>
 
                     @if ($cekTahapan == 0)
                         <a href="{{ route('tahapan.manage', $lowongan->id) }}"
@@ -139,7 +169,8 @@
                                         <div class="form-group mb-2">
                                             <label for="tipeField" class="form-label fw-bold text-secondary"> Tipe
                                                 Field</label>
-                                            <div class="custom-tooltip" data-title="Pilih Tipe Field yang sesuai, wajib diisi">
+                                            <div class="custom-tooltip"
+                                                data-title="Pilih Tipe Field yang sesuai, wajib diisi">
                                                 <i class="material-symbols-rounded text-secondary ms-1"
                                                     style="font-size: 1rem;">info</i>
                                             </div>
@@ -423,6 +454,7 @@
         });
 
         $(document).on('click', '.btntoggle', function() {
+            if ($(this).hasClass('disabled')) return;
 
             let btn = $(this);
             let id = btn.data('id');
@@ -492,11 +524,11 @@
                             });
                         },
 
-                        error: function() {
+                        error: function(xhr) {
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Oops...',
-                                text: 'Terjadi kesalahan saat mengubah status field.'
+                                text: xhr.responseJSON.message
                             });
                         }
                     });
@@ -519,4 +551,29 @@
 
         });
     </script>
+    @if (session('success'))
+        <script>
+            $(document).ready(function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: '{{ session('success') }}',
+                    showConfirmButton: false,
+                    timer: 2500,
+                });
+            });
+        </script>
+    @elseif (session('error'))
+        <script>
+            $(document).ready(function() {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Ditolak',
+                    text: '{{ session('error') }}',
+                    showConfirmButton: false,
+                    timer: 2500,
+                });
+            });
+        </script>
+    @endif
 @endpush

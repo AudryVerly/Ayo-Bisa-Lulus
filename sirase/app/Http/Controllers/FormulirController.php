@@ -31,6 +31,11 @@ class FormulirController extends Controller
      */
     public function store(Request $request)
     {
+        $lowongan = Lowongan::findorFail($request->idLowongan);
+        if($lowongan->status == 1){
+            return redirect()->back()->with('error','Lowongan sudah dibuka,Field tidak bisa ditambah lagi');
+        }
+        
         $request->validate([
             'namaField' =>'required|string',
             'tipeField' => 'required|string',
@@ -80,13 +85,19 @@ class FormulirController extends Controller
                       ->count();
         return view('formulir.applicationForm', compact('lowongan','field','cekTahapan'));
     }
-
+ 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
     {
         $formulir = formulir::findorfail($id);
+        $lowongan = $formulir->lowongan;
+
+        if($lowongan->status == 1){
+            return redirect()->back()->with('error','Lowongan sudah dibuka,Field tidak bisa diedit lagi');
+        }
+        
         $request->validate([
             'namaField' =>'required|string',
             'tipeField' => 'required|string',
@@ -120,6 +131,10 @@ class FormulirController extends Controller
 
     public function active(string $id){
         $formulir = formulir::findorFail($id);
+        $lowongan = $formulir->lowongan;
+        if($lowongan->status == 1){
+             return response()->json(['message' => 'Lowongan sudah dibuka. Field tidak bisa diubah.'],422);
+        }
         $formulir->update(['status' => 1]);
 
         return response()->json(['message' => 'Field ini berhasil diaktifkan']);
@@ -127,6 +142,12 @@ class FormulirController extends Controller
 
     public function nonactive(string $id){
         $formulir = formulir::findorFail($id);
+        //ini kalau misalnya field itu udah di pakai gak boleh lagi
+        $formulirTerpakai = $formulir->jawabanFormulir()->count();
+
+        if($formulirTerpakai > 0){
+            return response()->json(['message' => 'Field sudah dipakai pelamar. Tidak bisa dinonaktifkan.'],422);
+        }
         $formulir->update(['status' => 0]);
 
         return response()->json(['message' => 'Field ini berhasil dinonktifkan']);

@@ -17,4 +17,8 @@ class StaffUnit extends Model
     public function unit(){
         return $this->belongsTo(Unit::class, 'idUnit');
     }
+
+    public function jadwalWawancara(){
+        return $this->belongsToMany(PenjadwalanWawancara::class, 'wawancara_penilai','idStaffUnit','idJdawalWawancara')->withPivot('status');
+    }
 }

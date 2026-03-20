@@ -18,7 +18,8 @@
     <div class="modal fade" id="modalwawancara" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <form action="POST" id="formwawancara">
+                {{-- <form method="POST" id="formwawancara" action="{{ route('kandidat.addWawancara') }}"> --}}
+                    <form method="POST" id="formwawancara" action="/simpanWawancara">
                     @csrf
                     <div
                         class="modal-header d-flex justify-content-between align-items-center bg-dark text-white px-4 py-3">
@@ -47,7 +48,7 @@
                                 @foreach ($penilai as $p)
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="tim_penilai[]"
-                                            value="{{ $p->idTimPenilai }}">
+                                            value="{{ $p->idStaffUnit }}">
 
                                         <label class="form-check-label">
                                             {{ $p->namaPenilai }}
@@ -85,7 +86,7 @@
                                     info
                                 </i>
                             </label>
-                            <input type="time" nama="waktu_mulai"
+                            <input type="time" name="waktu_mulai"
                                 class="form-control border rounded-3 px-3 py-2">
                         </div>
                         <div class="form-group">
@@ -97,7 +98,7 @@
                                     info
                                 </i>
                             </label>
-                            <input type="time" nama="waktu_selesai"
+                            <input type="time" name="waktu_selesai"
                                 class="form-control border rounded-3 px-3 py-2">
                         </div>
                         <div class="form-group">
@@ -142,7 +143,7 @@
                     </div>
                     <div class="modal-footer">
                         {{-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button> --}}
-                        <button type="submit" class="btn btn-success">Simpan</button>
+                        <button type="submit" class="btn btn-success" id="btnSubmit">Simpan</button>
                     </div>
                 </form>
             </div>
@@ -176,6 +177,7 @@
             });
 
             calendar.render();
+       
         });
     </script>
 @endpush

@@ -18,8 +18,10 @@ use App\Models\Lowongan;
 use App\Models\Mahasiswa;
 use App\Models\StaffUnit;
 use Illuminate\Container\Attributes\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Phiki\Phast\Root;
+use App\Mail\MyTestEmail;
 
 // Route::get('/', function () {
 //     return view('dashboard'); 
@@ -32,6 +34,11 @@ Route::middleware('guest')->group(function(){
 
 Route::post('/logout',[AuthController::class, 'logout'])->name('logout');
 Route::get('/autoupdate',[LowonganController::class, 'autoUpdate'])->name('lowongan.autoupdate');
+Route::get('/testroute', function(){
+    $name="Audry Cantik";
+
+    Mail::to('audry.verly@gmail.com')->send(new MyTestEmail($name));
+});
 
 
 // Route::get('/dashboard', function () {return view('dashboard');})->name('superadmin.dashboard')->middleware('role:SuperAdmin');
@@ -85,9 +92,10 @@ Route::middleware(['auth','role:AdminUnit'])->group(function(){
   Route::post('/kandidat/{idPendaftaran}',[KandidatPendaftaranController::class, 'updateStatusDaftar'])->name('kandidat.proses');
   Route::post('/kandidat/lulus/{idPendaftaran}',[KandidatPendaftaranController::class,'lulusTahapan'])->name('kandidat.lulus');
   Route::post('/kandidat/gagal/{idPendaftaran}',[KandidatPendaftaranController::class,'gagalTahapan'])->name('kandidat.gagal');
-  Route::get('/kandidat/setWawancara',[WawancaraController::class,'index'])->name('kandidat.wawancara');
+  
+  Route::get('/kandidat/Wawancara',[WawancaraController::class,'index'])->name('kandidat.wawancara');
+  Route::post('/simpanWawancara',[WawancaraController::class,'storeData'])->name('kandidat.addWawancara');
 });
-
 Route::middleware(['auth','role:StaffUnit'])->group(function(){
    Route::get('/dashboardStaffUnit', function () {return view('staffUnitPage.dashboard');})->name('staff.dashboard');
 });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class WawancaraController extends Controller
 {
@@ -15,6 +16,15 @@ class WawancaraController extends Controller
         //kita perlu ambil data lowongan & kandidat
         $idProgressTahapan = $request->idProgressTahapan;
         $idPendaftaran = $request->idPendaftaran;
+        $idUnit = Auth::user()->staffUnit()->pluck('idUnit')->first();
+        $idJadwal = DB::table('jadwal_wawancara')
+                    ->where('idPendaftaran', $idPendaftaran)
+                    ->pluck('id')
+                    ->toArray();
+        $staffSudahMenulai = DB::table('wawancara_penilai')
+                             ->whereIn('idJadwalWawancara', $idJadwal)
+                             ->pluck('idStaffUnit')
+                             ->toArray();
         $pendaftaran = DB::table('pendaftaran as p')
                        ->join('lowongan as l','p.idLowongan','=','l.id')
                        ->join('mahasiswa as m','p.idMahasiswa','=','m.id')
@@ -27,27 +37,32 @@ class WawancaraController extends Controller
                        )
                     ->where('p.id',$idPendaftaran)
                     ->first();
-        $penilai = DB::table('tim_penilai as tp')
-                   ->join('staffUnit as s','tp.idStaffUnit','=','s.id')
+        $penilai = DB::table('staffunit as s')
                    ->join('users as u','s.idUser','=','u.id')
-                   ->select('tp.id as idTimPenilai',
-                            'u.name as namaPenilai')
-                    ->where('tp.idLowongan', $pendaftaran->idLowongan)
-                    ->where('tp.isActive',1)
-                    ->get();
+                   ->select(
+                        's.id as idStaffUnit',
+                        'u.name as namaPenilai'
+                    )
+                   ->where('s.idUnit',$idUnit)
+                   ->where('s.status', 1)
+                   ->where('u.role','!=','AdminUnit')
+                   ->whereNotIn('s.id',$staffSudahMenulai)
+                   ->get();
+
         return view('setwawancara.invtwawancara', compact('pendaftaran','penilai','idProgressTahapan'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //susunanya adalah rules, message, atrributes
+    public function storeData(Request $request){
+        // var_dump("cheryl jodoh kai");
+        // exit;
+        // var_dump($request->tanggal_wawancara);
+        // exit;
+        // var_dump($request->all());
+        // exit;
         $request->validate([
             'idPendaftaran' => 'required',
             'idProgressTahapan' => 'required',
-            'tanggal_wawancara' => 'required|date', 
+            'tanggal_wawancara' => 'required', 
             'waktu_mulai'=>'required',
             'waktu_selesai' =>'required',
             'tim_penilai' => 'required',
@@ -69,8 +84,10 @@ class WawancaraController extends Controller
             'link_wawancara' => 'Link Wawancara',
             'keterangan' => 'Keterangan',
         ]);
+        
 
         DB::transaction(function () use ($request){
+
             //jadinya ini ambil id jadwal
             $idJadwal = DB::table('jadwal_wawancara')->insertGetId([
                 'idProgressTahapan' => $request->idProgressTahapan,
@@ -79,10 +96,11 @@ class WawancaraController extends Controller
                 'waktu_mulai' => $request->waktu_mulai,
                 'waktu_selesai' => $request->waktu_selesai,
                 'lokasi' => $request->lokasi,
-                'link_wawancara' => $request->lokasi,
+                'link_wawancara' => $request->link_wawancara,
                 'keterangan' => $request->keterangan,
                 'status'=>'terjadwal',
             ]);
+
 
             $timPenilai =  $request->tim_penilai;
 
@@ -91,17 +109,17 @@ class WawancaraController extends Controller
             }
 
             foreach ($timPenilai as $penilai){
-                DB::table('tim_penilai_wawancara')->insert([
+                DB::table('wawancara_penilai')->insert([
                     'idJadwalWawancara' => $idJadwal,
-                    'idTimPenilai' => $penilai
+                    'idStaffUnit' => $penilai,
+                    'status' => 'belum'
                 ]);
             }
         });
 
-        return response()->json([
-            'success' => true,'message' => 'Jadwal Wawancara berhasil disimpan'
-        ]);
+        return redirect()->back()->with('success','Field berhasil ditambahkan');
     }
+
 
     /**
      * Display the specified resource.

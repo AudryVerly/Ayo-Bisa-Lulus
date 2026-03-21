@@ -11,7 +11,8 @@ class WawancaraPenilai extends Model
     protected $fillable =[
         'idJadwalWawancara',
         'idStaffUnit',
-        'idStatus',
+        'status',
+        'token'
     ];
 
     public function jadwalWawancara(){

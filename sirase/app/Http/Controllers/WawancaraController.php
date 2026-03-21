@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\InterviewCandidateMail;
+use App\Mail\InterviewInterviewerMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
 
 class WawancaraController extends Controller
 {
@@ -88,6 +92,20 @@ class WawancaraController extends Controller
 
         DB::transaction(function () use ($request){
 
+            $pendaftaran = DB::table('pendaftaran as p')
+                    ->join('mahasiswa as m','p.idMahasiswa','=','m.id')
+                    ->join('users as u','m.idUser','=','u.id')
+                    ->join('lowongan as l','p.idLowongan','=','l.id')
+                    ->join('unit as un','l.idUnit','=','un.id')
+                    ->select('u.email',
+                            'u.name as namaMahasiswa',
+                            'l.judulLowongan as namaLowongan',
+                            'un.name as namaUnit',
+                            'un.kontak as kontakUnit',
+                            'un.emailUnit as emailUnit')
+                    ->where('p.id',$request->idPendaftaran)
+                    ->first();
+
             //jadinya ini ambil id jadwal
             $idJadwal = DB::table('jadwal_wawancara')->insertGetId([
                 'idProgressTahapan' => $request->idProgressTahapan,
@@ -109,17 +127,104 @@ class WawancaraController extends Controller
             }
 
             foreach ($timPenilai as $penilai){
-                DB::table('wawancara_penilai')->insert([
+                //kita kasik token supaya dia gak main tembak aja
+                $token = Str::random(40);
+
+                $idpewawancara = DB::table('wawancara_penilai')->insertGetId([
                     'idJadwalWawancara' => $idJadwal,
                     'idStaffUnit' => $penilai,
-                    'status' => 'belum'
+                    'status' => 'belum',
+                    'token' => $token
                 ]);
-            }
-        });
 
+                //ini url buat terima tolak
+                $urlTerima = url('/interview/confirm/'.$idpewawancara.'/terima?token='.$token);
+                $urlTolak = url('/interview/confirm/'.$idpewawancara.'/tolak?token='.$token);
+                
+                $dataEmailInterviewer = [
+                    'namaMahasiswa' => $pendaftaran->namaMahasiswa,
+                    'namaLowongan' => $pendaftaran->namaLowongan,
+                    'tanggal' =>  $request->tanggal_wawancara,
+                    'mulai'  =>  $request->waktu_mulai,
+                    'selesai' => $request->waktu_selesai,
+                    'lokasi' => $request->lokasi,
+                    'link' =>  $request->link_wawancara,
+                    'urlTerima'=> $urlTerima,
+                    'urlTolak' => $urlTolak
+                ];
+                //ini email pewawancara
+                $staffPenilai = DB::table('staffunit as s')
+                                ->join('users as u','s.idUser','=','u.id')
+                                ->where('s.id', $penilai)
+                                ->select('u.email', 'u.name')
+                                ->first();
+                Mail::to($staffPenilai->email)->send(new InterviewInterviewerMail($dataEmailInterviewer,$staffPenilai->name) );
+            }
+            $dataEmailKandidat = [
+                'namaMahasiswa' => $pendaftaran->namaMahasiswa,
+                'namaLowongan' => $pendaftaran->namaLowongan,
+                'namaUnit' => $pendaftaran->namaUnit,
+                'emailUnit' => $pendaftaran->emailUnit,
+                'kontakUnit' => $pendaftaran->kontakUnit,
+                'tanggal' =>  $request->tanggal_wawancara,
+                'mulai'  =>  $request->waktu_mulai,
+                'selesai' => $request->waktu_selesai,
+                'lokasi' => $request->lokasi,
+                'link' =>  $request->link_wawancara,
+            ];
+            Mail::to($pendaftaran->email)->send(new InterviewCandidateMail($dataEmailKandidat));
+        });
+        
+            
         return redirect()->back()->with('success','Field berhasil ditambahkan');
     }
 
+    public function confirmJadwal($idpewawancara,$aksi, Request $request){
+        //jadi ini kita perlu tau idanya supaya nemu gak
+        $pivot = DB::table('wawancara_penilai')->where('id',$idpewawancara)->first();
+        if(!$pivot){
+            abort(404,'Data penilai tidak ditemukan');
+        }
+
+        if($request->token != $pivot->token){
+            abort(403,'Token tidak valid');
+        }
+
+        if($aksi == 'terima'){
+            DB::table('wawancara_penilai')->where('id',$idpewawancara)
+                ->update(['status'=>'terjadwal']);
+            DB::table('jadwal_wawancara')->where('id',$pivot->idJadwalWawancara)
+                ->update(['status'=>'terjadwal']);
+        }else if($aksi== 'tolak'){
+            DB::table('wawancara_penilai')->where('id',$idpewawancara)
+                ->update(['status'=>'batal']);
+            //kita cek apabila lebih dari 1 interviwer
+            $terima = DB::table('wawancara_penilai')
+                        ->where('idJadwalWawancara',$pivot->idJadwalWawancara)
+                        ->where('status','terjadwal')
+                        ->count();
+            $pending = DB::table('wawancara_penilai')
+                    ->where('idJadwalWawancara',$pivot->idJadwalWawancara)
+                    ->where('status','belum')
+                    ->count();
+
+            if($terima == 0 && $pending == 0){
+                // semua nolak → jadwal batal
+                DB::table('jadwal_wawancara')->where('id',$pivot->idJadwalWawancara)
+                    ->update(['status'=>'batal']);
+                $jadwal = DB::table('jadwal_wawancara')->where('id', $pivot->idJadwalWawancara)->first();
+                $pendaftaran = DB::table('pendaftaran as p')
+                    ->join('mahasiswa as m','p.idMahasiswa','=','m.id')
+                    ->join('users as u','m.idUser','=','u.id')
+                    ->select('u.email','m.name as namaMahasiswa')
+                    ->where('p.id',$jadwal->idPendaftaran)
+                    ->first();
+                Mail::to($pendaftaran->email)->send(new InterviewCandidateMail($jadwal));
+            }
+        }
+
+        return view('mail.candidateupdateemail',['aksi' =>$aksi]);
+    }
 
     /**
      * Display the specified resource.

@@ -39,6 +39,7 @@ Route::get('/testroute', function(){
 
     Mail::to('audry.verly@gmail.com')->send(new MyTestEmail($name));
 });
+Route::get('/interview/confirm/{$idPivot}/{aksi}',[WawancaraController::class, 'confirmJadwal'])->name('interview.confirm');
 
 
 // Route::get('/dashboard', function () {return view('dashboard');})->name('superadmin.dashboard')->middleware('role:SuperAdmin');

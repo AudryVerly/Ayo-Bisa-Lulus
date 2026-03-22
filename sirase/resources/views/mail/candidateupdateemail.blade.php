@@ -19,7 +19,7 @@
 
         <div style="padding:24px;color:#374151;font-size:14px;line-height:1.6">
 
-            <p>Yth. <strong>{{ $jadwal->namaMahasiswa }}</strong>,</p>
+            <p>Yth. <strong>{{ $jadwal['namaMahasiswa'] }}</strong>,</p>
 
             <p>
                 Kami informasikan bahwa jadwal wawancara Anda untuk posisi berikut
@@ -27,7 +27,7 @@
             </p>
 
             <p style="font-size:18px;font-weight:bold;color:#111827;margin-top:6px">
-                {{ $jadwal->namaLowongan }}
+                {{ $jadwal['namaLowongan'] }}
             </p>
 
             <hr style="border:none;border-top:1px solid #e5e7eb;margin:18px 0">
@@ -36,12 +36,12 @@
 
                 <tr>
                     <td style="padding:6px 0;width:120px">Tanggal</td>
-                    <td>: {{ $jadwal->tanggal_wawancara }}</td>
+                    <td>: {{ $jadwal['tanggal'] }}</td>
                 </tr>
 
                 <tr>
                     <td style="padding:6px 0">Waktu</td>
-                    <td>: {{ $jadwal->waktu_mulai }} - {{ $jadwal->waktu_selesai }} WIB</td>
+                    <td>: {{ $jadwal['mulai']}} - {{ $jadwal['selesai'] }} WIB</td>
                 </tr>
 
             </table>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\InterviewCandidateMail;
 use App\Mail\InterviewInterviewerMail;
+use App\Mail\InterviewUpdateCandidateMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -57,12 +58,6 @@ class WawancaraController extends Controller
     }
 
     public function storeData(Request $request){
-        // var_dump("cheryl jodoh kai");
-        // exit;
-        // var_dump($request->tanggal_wawancara);
-        // exit;
-        // var_dump($request->all());
-        // exit;
         $request->validate([
             'idPendaftaran' => 'required',
             'idProgressTahapan' => 'required',
@@ -197,7 +192,7 @@ class WawancaraController extends Controller
                 ->update(['status'=>'terjadwal']);
         }else if($aksi== 'tolak'){
             DB::table('wawancara_penilai')->where('id',$idpewawancara)
-                ->update(['status'=>'batal']);
+                ->update(['status'=>'gagal']);
             //kita cek apabila lebih dari 1 interviwer
             $terima = DB::table('wawancara_penilai')
                         ->where('idJadwalWawancara',$pivot->idJadwalWawancara)
@@ -212,18 +207,36 @@ class WawancaraController extends Controller
                 // semua nolak → jadwal batal
                 DB::table('jadwal_wawancara')->where('id',$pivot->idJadwalWawancara)
                     ->update(['status'=>'batal']);
-                $jadwal = DB::table('jadwal_wawancara')->where('id', $pivot->idJadwalWawancara)->first();
+                $jadwal = DB::table('jadwal_wawancara')
+                        ->select(
+                                'idPendaftaran',
+                                'tanggal_wawancara as tanggal',
+                                'waktu_mulai as mulai',
+                                'waktu_selesai as selesai')
+                        ->where('id', $pivot->idJadwalWawancara)
+                        ->first();
                 $pendaftaran = DB::table('pendaftaran as p')
                     ->join('mahasiswa as m','p.idMahasiswa','=','m.id')
                     ->join('users as u','m.idUser','=','u.id')
-                    ->select('u.email','m.name as namaMahasiswa')
+                    ->join('lowongan as l','l.id','=','p.idLowongan')
+                    ->join('jadwal_wawancara as j','j.idPendaftaran','=','p.id')
+                    ->select('u.email',
+                            '.name as namaMahasiswa',
+                            'l.judulLowongan as namaLowongan')
                     ->where('p.id',$jadwal->idPendaftaran)
                     ->first();
-                Mail::to($pendaftaran->email)->send(new InterviewCandidateMail($jadwal));
+                $dataEmailGagal =[
+                    'namaMahasiswa' => $pendaftaran->namaMahasiswa,
+                    'namaLowongan' => $pendaftaran->namaLowongan,
+                    'tanggal' => $jadwal->tanggal,
+                    'mulai' => $jadwal->mulai,
+                    'selesai' => $jadwal->selesai,
+                ];
+                Mail::to($pendaftaran->email)->send(new InterviewUpdateCandidateMail($dataEmailGagal));
             }
         }
 
-        return view('mail.candidateupdateemail',['aksi' =>$aksi]);
+        return view('mail.interviewconfirm',['aksi' => $aksi]);
     }
 
     /**

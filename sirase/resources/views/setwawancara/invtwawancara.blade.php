@@ -163,12 +163,18 @@
                     <p><strong>Keterangan:</strong> <span id="detailKeterangan"></span></p>
                     <p><strong>Status:</strong> <span id="detailStatus"></span></p>
                 </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger d-none" id="btnCancelJadwal">
+                        Cancel Jadwal
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 @endpush
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         $(document).ready(function() {
@@ -213,6 +219,13 @@
                     $('#detailKeterangan').text(e.keterangan || '-');
                     $('#detailStatus').text(e.status);
 
+                    if (e.status === 'terjadwal') {
+                        $('#btnCancelJadwal').removeClass('d-none')
+                            .data('id', info.event.id);
+                    } else {
+                        $('#btnCancelJadwal').addClass('d-none');
+                    }
+
                     $('#modalDetailJadwal').modal('show');
                 }
             });
@@ -246,9 +259,68 @@
                         }
                     });
                 });
-                 
+
             });
             calendar.render();
+        });
+
+        $('#btnCancelJadwal').on('click', function() {
+
+            let id = $(this).data('id');
+            let modal = bootstrap.Modal.getInstance(
+                document.getElementById('modalDetailJadwal')
+            );
+
+            if (modal) {
+                modal.hide();
+            }
+
+            Swal.fire({
+                title: 'Cancel Jadwal?',
+                text: "Jadwal wawancara akan dibatalkan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya Cancel',
+                cancelButtonText: 'Tidak'
+            }).then((result) => {
+
+                if (result.isConfirmed) {
+
+                    $.ajax({
+                        url: '/jadwal/cancel/' + id,
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+
+                        success: function(response) {
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: response.message ?? 'Jadwal berhasil dicancel',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                        },
+
+                        error: function(xhr) {
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: xhr.responseJSON?.message ?? 'Terjadi kesalahan'
+                            });
+
+                        }
+                    });
+
+                }
+
+            });
+
         });
     </script>
 @endpush

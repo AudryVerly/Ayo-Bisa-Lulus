@@ -34,7 +34,7 @@
             </p>
 
             <p style="color:#6b7280; font-size:14px;margin-top:10px;">Terima kasih atas konfirmasi Anda.</p>
-        @else
+        @elseif($aksi == 'tolak')
             <div
                 style="width:80px;
                 height:80px;
@@ -52,8 +52,43 @@
             <p style="color:#374151; font-size:15px;line-height:1.6;">Anda telah <strong>menolak</strong> jadwal
                 wawancara yang diberikan.</p>
             <p style="color:#6b7280;font-size:14px;margin-top:10px;">Tim rekrutmen akan melakukan penjadwalan ulang.</p>
+        @elseif($aksi == 'jadwal_batal')
+            <div
+                style="width:80px;height:80px;border-radius:50%;border:4px solid #f59e0b;
+                margin:0 auto 20px auto;display:flex;align-items:center;justify-content:center;
+                font-size:40px;color:#f59e0b;">
+                !
+            </div>
+
+            <h2 style="margin-bottom:15px; color:#111827;">Jadwal Sudah Dibatalkan</h2>
+
+            <p style="color:#374151; font-size:15px;line-height:1.6;">
+                Jadwal wawancara ini sudah <strong>dibatalkan oleh tim rekrutmen</strong>.
+                Konfirmasi tidak dapat dilakukan lagi.
+            </p>
+
+            <p style="color:#6b7280;font-size:14px;margin-top:10px;">
+                Silakan menunggu informasi jadwal terbaru apabila dijadwalkan ulang.
+            </p>
+        @elseif($aksi == 'expired')
+            <div
+                style="width:80px;height:80px;border-radius:50%;border:4px solid #6b7280;
+                margin:0 auto 20px auto;display:flex;align-items:center;justify-content:center;
+                font-size:40px;color:#6b7280;">
+                !
+            </div>
+
+            <h2 style="margin-bottom:15px; color:#111827;">Link Tidak Berlaku</h2>
+
+            <p style="color:#374151; font-size:15px;line-height:1.6;">
+                Link konfirmasi ini sudah <strong>tidak berlaku</strong> atau Anda sudah melakukan konfirmasi
+                sebelumnya.
+            </p>
+
+            <p style="color:#6b7280;font-size:14px;margin-top:10px;">
+                Jika ada perubahan jadwal, tim rekrutmen akan menghubungi Anda kembali.
+            </p>
         @endif
     </div>
 </body>
-
 </html>

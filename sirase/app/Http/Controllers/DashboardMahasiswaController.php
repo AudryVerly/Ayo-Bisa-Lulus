@@ -7,6 +7,7 @@ use App\Models\Unit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardMahasiswaController extends Controller
 {
@@ -15,7 +16,21 @@ class DashboardMahasiswaController extends Controller
      */
     public function index()
     {
-       //$lowongan = Lowongan::where('status', 1)->get();
+        $idMahasiswa = Auth::user()->mahasiswa->id;
+        $jadwal = DB::table('jadwal_wawancara as j')
+                  ->join('pendaftaran as p','j.idPendaftaran','=', 'p.id')
+                  ->join('lowongan as l','p.idLowongan', '=', 'l.id')
+                  ->where('p.idMahasiswa', $idMahasiswa)
+                  ->where('j.status', 'terjadwal')
+                  ->select(
+                    'j.tanggal_wawancara as tanggal',
+                    'j.waktu_mulai as mulai',
+                    'j.waktu_selesai as selesai',
+                    'l.judulLowongan as judulLowongan'
+                  )
+                ->orderBy('j.tanggal_wawancara')
+                ->first();
+                //$lowongan = Lowongan::where('status', 1)->get();
        $lowongan = DB::table('lowongan as l')
                    ->join('unit as u', 'l.idUnit', '=', 'u.id')
                    ->where('l.status',1)
@@ -26,7 +41,7 @@ class DashboardMahasiswaController extends Controller
                  ->where('status',1)
                  ->get();
 
-       return view('mahasiswaPage.dashboard', compact('lowongan', 'units'));
+       return view('mahasiswaPage.dashboard', compact('lowongan', 'units','jadwal'));
     }
 
     public function detailLowongan(string $id){

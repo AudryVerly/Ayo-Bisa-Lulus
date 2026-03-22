@@ -28,6 +28,7 @@ class WawancaraController extends Controller
                     ->toArray();
         $staffSudahMenulai = DB::table('wawancara_penilai')
                              ->whereIn('idJadwalWawancara', $idJadwal)
+                             ->whereIn('status',['belum','terjadwal','sudah'])
                              ->pluck('idStaffUnit')
                              ->toArray();
         $pendaftaran = DB::table('pendaftaran as p')
@@ -239,6 +240,37 @@ class WawancaraController extends Controller
         return view('mail.interviewconfirm',['aksi' => $aksi]);
     }
 
+    //ini buat show jadwal di calendar
+    public function showAllJadwal(){
+        $jadwal = DB::table('jadwal_wawancara as j')
+                  ->join('pendaftaran as p','p.id','=','j.idPendaftaran')
+                  ->join('lowongan as l','p.idLowongan','=','l.id')
+                  ->join('mahasiswa as m','m.id','=','p.idMahasiswa')
+                  ->join('users as u','m.idUser','=','u.id')
+                  ->select(
+                    'j.id',
+                    'j.tanggal_wawancara as tanggalWawancara',
+                    'j.waktu_mulai as waktuMulai',
+                    'j.waktu_selesai as waktuSelesai',
+                    'j.lokasi as lokasi',
+                    'j.link_wawancara as link',
+                    'j.keterangan as keterangan',
+                    'j.status as status',
+                    'u.name as namaMahasiswa',
+                    'l.judulLowongan as namaLowongan'
+                  )
+                  ->get();
+        foreach($jadwal as $item){
+            $penilai = DB::table('wawancara_penilai as w')
+                       ->join('staffUnit as s', 'w.idStaffUnit','=','s.id')
+                       ->join('users as u','s.idUser','=','u.id')
+                       ->where('w.idJadwalWawancara',$item->id)
+                       ->pluck('u.name')
+                       ->toArray();
+            $item->penilaiStr = implode(', ', $penilai);           
+        }
+        return response()->json($jadwal);
+    } 
     /**
      * Display the specified resource.
      */

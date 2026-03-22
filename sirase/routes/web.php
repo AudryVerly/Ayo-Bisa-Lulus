@@ -96,6 +96,7 @@ Route::middleware(['auth','role:AdminUnit'])->group(function(){
   
   Route::get('/kandidat/Wawancara',[WawancaraController::class,'index'])->name('kandidat.wawancara');
   Route::post('/simpanWawancara',[WawancaraController::class,'storeData'])->name('kandidat.addWawancara');
+  Route::get('/jadwalwawancara/all',[WawancaraController::class, 'showAllJadwal'])->name('jadwal.alljadwal');
 });
 Route::middleware(['auth','role:StaffUnit'])->group(function(){
    Route::get('/dashboardStaffUnit', function () {return view('staffUnitPage.dashboard');})->name('staff.dashboard');

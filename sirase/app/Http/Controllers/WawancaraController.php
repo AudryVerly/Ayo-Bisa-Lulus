@@ -354,4 +354,65 @@ class WawancaraController extends Controller
             'message' => 'Jadwal berhasil dibatalkan',
         ]);
     }
+
+    public function showCalendarMahasiswa()
+    {
+        $idMahasiswa = Auth::user()->mahasiswa->id;
+        $jadwal = DB::table('jadwal_wawancara as j')
+            ->join('pendaftaran as p', 'j.idPendaftaran', '=', 'p.id')
+            ->join('lowongan as l', 'l.id', '=', 'p.idLowongan')
+            ->join('mahasiswa as m', 'm.id', '=', 'p.idMahasiswa')
+            ->join('users as u', 'u.id', '=', 'm.idUser')
+            ->select(
+                'j.id',
+                'j.tanggal_wawancara as tanggalWawancara',
+                'j.waktu_mulai as waktuMulai',
+                'j.waktu_selesai as waktuSelesai',
+                'j.lokasi as lokasi',
+                'j.link_wawancara as link',
+                'j.keterangan as keterangan',
+                'j.status as status',
+                'u.name as namaMahasiswa',
+                'l.judulLowongan as namaLowongan'
+            )
+            ->where('p.idMahasiswa', $idMahasiswa)
+            ->where('j.status', '!=', 'batal')
+            ->get();
+        foreach ($jadwal as $item) {
+            $penilai = DB::table('wawancara_penilai as w')
+                ->join('staffUnit as s', 'w.idStaffUnit', '=', 's.id')
+                ->join('users as u', 's.idUser', '=', 'u.id')
+                ->where('w.idJadwalWawancara', $item->id)
+                ->pluck('u.name')
+                ->toArray();
+            $item->penilaiStr = implode(', ', $penilai);
+        }
+
+        return view('mahasiswaPage.listwawancara', compact('jadwal'));
+    }
+
+    public function showCalendarStaffUnit()
+    {
+        $idStaffUnit = Auth::user()->staffUnit->first()->id;
+        $jadwal = DB::table('jadwal_wawancara as j')
+            ->join('pendaftaran as p', 'j.idPendaftaran', '=', 'p.id')
+            ->join('mahasiswa as m', 'm.id', '=', 'p.idMahasiswa')
+            ->join('users as u', 'u.id', '=', 'm.idUser')
+            ->join('wawancara_penilai as w', 'w.idJadwalWawancara', '=', 'j.id')
+            ->select(
+                'j.id',
+                'j.tanggal_wawancara as tanggalWawancara',
+                'j.waktu_mulai as waktuMulai',
+                'j.waktu_selesai as waktuSelesai',
+                'j.lokasi as lokasi',
+                'j.link_wawancara as link',
+                'w.status as statusPenilai',
+                'u.name as namaMahasiswa'
+            )
+            ->where('w.idStaffUnit', $idStaffUnit)
+            ->where('w.status','!=','gagal')
+            ->get();
+
+        return view('staffUnitPage.listwawancarastaff',compact('jadwal'));
+    }
 }

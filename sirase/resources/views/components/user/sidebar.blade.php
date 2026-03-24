@@ -23,8 +23,8 @@
             @endcan
             @can('role:StaffUnit')
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->is('/dashboardStaffUnit') || request()->is('dashboardStaffUnit') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
-                        href="{{ url('/dashboardStaffUnit') }}">
+                    <a class="nav-link {{ request()->is('dashboardStaff*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                        href="{{ route('staff.dashboard') }}">
                         <i class="material-symbols-rounded opacity-5">dashboard</i>
                         <span class="nav-link-text ms-1">Dashboard</span>
                     </a>
@@ -135,6 +135,24 @@
                         href="{{ route('riwayatPendaftaran.list') }}">
                         <i class="material-symbols-rounded opacity-5">assignment</i>
                         <span class="nav-link-text ms-1">Riwayat Pendaftaran</span>
+                    </a>
+                </li>
+            @endcan
+            @can('role:Mahasiswa')
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('listwawancaramahasiswa*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                        href="{{ route('listwawancara.show') }}">
+                        <i class="material-symbols-rounded opacity-5">calendar_month</i>
+                        <span class="nav-link-text ms-1">List wawancara</span>
+                    </a>
+                </li>
+            @endcan
+            @can('role:StaffUnit')
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('listwawancarastaff*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                        href="{{ route('listwawancarastaff.show') }}">
+                        <i class="material-symbols-rounded opacity-5">calendar_month</i>
+                        <span class="nav-link-text ms-1">List wawancara</span>
                     </a>
                 </li>
             @endcan

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardMahasiswaController;
+use App\Http\Controllers\DashboardStaffUnitController;
 use App\Http\Controllers\FormulirController;
 use App\Http\Controllers\KandidatPendaftaran;
 use App\Http\Controllers\KandidatPendaftaranController;
@@ -51,6 +52,7 @@ Route::middleware(['auth','role:Mahasiswa'])->group(function(){
     Route::post('/pendaftaran/{idLowongan}/formulir',[PendaftaranController::class,'inputPendaftaran'])->name('pendaftaran.store');
     Route::get('/riwayatPendaftaran',[PendaftaranController::class, 'showRiwayatPendaftaran'])->name('riwayatPendaftaran.list');
     Route::get('/riwayatPendaftaran/{id}/detailPendaftaran',[PendaftaranController::class, 'showDetailPendaftaran'])->name('riwayatPendaftaran.detail');
+    Route::get('/listwawancaramahasiswa',[WawancaraController::class, 'showCalendarMahasiswa'])->name('listwawancara.show');
 });
 
 Route::middleware(['auth','role:AdminUnit'])->group(function(){
@@ -100,7 +102,8 @@ Route::middleware(['auth','role:AdminUnit'])->group(function(){
   Route::post('/jadwal/cancel/{id}',[WawancaraController::class,'cancelJadwal'])->name('jadwal.cancel');
 });
 Route::middleware(['auth','role:StaffUnit'])->group(function(){
-   Route::get('/dashboardStaffUnit', function () {return view('staffUnitPage.dashboard');})->name('staff.dashboard');
+   Route::get('/dashboardStaff',[DashboardStaffUnitController::class, 'index'])->name('staff.dashboard');
+   Route::get('/listwawancarastaff',[WawancaraController::class, 'showCalendarStaffUnit'])->name('listwawancarastaff.show');
 });
 
 Route::middleware(['auth','role:SuperAdmin'])->group(function(){

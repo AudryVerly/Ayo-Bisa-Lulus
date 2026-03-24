@@ -25,4 +25,8 @@ class Unit extends Model
         return $this->hasMany(Lowongan::class, 'idUnit');
     }
 
+    public function bobotKriteria(){
+        return $this->hasMany(BobotKriteria::class, 'idKriteria');
+    }
+
 }

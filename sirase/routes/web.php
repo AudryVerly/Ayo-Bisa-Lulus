@@ -6,6 +6,10 @@ use App\Http\Controllers\DashboardStaffUnitController;
 use App\Http\Controllers\FormulirController;
 use App\Http\Controllers\KandidatPendaftaran;
 use App\Http\Controllers\KandidatPendaftaranController;
+use App\Http\Controllers\KriteriaController;
+use App\Http\Controllers\KriteriaController as ControllersKriteriaController;
+use App\Http\Controllers\KriteriaController as HttpControllersKriteriaController;
+use App\Http\Controllers\KriteriaController as AppHttpControllersKriteriaController;
 use App\Http\Controllers\LowonganController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\pendaftaranController;
@@ -148,4 +152,9 @@ Route::middleware(['auth','role:SuperAdmin'])->group(function(){
     Route::post('/mahasiswas/{id}', [MahasiswaController::class, 'update'])->name('mahasiswa.update');
     Route::post('/mahasiswas/{id}/active', [MahasiswaController::class, 'active']);
     Route::post('/mahasiswas/{id}/destroy',[MahasiswaController::class, 'destroy']);
+
+    Route::get('/kriteria',[KriteriaController::class,'index'])->name('kriteria.index');
+    Route::post('/kriteria/store', [KriteriaController::class,'storeData'])->name('kriteria.store');
+    Route::post('/kriteria/{id}/update', [KriteriaController::class, 'update'])->name('kriteria.update');
+    Route::post('/kriteria/toggle/{id}', [KriteriaController::class, 'toggle'])->name('kriteria.toggle');
 });

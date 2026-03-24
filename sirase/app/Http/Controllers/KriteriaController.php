@@ -2,63 +2,81 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BobotKriteria;
+use App\Models\Kriteria;
 use Illuminate\Http\Request;
 
 class KriteriaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $kriteria = Kriteria::orderBy('status', 'desc')->get();
+
+        return view('kriteria.index', compact('kriteria'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function storeData(Request $request)
     {
-        //
+        $request->validate([
+            'namaKriteria' => 'required|unique:kriteria,namaKriteria',
+        ], [
+            'required' => 'Bagian :attribute wajib diisi.',
+            'namaKriteria.unique' => 'Nama Kriteria yang dimasukkan sudah ada didata ',
+        ], [
+            'namaKriteria' => 'nama kriteria',
+        ]);
+
+        Kriteria::create([
+            'namaKriteria' => $request->namaKriteria,
+            'status' => 1,
+        ]);
+
+        return redirect()->route('kriteria.index')->with('success', 'Kriteria berhasil ditambahkan.');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function update(Request $request, $id)
     {
-        //
+        $kriteria = Kriteria::findOrFail($id);
+
+        $dipakai = BobotKriteria::where('idKriteria', $id)->exists();
+
+        if ($dipakai) {
+            return redirect()->back()
+                ->with('error', 'Kriteria sudah dipakai unit, tidak bisa diedit.');
+        }
+
+        $request->validate([
+            'namaKriteria' => 'required|unique:kriteria,namaKriteria,'.$id,
+        ], [
+            'required' => 'Bagian :attribute wajib diisi.',
+            'namaKriteria.unique' => 'Nama Kriteria yang dimasukkan sudah ada didata ',
+        ], [
+            'namaKriteria' => 'nama kriteria',
+        ]);
+
+        $kriteria->update([
+            'namaKriteria' => $request->namaKriteria,
+        ]);
+
+        return redirect()->back()->with('success', 'Berhasil update');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function toggle($id)
     {
-        //
-    }
+        $kriteria = Kriteria::findOrFail($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+        $dipakai = BobotKriteria::where('idKriteria', $id)->exists();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        if ($dipakai) {
+            return redirect()->back()
+                ->with('error', 'Kriteria sudah dipakai unit, tidak bisa diubah status.');
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $kriteria->update([
+            'status' => $kriteria->status == 1 ? 0 : 1,
+        ]);
+
+        return redirect()->back()->with('success', 'Status berhasil diubah');
+
     }
 }

@@ -233,8 +233,8 @@
                             <div class="custom-tooltip" data-title="Masukkan nama field, wajib diisi">
                                 <i class="material-symbols-rounded text-secondary ms-1" style="font-size: 1rem;">info</i>
                             </div>
-                            <input type="text" class="form-control shadow-sm border rounded-3 px-3 py-2"
-                                name="name" id="namaUrutan" placeholder="Masukkan Nama urutan"
+                            <input type="text" class="form-control border rounded-3 px-3 py-2"
+                                name="name" id="namaUrutan"
                                 value="{{ old('name') }}">
                             @error('name')
                                 <div class="text-danger" id="errorName">{{ $message }}</div>
@@ -246,7 +246,7 @@
                                 data-title="Tahapan yang menentukan jenis proses tahapannya, wajib diisi">
                                 <i class="material-symbols-rounded text-secondary ms-1" style="font-size: 1rem;">info</i>
                             </div>
-                            <select name="tipe_tahap" class="form-select shadow-sm border rounded-3 px-3 py-2">
+                            <select name="tipe_tahap" class="form-select border rounded-3 px-3 py-2">
                                 <option value="" disabled selected>Pilih Tipe</option>
                                 <option value="Seleksi" {{ old('tipe_tahap') == 'Seleksi' ? 'selected' : '' }}>Seleksi
                                 </option>

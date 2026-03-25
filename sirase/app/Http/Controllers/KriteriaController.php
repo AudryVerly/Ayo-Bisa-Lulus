@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\BobotKriteria;
 use App\Models\Kriteria;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class KriteriaController extends Controller
 {
@@ -62,7 +64,7 @@ class KriteriaController extends Controller
         }
 
         $request->validate([
-            'namaKriteria' => 'required'
+            'namaKriteria' => 'required',
         ], [
             'required' => 'Bagian :attribute wajib diisi.',
         ], [
@@ -93,5 +95,99 @@ class KriteriaController extends Controller
 
         return redirect()->back()->with('success', 'Status berhasil diubah');
 
+    }
+
+    public function showKriteriaUnit()
+    {
+        $idUnit = Auth::user()->staffUnit()->pluck('idUnit')->first();
+
+        $kriteria = DB::table('kriteria')
+            ->where('status', 1)
+            ->get();
+        $selected = DB::table('bobot_kriteria')
+            ->where('idUnit', $idUnit)
+            ->where('is_active', 1)
+            ->pluck('idKriteria')
+            ->toArray();
+        $kriteriaUnit = DB::table('bobot_kriteria as bk')
+            ->join('kriteria as k', 'bk.idKriteria', '=', 'k.id')
+            ->where('bk.idUnit', $idUnit)
+            ->select(
+                'k.namaKriteria',
+                'bk.nilaiBobot',
+                'bk.is_active'
+            )
+            ->get();
+
+        return view('kriteria.kriteriaunit', compact('kriteria', 'selected', 'kriteriaUnit'));
+    }
+
+    public function storeKriteriaUnit(Request $request)
+    {
+        $namaInput = trim($request->namaKriteria);
+
+        if (Kriteria::whereRaw('LOWER(TRIM(namaKriteria)) = ?', [strtolower($namaInput)])->exists()) {
+            return response()->json([
+                'status' => false, 'message' => 'Nama Kriteria sudah ada',
+            ]);
+        }
+
+        if ($namaInput == '') {
+            return response()->json([
+                'status' => false,
+                'message' => 'Bagian nama kriteria wajib diisi.',
+            ]);
+        }
+
+        $idkriteria = DB::table('kriteria')->insertGetId([
+            'namaKriteria' => $namaInput,
+            'status' => 1,
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Kriteria berhasil ditambahkan.',
+            'id' => $idkriteria,
+            'namaKriteria' => $namaInput,
+        ]);
+    }
+
+    public function saveBobotKriteriaUnit(Request $request)
+    {
+        $idUnit = Auth::user()->staffUnit()->pluck('idUnit')->first();
+
+        $kriteriaDipilih = $request->kriteria;
+
+        if (! $kriteriaDipilih || count($kriteriaDipilih) < 3) {
+            return redirect()->back()
+                ->with('error', 'Minimal pilih 3 kriteria');
+        }
+
+        if (count($kriteriaDipilih) > 5) {
+            return back()->with('error', 'Maksimal 5 kriteria');
+        }
+
+        DB::transaction(function () use ($idUnit, $kriteriaDipilih) {
+           
+            $sudahada = DB::table('bobot_kriteria')
+                    ->where('idUnit', $idUnit)
+                    ->pluck('idKriteria')
+                    ->toArray();
+
+           $kriteriaBaru = array_diff($kriteriaDipilih, $sudahada);
+
+            foreach($kriteriaBaru as $idKriteria){
+                     DB::table('bobot_kriteria')->insert([
+                    'idUnit' => $idUnit,
+                    'idKriteria' => $idKriteria,
+                    'nilaiBobot' => 0,
+                    'is_active' => 1,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        });
+
+        return view('AHP.pairwise')->with('success', 'Konfigurasi kriteria berhasil disimpan');
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AHPController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardMahasiswaController;
 use App\Http\Controllers\DashboardStaffUnitController;
@@ -104,6 +105,12 @@ Route::middleware(['auth','role:AdminUnit'])->group(function(){
   Route::post('/simpanWawancara',[WawancaraController::class,'storeData'])->name('kandidat.addWawancara');
   Route::get('/jadwalwawancara/all',[WawancaraController::class, 'showAllJadwal'])->name('jadwal.alljadwal');
   Route::post('/jadwal/cancel/{id}',[WawancaraController::class,'cancelJadwal'])->name('jadwal.cancel');
+
+  Route::get('/kriteriaUnit',[KriteriaController::class, 'showKriteriaUnit'])->name('kriteria.showUnit');
+  Route::post('/kriteriaUnit/store', [KriteriaController::class, 'storeKriteriaUnit'])->name('kriteria.storeKriteriaUnit');
+  Route::post('/kriteriaUnit/strorekriteriaUnit', [KriteriaController::class, 'saveBobotKriteriaUnit'])->name('kriteria.kriteriaunit');
+
+  Route::get('/AHP',[AHPController::class, 'index'])->name('ahp.show');
 });
 Route::middleware(['auth','role:StaffUnit'])->group(function(){
    Route::get('/dashboardStaff',[DashboardStaffUnitController::class, 'index'])->name('staff.dashboard');

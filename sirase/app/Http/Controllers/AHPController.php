@@ -11,7 +11,7 @@ class AHPController extends Controller
      */
     public function index()
     {
-        //
+        return view('AHP.pairwise');
     }
 
     /**

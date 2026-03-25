@@ -8,7 +8,7 @@ class BobotKriteria extends Model
 {
     protected $table = "bobot_kriteria";
 
-    protected $fillable= ['idUnit','idKriteria','nilaiBobot'];
+    protected $fillable= ['idUnit','idKriteria','nilaiBobot','is_active'];
 
     public function unit(){
         return $this->belongsTo(Unit::class, 'idUnit');

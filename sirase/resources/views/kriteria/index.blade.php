@@ -30,6 +30,9 @@
                         </thead>
                         <tbody>
                             @foreach ($kriteria as $index => $kriterias)
+                                @php
+                                    $dipakai = $kriterias->bobotKriteria->count() > 0;
+                                @endphp
                                 <tr class={{ $kriterias->status == 0 ? 'table-secondary' : '' }}>
                                     <td class="text-sm" style="padding: 10px 16px; text-align: center;">{{ $index + 1 }}
                                     </td>
@@ -41,6 +44,22 @@
                                         @else
                                             <span class="badge bg-gradient-danger text-white px-3 py-2">Nonaktif</span>
                                         @endif
+                                    </td>
+                                    <td class="text-center">
+                                        <button class="btn btn-warning btn-sm btnEdit" data-id={{ $kriterias->id }}
+                                            data-nama="{{ $kriterias->namaKriteria }}"
+                                            {{ $dipakai || $kriterias->status == 0 ? 'disabled' : '' }}>
+                                            Edit
+                                        </button>
+                                        <form action="{{ route('kriteria.toggle', $kriterias->id) }}" method="POST"
+                                            class="d-inline">
+                                            @csrf
+                                            <button
+                                                class="btn btn-{{ $kriterias->status == 1 ? 'danger' : 'success' }} btn-sm btnToggle"
+                                                type="button" {{ $dipakai ? 'disabled' : '' }}>
+                                                {{ $kriterias->status == 1 ? 'Nonaktifkan' : 'Aktifkan' }}
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach
@@ -70,7 +89,41 @@
                                 <i class="material-symbols-rounded text-secondary ms-1" style="font-size: 1rem;">info</i>
                             </div>
                             <input type="text" class="form-control border rounded-3 px-3 py-2" name="namaKriteria"
-                                id="namaUrutan" value="{{ old('namaKriteria') }}">
+                                id="namaKriteria" value="{{ old('namaKriteria') }}">
+                            @error('namaKriteria')
+                                <div class="text-danger" id="errorName">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Simpan</button>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class= "modal fade" id="modaleditKriteria" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="formEditKriteria" method="POST">
+                    <div
+                        class="modal-header d-flex justify-content-between align-items-center bg-dark text-white px-4 py-3">
+                        <h5 class="modal-title text-white">Edit Kriteria</h5>
+                        <button type="button" class="btn-close btn-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        @csrf
+                        <div class="form-group mb-1">
+                            <label for="name" class="form-label fw-bold text-secondary">Nama Kriteria</label>
+                            <div class="custom-tooltip"
+                                data-title="Masukkan nama kriteria anda,wajib diisi apabila ingin menginput">
+                                <i class="material-symbols-rounded text-secondary ms-1" style="font-size: 1rem;">info</i>
+                            </div>
+                            <input type="text" class="form-control border rounded-3 px-3 py-2" name="namaKriteria"
+                                id="editNamaKriteria" value="{{ old('namaKriteria') }}">
                             @error('namaKriteria')
                                 <div class="text-danger" id="errorName">{{ $message }}</div>
                             @enderror
@@ -90,6 +143,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         $(document).ready(function() {
@@ -110,6 +164,67 @@
                     }
                 ]
             })
-        })
+
+            $('.btnToggle').click(function() {
+                let form = $(this).closest('form');
+                let actionText = $(this).text().trim();
+
+                Swal.fire({
+                    title: 'Apakah Anda yakin?',
+                    text: "Anda akan " + actionText.toLowerCase() + " kriteria ini.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, ' + actionText.toLowerCase() + '!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+
+            @if (session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: "{{ session('success') }}",
+                    timer: 2500,
+                    showConfirmButton: false
+                });
+            @elseif (session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: "{{ session('error') }}",
+                    timer: 2500,
+                    showConfirmButton: false
+                });
+            @endif
+
+            @if ($errors->any())
+                @if (old('namaKriteria') && request()->routeIs('kriteria.store'))
+                    $('#modaladdKriteria').modal('show');
+                @elseif (old('namaKriteria') && request()->routeIs('kriteria.update'))
+                    $('#modaleditKriteria').modal('show');
+                @endif
+            @endif
+        });
+
+        $(document).on('click', '.btnEdit', function() {
+            let id = $(this).data('id');
+            let nama = $(this).data('nama');
+
+            $('#editNamaKriteria').val(nama)
+
+            $('#formEditKriteria').attr(
+                'action',
+                '/kriteria/' + id + '/update'
+            );
+
+            $('#modaleditKriteria').modal('show')
+
+        });
     </script>
 @endpush

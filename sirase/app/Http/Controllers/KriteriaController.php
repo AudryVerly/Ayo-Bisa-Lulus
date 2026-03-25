@@ -17,11 +17,18 @@ class KriteriaController extends Controller
 
     public function storeData(Request $request)
     {
+        // ini ngecek supaya kek misalnya sama atau hurig besar kecil bisa gak double update
+        $namaInput = trim($request->namaKriteria);
+        if (Kriteria::whereRaw('LOWER(TRIM(namaKriteria)) = ?', [strtolower($namaInput)])->exists()) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Nama Kriteria sudah ada.');
+        }
+
         $request->validate([
-            'namaKriteria' => 'required|unique:kriteria,namaKriteria',
+            'namaKriteria' => 'required',
         ], [
             'required' => 'Bagian :attribute wajib diisi.',
-            'namaKriteria.unique' => 'Nama Kriteria yang dimasukkan sudah ada didata ',
         ], [
             'namaKriteria' => 'nama kriteria',
         ]);
@@ -45,11 +52,19 @@ class KriteriaController extends Controller
                 ->with('error', 'Kriteria sudah dipakai unit, tidak bisa diedit.');
         }
 
+        $namaInput = trim($request->namaKriteria);
+
+        if (Kriteria::whereRaw('LOWER(TRIM(namaKriteria)) = ?', [strtolower($namaInput)])
+            ->where('id', '<>', $id)
+            ->exists()
+        ) {
+            return redirect()->back()->withInput()->with('error', 'Nama Kriteria sudah ada.');
+        }
+
         $request->validate([
-            'namaKriteria' => 'required|unique:kriteria,namaKriteria,'.$id,
+            'namaKriteria' => 'required'
         ], [
             'required' => 'Bagian :attribute wajib diisi.',
-            'namaKriteria.unique' => 'Nama Kriteria yang dimasukkan sudah ada didata ',
         ], [
             'namaKriteria' => 'nama kriteria',
         ]);

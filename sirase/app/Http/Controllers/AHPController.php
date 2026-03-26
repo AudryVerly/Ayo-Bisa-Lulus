@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BobotKriteria;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AHPController extends Controller
 {
@@ -11,7 +14,17 @@ class AHPController extends Controller
      */
     public function index()
     {
-        return view('AHP.pairwise');
+        $idUnit = Auth::user()->staffUnit()->pluck('idUnit')->first();
+        $kriteria = DB::table('bobot_kriteria as b')
+                    ->join('kriteria as k', 'k.id','=','b.idKriteria')
+                    ->where('b.idUnit', $idUnit)
+                    ->where('b.is_active', 1)
+                    ->select(
+                        'k.id',
+                        'k.namaKriteria as namaKriteria'
+                    )
+                    ->get();
+        return view('AHP.pairwise',compact('kriteria'));
     }
 
     /**

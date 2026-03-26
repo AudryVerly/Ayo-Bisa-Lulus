@@ -29536,42 +29536,42 @@ body.modal-open .sidenav {
   /* box-shadow: 0 0 0 1px #e9ecef; */
 }
 
-.timeline-pro-unit{
+.timeline-pro-unit {
   position: relative;
   padding-left: 30px;
   margin-top: 5px;
 }
 
 .timeline-pro-unit::before {
-    content: "";
-    position: absolute;
-    left: 8px;
-    top: 5px;
-    bottom: 2px;
-    width: 2px;
-    background: #e9ecef;
-    border-radius: 10px;
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 5px;
+  bottom: 2px;
+  width: 2px;
+  background: #e9ecef;
+  border-radius: 10px;
 }
 
 /* Item */
 .timeline-item-pro-unit {
-    position: relative;
-    margin-bottom: 10px !important;
-    padding-bottom: 5px
+  position: relative;
+  margin-bottom: 10px !important;
+  padding-bottom: 5px
 }
 
 .timeline-item-pro-unit form {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
-#calendar{
-  max-width:100%;
+#calendar {
+  max-width: 100%;
 }
 
-.fc-event{
+.fc-event {
   border-radius: 20px;
-  padding:3px 8px;
-  font-size:12px;
+  padding: 3px 8px;
+  font-size: 12px;
 }
 
 /* .tooltip {
@@ -29580,99 +29580,229 @@ body.modal-open .sidenav {
 
 /* Container utama untuk label dan ikon */
 .label-info-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 /* Container khusus ikon */
 .custom-tooltip {
-    position: relative;
-    display: inline-flex; /* Menjaga ikon tetap sejajar teks */
-    align-items: center;
-    cursor: help;
-    vertical-align: middle;
-    
+  position: relative;
+  display: inline-flex;
+  /* Menjaga ikon tetap sejajar teks */
+  align-items: center;
+  cursor: help;
+  vertical-align: middle;
+
 }
 
 .custom-tooltip i {
-   transform: translateY(-6px);
-   margin-left: 13px;
-    
+  transform: translateY(-6px);
+  margin-left: 13px;
+
 }
 
 /* Kotak Hitam Tooltip */
 .custom-tooltip::after {
-    content: attr(data-title); /* Ambil teks dari atribut data-title */
-    position: absolute;
-    bottom: 160%; /* Jarak melayang di atas ikon kalau mau dibawah ubah jadi top */
-    left: 50%;
-    transform: translateX(-50%);
-    width: 200px; /* Lebar kotak */
-    padding: 10px 14px;
-    background: rgba(33, 33, 33, 0.95); /* Warna gelap Material */
-    color: #fff;
-    font-size: 14px; /* Font lebih besar sesuai maumu */
-    border-radius: 8px;
-    text-align: center;
-    z-index: 9999; /* Pastikan paling depan di modal */
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.2s ease-in-out;
-    font-weight: 400;
-    line-height: 1.5;
-    pointer-events: none; /* Supaya tidak mengganggu klik */
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  content: attr(data-title);
+  /* Ambil teks dari atribut data-title */
+  position: absolute;
+  bottom: 160%;
+  /* Jarak melayang di atas ikon kalau mau dibawah ubah jadi top */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  /* Lebar kotak */
+  padding: 10px 14px;
+  background: rgba(33, 33, 33, 0.95);
+  /* Warna gelap Material */
+  color: #fff;
+  font-size: 14px;
+  /* Font lebih besar sesuai maumu */
+  border-radius: 8px;
+  text-align: center;
+  z-index: 9999;
+  /* Pastikan paling depan di modal */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease-in-out;
+  font-weight: 400;
+  line-height: 1.5;
+  pointer-events: none;
+  /* Supaya tidak mengganggu klik */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 /* Panah Bawah */
 .custom-tooltip::before {
-    content: "";
-    position: absolute;
-    bottom: 63%; /* Pas di bawah kotak hitam */
-    left: 50%;
-    transform: translateX(-50%);
-    border: 8px solid transparent;
-    border-top-color: rgba(33, 33, 33, 0.95); /* Warna harus sama dengan kotak */
-    z-index: 9999;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.2s ease-in-out;
-    pointer-events: none;
+  content: "";
+  position: absolute;
+  bottom: 63%;
+  /* Pas di bawah kotak hitam */
+  left: 50%;
+  transform: translateX(-50%);
+  border: 8px solid transparent;
+  border-top-color: rgba(33, 33, 33, 0.95);
+  /* Warna harus sama dengan kotak */
+  z-index: 9999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease-in-out;
+  pointer-events: none;
 }
 
 /* Munculkan Tooltip saat Hover */
-.custom-tooltip:hover::after, 
+.custom-tooltip:hover::after,
 .custom-tooltip:hover::before {
-    opacity: 1;
-    visibility: visible;
+  opacity: 1;
+  visibility: visible;
 }
 
 .job-card img {
-    padding: 10px;
-    background-color: #f8f9fa;
-    object-fit: contain; /* Supaya isi poster tidak terpotong */
-    height: 180px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  object-fit: contain;
+  /* Supaya isi poster tidak terpotong */
+  height: 180px;
 }
 
-.cardUnit-checkbox{
-    border:1px solid #ddd;
-    border-radius:12px;
-    padding:15px;
-    cursor:pointer;
-    display:flex;
-    align-items:center;
-    gap:10px;
-    transition:.2s;
-}
-.cardUnit-checkbox.checked{
-    border-color:#0d6efd;
-    background:#e7f1ff;
+.cardUnit-checkbox {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: .2s;
 }
 
-.cardUnit-checkbox:hover{
-    transform:scale(1.02);
+.cardUnit-checkbox.checked {
+  border-color: #0d6efd;
+  background: #e7f1ff;
 }
 
+.cardUnit-checkbox:hover {
+  transform: scale(1.02);
+}
+
+.container-main {
+  padding: 30px 20px;
+}
+
+/* comparison card modern */
+.comparison-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: .3s;
+}
+
+.card-custom {
+  background: #f1f3f7;
+  border-radius: 14px;
+  padding: 22px;
+  margin-bottom: 22px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, .08);
+}
+
+.comparison-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.12);
+}
+
+.criterion {
+  font-weight: 600;
+  width: 160px;
+  text-align: center;
+  color: black;
+  font-size: 1.05rem;
+}
+
+.slider-container {
+  flex: 1;
+  margin: 0 25px;
+  position: relative;
+}
+
+/* slider modern SAFE */
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 10px;
+  /* Sedikit lebih tipis agar elegan */
+  border-radius: 10px;
+  background: #e5e7eb;
+  /* Warna dasar abu-abu terang */
+  outline: none;
+  transition: .3s;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 24px;
+  height: 24px;
+  background: #ffffff;
+  border: 3px solid #10b981;
+  /* Warna Indigo yang tenang */
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: .2s;
+}
+
+.slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  border-color: #10b981;
+}
+
+.slider-value {
+  position: absolute;
+  top: -32px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: bold;
+  color: #047857;
+  background: #ecfdf5;
+  padding: 3px 8px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .12);
+  font-size: .9rem;
+}
+
+/* ini untuk tabel ahp */
+.table-ahp {
+  background: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+  border-collapse: collapse !important;
+}
+
+.table-ahp thead th,
+.table-ahp tbody td {
+  background-color: #ffffff !important;
+  padding: 10px 15px;
+  vertical-align: middle;
+  color: #374151;
+  /* Warna border yang sangat soft agar tidak kaku */
+  border: 1px solid #dee2e6 !important;
+}
+
+.badge-ahp {
+  display: inline-block;
+  background: #10b981;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: bold;
+  min-width: 30px;
+  text-align: center;
+}
 
 /*# sourceMappingURL=dashboard-free.css.map */

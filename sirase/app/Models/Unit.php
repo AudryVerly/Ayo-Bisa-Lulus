@@ -29,4 +29,8 @@ class Unit extends Model
         return $this->hasMany(BobotKriteria::class, 'idKriteria');
     }
 
+    public function pairwise(){
+        return $this->hasMany(PairwiseComparison::class, 'idUnit');
+    }
+
 }

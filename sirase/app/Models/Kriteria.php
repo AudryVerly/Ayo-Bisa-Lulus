@@ -16,4 +16,9 @@ class Kriteria extends Model
     public function bobotKriteria(){
         return $this->hasMany(BobotKriteria::class, 'idKriteria');
     }
+
+    public function pairwise(){
+        return $this->hasMany(PairwiseComparison::class, 'kriteriaAwal')
+               ->orWhere('kriteriaPembanding', $this->id);
+    }
 }

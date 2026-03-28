@@ -111,6 +111,7 @@ Route::middleware(['auth','role:AdminUnit'])->group(function(){
   Route::post('/kriteriaUnit/strorekriteriaUnit', [KriteriaController::class, 'saveBobotKriteriaUnit'])->name('kriteria.kriteriaunit');
 
   Route::get('/AHP',[AHPController::class, 'index'])->name('ahp.show');
+  Route::post('/AHP/store',[AHPController::class,'storeBobot'])->name('ahp.store');
 });
 Route::middleware(['auth','role:StaffUnit'])->group(function(){
    Route::get('/dashboardStaff',[DashboardStaffUnitController::class, 'index'])->name('staff.dashboard');

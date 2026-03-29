@@ -217,8 +217,16 @@
                                                                         </button>
                                                                     </form>
                                                                 @endif
+                                                                @php
+                                                                    $today = \Carbon\Carbon::today();
+                                                                    $batas = \Carbon\Carbon::parse(
+                                                                        $lowongans->batasPendaftaran,
+                                                                    );
+                                                                @endphp
                                                                 <a href="{{ route('lowongans.edit', $lowongans->id) }}"
-                                                                    class="btn bg-gradient-info text-white px-4">
+                                                                    class="btn bg-gradient-info text-white px-4
+                                                                    {{ $lowongans->is_ready == 1 && $today >= $batas ? 'disabled' : '' }}"
+                                                                    style="{{ $lowongans->is_ready == 1 && $today >= $batas ? 'pointer-events:none;' : '' }}">
                                                                     <i class="material-symbols-rounded text-sm">edit</i><span
                                                                         class="align-middle">&nbsp;&nbsp;Edit Lowongan</span>
                                                                 </a>

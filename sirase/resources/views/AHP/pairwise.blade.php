@@ -78,6 +78,7 @@
     </div>
 @endsection
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
             $('input.slider').each(function() {
@@ -156,14 +157,38 @@
                         console.log("=== CR ===");
                         console.log(res.CR);
 
-                        if (res.isConsistent) {
-                            console.log("✅ KONSISTEN (CR < 0.1)");
-                        } else {
-                            console.log("❌ TIDAK KONSISTEN");
+                        if (!res.isConsistent) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Tidak Konsisten',
+                                text: 'CR > 0.1, silakan ubah nilai perbandingan',
+                            });
+                            return;
                         }
+
+                        if (!res.isBobotValid) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Bobot Tidak Valid',
+                                text: 'Total bobot tidak sama dengan 1',
+                            });
+                            return;
+                        }
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: 'Perhitungan AHP valid & berhasil disimpan!',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
                     },
                     error: function(err) {
-                        console.log(err);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Terjadi kesalahan saat memasukkan bobot.'
+                        });
                     }
                 })
             });

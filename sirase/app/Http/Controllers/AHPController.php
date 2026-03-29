@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BobotKriteria;
+use App\Models\PairwiseComparison;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -29,6 +31,7 @@ class AHPController extends Controller
 
     public function storeBobot(Request $request)
     {
+        $idUnit = Auth::user()->staffUnit()->pluck('idUnit')->first();
         $data = $request->data;
 
         $matrix = [];
@@ -45,6 +48,19 @@ class AHPController extends Controller
 
             $matrix[$i][$i] = 1;
             $matrix[$j][$j] = 1;
+        }
+
+        $allKriteria = array_unique(array_merge(
+            array_column($data, 'kriteria1'),
+            array_column($data, 'kriteria2')
+        ));
+
+        foreach ($allKriteria as $i) {
+            foreach ($allKriteria as $j) {
+                if (! isset($matrix[$i][$j])) {
+                    $matrix[$i][$j] = ($i == $j) ? 1 : 0;
+                }
+            }
         }
 
         // ini buat hitung kolom
@@ -84,7 +100,7 @@ class AHPController extends Controller
 
         $lambda = [];
         foreach ($eigen as $i => $val) {
-            $lambda[$i] = $val / $bobot[$i];
+            $lambda[$i] = $bobot[$i] != 0 ? $val / $bobot[$i] : 0;
         }
 
         $lambdaMax = array_sum($lambda) / count($lambda);
@@ -109,6 +125,53 @@ class AHPController extends Controller
         $CR = $RI[$n] != 0 ? $CI / $RI[$n] : 0;
         $isConsistent = $CR < 0.1;
 
+        $isBobotValid = abs($totalBobot - 1) < 0.01;
+
+        if (! $isConsistent) {
+            return response()->json([
+                'matrix' => $matrix,
+                'column' => $colsum,
+                'normalisasi' => $normalized,
+                'bobot' => $bobot,
+                'totalBobot' => $totalBobot,
+                'eigen' => $eigen,
+                'lambda' => $lambda,
+                'lambdaMax' => $lambdaMax,
+                'CI' => $CI,
+                'CR' => $CR,
+                'isConsistent' => false,
+                'isBobotValid' => false,
+                'message' => 'Tidak konsisten, tidak disimpan',
+            ]);
+        }
+
+        // simpan pairwise
+        // ini delete supaya data pairwise di id itu tidak duplikat
+        PairwiseComparison::where('idUnit', $idUnit)->delete();
+
+        foreach ($data as $item) {
+            PairwiseComparison::create([
+                'idUnit' => $idUnit,
+                'kriteriaAwal' => $item['kriteria1'],
+                'kriteriaPembanding' => $item['kriteria2'],
+                'nilai' => $item['nilai'],
+            ]);
+        }
+
+        // ini tinggal di update aja sesuai idkriteria dan idUnit
+        foreach ($bobot as $idKriteria => $nilai) {
+            BobotKriteria::updateOrCreate(
+                [
+                    'idUnit' => $idUnit,
+                    'idKriteria' => $idKriteria,
+                    'is_active' => 1,
+                ],
+                [
+                    'nilaiBobot' => $nilai,
+                ]
+            );
+        }
+
         return response()->json([
             'matrix' => $matrix,
             'column' => $colsum,
@@ -120,7 +183,11 @@ class AHPController extends Controller
             'lambdaMax' => $lambdaMax,
             'CI' => $CI,
             'CR' => $CR,
-            'isConsistent' => $isConsistent,
+            'isConsistent' => true,
+            'isBobotValid' => $isBobotValid,
+            'message' => $isBobotValid
+                ? 'Perhitungan berhasil & bobot valid'
+                : 'Bobot tidak valid (total tidak = 1)',
         ]);
     }
 }

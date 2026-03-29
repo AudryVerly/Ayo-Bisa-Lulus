@@ -70,8 +70,6 @@
                                             style="text-align: center;">Bobot Nilai</th>
                                         <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
                                             style="text-align: center;">Status</th>
-                                        <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
-                                            style="text-align: center;">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -94,15 +92,6 @@
                                                     <span
                                                         class="badge bg-gradient-danger text-white px-3 py-2">Nonaktif</span>
                                                 @endif
-                                            </td>
-                                            <td>
-                                                <div class="d-flex justify-content-center gap-2"
-                                                    style="text-align: center;">
-                                                    <button
-                                                        class="btn btn-{{ $kriteria->is_active == 1 ? 'danger' : 'success' }} btn-sm btnToggle">
-                                                        {{ $kriteria->is_active == 1 ? 'Nonaktifkan' : 'Aktifkan' }}
-                                                    </button>
-                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach

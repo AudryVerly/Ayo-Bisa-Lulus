@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\BobotKriteria;
 use App\Models\Kriteria;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -101,6 +102,18 @@ class KriteriaController extends Controller
     {
         $idUnit = Auth::user()->staffUnit()->pluck('idUnit')->first();
 
+        $kriteriaExists = DB::table('bobot_kriteria')
+            ->where('idUnit', $idUnit)
+            ->where('is_active', 1)
+            ->exists();
+
+        $today = Carbon::today();
+        $isLocked = DB::table('lowongan')
+            ->where('idUnit', $idUnit)
+            ->whereDate('batasPendaftaran', '<', $today)
+            ->whereDate('mulaiKerja', '>=', $today)
+            ->exists();
+
         $kriteria = DB::table('kriteria')
             ->where('status', 1)
             ->get();
@@ -119,7 +132,7 @@ class KriteriaController extends Controller
             )
             ->get();
 
-        return view('kriteria.kriteriaunit', compact('kriteria', 'selected', 'kriteriaUnit'));
+        return view('kriteria.kriteriaunit', compact('kriteria', 'selected', 'kriteriaUnit', 'isLocked', 'kriteriaExists'));
     }
 
     public function storeKriteriaUnit(Request $request)
@@ -168,26 +181,52 @@ class KriteriaController extends Controller
         }
 
         DB::transaction(function () use ($idUnit, $kriteriaDipilih) {
-           
+
             $sudahada = DB::table('bobot_kriteria')
+                ->where('idUnit', $idUnit)
+                ->pluck('idKriteria')
+                ->toArray();
+
+            foreach ($kriteriaDipilih as $idKriteria) {
+                $cek = DB::table('bobot_kriteria')
                     ->where('idUnit', $idUnit)
-                    ->pluck('idKriteria')
-                    ->toArray();
-
-           $kriteriaBaru = array_diff($kriteriaDipilih, $sudahada);
-
-            foreach($kriteriaBaru as $idKriteria){
-                     DB::table('bobot_kriteria')->insert([
-                    'idUnit' => $idUnit,
-                    'idKriteria' => $idKriteria,
-                    'nilaiBobot' => 0,
-                    'is_active' => 1,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
+                    ->where('idKriteria', $idKriteria)
+                    ->first();
+                if ($cek) {
+                    DB::table('bobot_kriteria')
+                        ->where('idUnit', $idUnit)
+                        ->where('idKriteria', $idKriteria)
+                        ->update([
+                            'is_active' => 1,
+                        ]);
+                } else {
+                    DB::table('bobot_kriteria')->insert([
+                        'idUnit' => $idUnit,
+                        'idKriteria' => $idKriteria,
+                        'nilaiBobot' => 0,
+                        'is_active' => 1,
+                    ]);
+                }
             }
         });
 
-        return view('AHP.pairwise')->with('success', 'Konfigurasi kriteria berhasil disimpan');
+        return redirect()->route('ahp.show')
+            ->with('success', 'Konfigurasi kriteria berhasil disimpan');
+    }
+
+    public function resetKriteria()
+    {
+        $idUnit = Auth::user()->staffUnit()->pluck('idUnit')->first();
+
+        DB::table('bobot_kriteria')
+            ->where('idUnit', $idUnit)
+            ->update([
+                'is_active' => 0,
+            ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'kriteria berhasil direset',
+        ]);
     }
 }

@@ -29,7 +29,12 @@
                         <small class="text-dark">Kriteria baru akan tersedia utuk seluruh Unit</small>
                     </div>
                 </div>
-
+                @if ($isLocked)
+                    <div class="alert alert-danger">
+                        Tidak bisa mengubah kriteria karena lowongan sedang dalam proses (pendaftaran sudah ditutup dan
+                        belum mulai kerja).
+                    </div>
+                @endif
                 <form action="{{ route('kriteria.kriteriaunit') }}" method="POST">
                     @csrf
                     <div class="row" id="kriteriaContainer">
@@ -37,7 +42,8 @@
                             <div class="col-md-4 mb-3">
                                 <div class="cardUnit-checkbox {{ in_array($k->id, $selected) ? 'checked' : '' }}">
                                     <input type="checkbox" name="kriteria[]" value={{ $k->id }}
-                                        {{ in_array($k->id, $selected) ? 'checked' : '' }}>
+                                        {{ in_array($k->id, $selected) ? 'checked' : '' }}
+                                        {{ $isLocked ? 'disabled' : '' }}>
                                     <label class="m-0">{{ $k->namaKriteria }}</label>
                                 </div>
                             </div>
@@ -45,11 +51,20 @@
                     </div>
                     <hr>
                     <div class="text-end">
-                        <button class="btn btn-success px-4" id="btnSimpan">
-                            Simpan Pilihan
-                        </button>
+                        @if (!$kriteriaExists)
+                            <button type="submit" class="btn btn-success" id="btnSimpan">
+                                Simpan Pilihan
+                            </button>
+                        @endif
                     </div>
                 </form>
+                <div class="text-end">
+                    @if ($kriteriaExists)
+                        <button type="button" class="btn btn-danger" {{ $isLocked ? 'disabled' : '' }} id="btnReset">
+                            Reset Kriteria
+                        </button>
+                    @endif
+                </div>
                 <div class="card shadow-sm border-0">
                     <div class="card-header bg-white">
                         <h5 class="fw-bold mb-0">Kriteria Digunakan Unit</h5>
@@ -148,8 +163,10 @@
                 });
             @endif
 
+            let isLocked = @json($isLocked);
             //untuk mengecek limit kriteria masing masing unit
             function updateLimit() {
+
                 let total = $('input[name="kriteria[]"]:checked').length
 
                 $('#counterKriteria').text(total + '/ 5 dipilih')
@@ -161,6 +178,11 @@
                     $('.cardUnit-checkbox.checked').last().removeClass('checked')
 
                     total--
+                }
+
+                if (isLocked) {
+                    $('#btnSimpan').prop('disabled', true)
+                    return
                 }
 
                 if (total < 3) {
@@ -224,6 +246,30 @@
                         $('#namaKriteria').val('').focus()
 
                         updateLimit()
+                    }
+                })
+            });
+
+            $('#btnReset').click(function() {
+                Swal.fire({
+                    title: 'Reset kriteria?',
+                    text: 'Semua kriteria akan dinonaktifkan!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya reset'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "{{ route('kriteria.reset') }}",
+                            type: "POST",
+                            data: {
+                                _token: "{{ csrf_token() }}"
+                            },
+                            success: function(res) {
+                                Swal.fire('Berhasil', res.message, 'success')
+                                location.reload()
+                            }
+                        })
                     }
                 })
             });

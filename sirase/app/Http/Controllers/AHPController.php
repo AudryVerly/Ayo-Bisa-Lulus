@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BobotKriteria;
 use App\Models\PairwiseComparison;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -26,13 +27,36 @@ class AHPController extends Controller
             )
             ->get();
 
-        return view('AHP.pairwise', compact('kriteria'));
+        $pairwise = PairwiseComparison::where('idUnit', $idUnit)->get();
+        $today = Carbon::today();
+
+        $isLocked = DB::table('lowongan')
+            ->where('idUnit', $idUnit)
+            ->whereDate('batasPendaftaran','<', $today )
+            ->whereDate('mulaiKerja', '>', $today)
+            ->exists();
+
+        return view('AHP.pairwise', compact('kriteria', 'pairwise', 'isLocked'));
     }
 
     public function storeBobot(Request $request)
     {
         $idUnit = Auth::user()->staffUnit()->pluck('idUnit')->first();
         $data = $request->data;
+
+        $today = Carbon::today();
+
+        $isLocked = DB::table('lowongan')
+            ->where('idUnit', $idUnit)
+             ->whereDate('batasPendaftaran','<', $today )
+            ->whereDate('mulaiKerja', '>=', $today)
+            ->exists();
+
+        if ($isLocked) {
+            return response()->json([
+                'message' => 'Tidak bisa mengubah bobot karena masih ada lowongan aktif',
+            ], 403);
+        }
 
         $matrix = [];
 
@@ -57,7 +81,7 @@ class AHPController extends Controller
 
         foreach ($allKriteria as $i) {
             foreach ($allKriteria as $j) {
-                if (! isset($matrix[$i][$j])) {
+                if (!isset($matrix[$i][$j])) {
                     $matrix[$i][$j] = ($i == $j) ? 1 : 0;
                 }
             }

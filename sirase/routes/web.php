@@ -8,9 +8,6 @@ use App\Http\Controllers\FormulirController;
 use App\Http\Controllers\KandidatPendaftaran;
 use App\Http\Controllers\KandidatPendaftaranController;
 use App\Http\Controllers\KriteriaController;
-use App\Http\Controllers\KriteriaController as ControllersKriteriaController;
-use App\Http\Controllers\KriteriaController as HttpControllersKriteriaController;
-use App\Http\Controllers\KriteriaController as AppHttpControllersKriteriaController;
 use App\Http\Controllers\LowonganController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\pendaftaranController;
@@ -109,6 +106,7 @@ Route::middleware(['auth','role:AdminUnit'])->group(function(){
   Route::get('/kriteriaUnit',[KriteriaController::class, 'showKriteriaUnit'])->name('kriteria.showUnit');
   Route::post('/kriteriaUnit/store', [KriteriaController::class, 'storeKriteriaUnit'])->name('kriteria.storeKriteriaUnit');
   Route::post('/kriteriaUnit/strorekriteriaUnit', [KriteriaController::class, 'saveBobotKriteriaUnit'])->name('kriteria.kriteriaunit');
+  Route::post('/kriteriaUnit/reset',[KriteriaController::class, 'resetKriteria'])->name('kriteria.reset');
 
   Route::get('/AHP',[AHPController::class, 'index'])->name('ahp.show');
   Route::post('/AHP/store',[AHPController::class,'storeBobot'])->name('ahp.store');

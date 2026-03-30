@@ -6,6 +6,11 @@
         <div class="card-custom">
             <h3>Pairwise Comparison Kriteria</h3>
             <p>Geser Slider sesuai dengan keperluan dan seberapa penting kriteria</p>
+            @if ($isLocked)
+                <div class="alert alert-warning">
+                    Tidak bisa mengubah bobot karena masih ada lowongan yang belum mencapai tanggal mulai kerja dan sudah tutup batas pendaftaran.
+                </div>
+            @endif
             <form id="pairwiseform">
                 @php
                     $pairs = [];
@@ -15,20 +20,21 @@
                         }
                     }
                 @endphp
-
                 @foreach ($pairs as $index => $pair)
                     <div class="comparison-card">
                         <div class="criterion">{{ $pair[0]->namaKriteria }}</div>
                         <div class="slider-container">
                             <span class="slider-value" id="val{{ $index }}">1</span>
                             <input type="range" min="1" max="9" value="1" class="slider"
-                                id="slider{{ $index }}" name="comparison[{{ $pair[0]->id }}-{{ $pair[1]->id }}]">
+                                id="slider{{ $index }}" name="comparison[{{ $pair[0]->id }}-{{ $pair[1]->id }}]"
+                                {{ $isLocked ? 'disabled' : '' }}>
                         </div>
                         <div class="criterion">{{ $pair[1]->namaKriteria }}</div>
                     </div>
                 @endforeach
                 <div class="d-flex justify-content-end mt-3">
-                    <button type="button" id="btnProses" class="btn btn-success" style="width: 15%;">
+                    <button type="button" id="btnProses" class="btn btn-success" style="width: 15%;"
+                        {{ $isLocked ? 'disabled' : '' }}>
                         Proses AHP
                     </button>
                 </div>
@@ -80,12 +86,40 @@
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        let pairwiseData = @json($pairwise)
+    </script>
+    <script>
         $(document).ready(function() {
             $('input.slider').each(function() {
 
                 var $slider = $(this);
                 var index = $slider.attr('id').replace('slider', '');
                 var $val = $('#val' + index);
+
+                let key = $slider.attr('name');
+                let match = key.match(/\[(\d+)-(\d+)\]/);
+
+                if (match) {
+                    let k1 = match[1];
+                    let k2 = match[2];
+
+                    let found = pairwiseData.find(p =>
+                        (p.kriteriaAwal == k1 && p.kriteriaPembanding == k2) ||
+                        (p.kriteriaAwal == k2 && p.kriteriaPembanding == k1)
+                    );
+
+                    if (found) {
+                        let value;
+
+                        if (found.kriteriaAwal == k1) {
+                            value = found.nilai;
+                        } else {
+                            value = 1 / found.nilai;
+                        }
+
+                        $slider.val(value);
+                    }
+                }
 
                 function updateSlider() {
                     let v = $slider.val();

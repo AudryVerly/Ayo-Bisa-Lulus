@@ -22,4 +22,8 @@ class WawancaraPenilai extends Model
     public function staffUnit(){
         return $this->belongsTo(StaffUnit::class,'idStaffUnit');
     }
+
+    public function penilaianKandidat(){
+        return $this->hasMany(penilaianKandidat::class, 'idWawancaraPenilai');
+    }
 }

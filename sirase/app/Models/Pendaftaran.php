@@ -38,4 +38,8 @@ class Pendaftaran extends Model
     public function jadwalWawancara(){
         return $this->hasMany(PenjadwalanWawancara::class, 'idPendaftaran');
     }
+
+    public function penilaianKandidat(){
+        return $this->hasMany(PenilaianKandidat::class, 'idPendaftaran');
+    }
 }

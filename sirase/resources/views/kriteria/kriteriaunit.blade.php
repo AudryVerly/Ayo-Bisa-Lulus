@@ -30,7 +30,7 @@
                     </div>
                 </div>
                 @if ($isLocked)
-                    <div class="alert alert-danger">
+                    <div class="alert alert-danger text-white">
                         Tidak bisa mengubah kriteria karena lowongan sedang dalam proses (pendaftaran sudah ditutup dan
                         belum mulai kerja).
                     </div>

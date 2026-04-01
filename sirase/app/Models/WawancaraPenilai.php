@@ -16,7 +16,7 @@ class WawancaraPenilai extends Model
     ];
 
     public function jadwalWawancara(){
-        return $this->belongsTo(PenilaiWawancara::class, 'idJadwalWawancara');
+        return $this->belongsTo(PenjadwalanWawancara::class, 'idJadwalWawancara');
     }
 
     public function staffUnit(){

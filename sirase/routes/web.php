@@ -11,6 +11,7 @@ use App\Http\Controllers\KriteriaController;
 use App\Http\Controllers\LowonganController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\pendaftaranController;
+use App\Http\Controllers\PenilaianKandidatController;
 use App\Http\Controllers\StaffUnitController;
 use App\Http\Controllers\TahapRekrutmenController;
 use App\Http\Controllers\TimPenilaiController;
@@ -114,6 +115,8 @@ Route::middleware(['auth','role:AdminUnit'])->group(function(){
 Route::middleware(['auth','role:StaffUnit'])->group(function(){
    Route::get('/dashboardStaff',[DashboardStaffUnitController::class, 'index'])->name('staff.dashboard');
    Route::get('/listwawancarastaff',[WawancaraController::class, 'showCalendarStaffUnit'])->name('listwawancarastaff.show');
+
+   Route::get('/penilaiankandidat',[PenilaianKandidatController::class, 'index'])->name('penilaian.show');
 });
 
 Route::middleware(['auth','role:SuperAdmin'])->group(function(){

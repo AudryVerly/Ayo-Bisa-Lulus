@@ -26,6 +26,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Phiki\Phast\Root;
 use App\Mail\MyTestEmail;
+use App\Models\PenilaianSetiapBobot;
 
 // Route::get('/', function () {
 //     return view('dashboard'); 
@@ -118,6 +119,8 @@ Route::middleware(['auth','role:StaffUnit'])->group(function(){
 
    Route::get('/penilaiankandidat',[PenilaianKandidatController::class, 'index'])->name('penilaian.show');
    Route::get('/penilaiankandidat/{id}/form',[PenilaianKandidatController::class, 'showForm'])->name('penilaian.formMenilai');
+   Route::post('/penilaiankandidat/hasilPenilaia',[PenilaianKandidatController::class, 'saveNilai'])->name('penilaian.hasilNilai');
+   Route::get('/penilaiankandidat/detailNilaiKandidat',[PenilaianKandidatController::class, 'detailKandidat'])->name('penilaian.detailNilaiKandidat');
 });
 
 Route::middleware(['auth','role:SuperAdmin'])->group(function(){

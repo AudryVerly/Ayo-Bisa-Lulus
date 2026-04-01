@@ -42,7 +42,7 @@
                                         </button>
                                     @endif
                                 @else
-                                    <a href="" class="btn btn-outline-success btn-sm">
+                                    <a href="{{ route('penilaian.detailNilaiKandidat') }}" class="btn btn-outline-success btn-sm">
                                         Lihat Hasil
                                     </a>
                                 @endif

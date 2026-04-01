@@ -10,9 +10,9 @@
             <p>{{ $data->judulLowongan }} - {{ $data->posisiLowongan }}</p>
         </div>
 
-        <form action="" method="POST">
+        <form action="{{ route('penilaian.hasilNilai') }}" method="POST">
             @csrf
-
+            <input type="hidden" name="idWawancaraPenilai" value="{{ $data->id }}">
             @foreach ($kriteria as $i => $k)
                 @php
                     $key = 'k' . $i;
@@ -26,10 +26,10 @@
                         @for ($n = 1; $n <= 5; $n++)
                             <input type="radio" id={{ $key }}_{{ $n }}
                                 name="nilai[{{ $k->idBobot }}]" value="{{ $n }}"
-                                data-bobot="{{ $k->nilaiBobot }}" data-target="{{ $key }}">
+                                data-bobot="{{ $k->nilaiBobot }}" data-target="{{ $key }}"
+                                {{ old('nilai.' . $k->idBobot) == $n ? 'checked' : '' }}>
                             <label for="{{ $key }}_{{ $n }}">
                                 {{ $n }}
-
                                 @if ($n == 1)
                                     <div class="badge-label">Sangat Buruk</div>
                                 @elseif($n == 2)
@@ -68,12 +68,13 @@
             </div>
 
             <div class="text-end mt-3">
-                <button class="btn btn-success">Simpan Penilaian</button>
+                <button class="btn btn-success" id="btnSubmit">Simpan Penilaian</button>
             </div>
         </form>
     </div>
 @endsection
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
             $('.rating-group input[type="radio"]').on('change', function() {
@@ -101,6 +102,45 @@
 
                 $('#total').text(total);
             }
+
+            hitungTotal();
+
+            $('#btnSubmit').on('click', function(e) {
+                let total = $('#total').text();
+
+                Swal.fire({
+                    title: 'Yakin simpan penilaian?',
+                    text: "Total nilai: " + total,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#198754',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, Simpan!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $('form').submit();
+                    }
+                });
+            });
+
+            @if (session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: "{{ session('success') }}",
+                    timer: 2500,
+                    showConfirmButton: false
+                });
+            @elseif (session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: "{{ session('error') }}",
+                    timer: 2500,
+                    showConfirmButton: false
+                });
+            @endif
         });
     </script>
 @endpush

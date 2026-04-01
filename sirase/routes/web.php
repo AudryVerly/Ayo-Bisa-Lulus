@@ -117,6 +117,7 @@ Route::middleware(['auth','role:StaffUnit'])->group(function(){
    Route::get('/listwawancarastaff',[WawancaraController::class, 'showCalendarStaffUnit'])->name('listwawancarastaff.show');
 
    Route::get('/penilaiankandidat',[PenilaianKandidatController::class, 'index'])->name('penilaian.show');
+   Route::get('/penilaiankandidat/{id}/form',[PenilaianKandidatController::class, 'showForm'])->name('penilaian.formMenilai');
 });
 
 Route::middleware(['auth','role:SuperAdmin'])->group(function(){

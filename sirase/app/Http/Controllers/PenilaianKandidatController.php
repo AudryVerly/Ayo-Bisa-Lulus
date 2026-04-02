@@ -159,8 +159,41 @@ class PenilaianKandidatController extends Controller
 
     public function detailKandidat(string $id){
         $idStaff = Auth::user()->staffUnit()->first();
-        
-
-        return view('penilaiankandidat.detailnilaikandidat');
+        $dataKandidat = DB::table('wawancara_penilai as wp')
+                        ->join('jadwal_wawancara as jw','wp.idJadwalWawancara','=','jw.id')
+                        ->join('pendaftaran as p', 'jw.idPendaftaran','=','p.id')
+                        ->join('lowongan as l','p.idLowongan','=','l.id')
+                        ->join('mahasiswa as m','p.idMahasiswa','=','m.id')
+                        ->join('users as u','m.idUser','=', 'u.id')
+                        ->join('staffUnit as sf','wp.idStaffUnit','=','sf.id')
+                        ->join('users as up','up.id','=','sf.idUser')
+                        ->join('penilaian_kandidat as pk','wp.id','=','pk.idWawancaraPenilai')
+                        ->where('wp.id', $id)
+                        ->where('wp.idStaffUnit', $idStaff->id)
+                        ->select(
+                            'wp.id',
+                            'u.name as namaKandidat',
+                            'l.judulLowongan as judulLowongan',
+                            'l.posisiLowongan as posisiLowongan',
+                            'jw.tanggal_wawancara as tanggalWawancara',
+                            'wp.status as status',
+                            'pk.nilaiFinal as nilaiFinal',
+                            'pk.catatan as catatan',
+                            'up.name as namaPewawanacara'
+                        )
+                        ->first();
+        $nilaiDetail = DB::table('penilaian_setiap_bobot as pb')
+                       ->join('penilaian_kandidat as pk','pb.idPenilaianKandidat','=','pk.id')
+                       ->join('bobot_kriteria as bk','pb.idBobotKriteria','=','bk.id')
+                       ->join('kriteria as k','bk.idKriteria','=','k.id')
+                       ->where('pk.idWawancaraPenilai', $id)
+                       ->select(
+                        'k.namaKriteria',
+                        'pb.nilaiAwal',
+                        'pb.nilaiAkhir',
+                        'bk.nilaiBobot as bobot'
+                       )
+                       ->get();
+        return view('penilaiankandidat.detailnilaikandidat',compact('dataKandidat','nilaiDetail'));
     }
 }

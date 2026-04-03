@@ -7,7 +7,7 @@
             <h3>Pairwise Comparison Kriteria</h3>
             <p>Geser Slider sesuai dengan keperluan dan seberapa penting kriteria</p>
             @if ($isLocked)
-                <div class="alert alert-warning">
+                <div class="alert alert-danger text-white">
                     Tidak bisa mengubah bobot karena masih ada lowongan yang belum mencapai tanggal mulai kerja dan sudah tutup batas pendaftaran.
                 </div>
             @endif

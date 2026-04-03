@@ -54,7 +54,7 @@
                 </div>
             </div>
         @else
-            <div class="alert alert-info">Belum ada jadwal wawancara terdekat yang Anda nilai.</div>
+            <div class="alert alert-info text-white">Belum ada jadwal wawancara terdekat yang Anda nilai.</div>
         @endif
     </div>
 @endsection

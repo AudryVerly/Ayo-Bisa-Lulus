@@ -42,7 +42,8 @@
                                         </button>
                                     @endif
                                 @else
-                                    <a href="{{ route('penilaian.detailNilaiKandidat',$k->id) }}" class="btn btn-outline-success btn-sm">
+                                    <a href="{{ route('penilaian.detailNilaiKandidat', $k->id) }}"
+                                        class="btn btn-outline-success btn-sm">
                                         Lihat Hasil
                                     </a>
                                 @endif
@@ -54,3 +55,25 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: "{{ session('success') }}",
+                timer: 2500,
+                showConfirmButton: false
+            });
+        @elseif (session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: "{{ session('error') }}",
+                timer: 2500,
+                showConfirmButton: false
+            });
+        @endif
+    </script>
+@endpush

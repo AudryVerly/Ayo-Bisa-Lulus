@@ -106,6 +106,8 @@
             hitungTotal();
 
             $('#btnSubmit').on('click', function(e) {
+                e.preventDefault();
+
                 let total = $('#total').text();
 
                 Swal.fire({
@@ -119,7 +121,7 @@
                     cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        $('form').submit();
+                        $('form').off('submit').submit();
                     }
                 });
             });

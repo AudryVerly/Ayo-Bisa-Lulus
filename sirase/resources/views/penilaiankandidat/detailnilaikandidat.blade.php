@@ -5,7 +5,7 @@
     <div class="container py-4">
         <div class="card shadow-sm mb-4">
             <div class="card-body">
-                <h4 class="fw-bold mb-3">Deta Penilaian Kandidat</h4>
+                <h4 class="fw-bold mb-3">Detail Penilaian Kandidat</h4>
 
                 <div class="row">
                     <div class="col-md-6">

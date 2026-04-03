@@ -125,7 +125,7 @@
                     <a class="nav-link {{ request()->is('kandidat*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
                         href="{{ route('kandidat.listLowongan') }}">
                         <i class="material-symbols-rounded opacity-5">groups_2</i>
-                        <span class="nav-link-text ms-1">Kandidat</span>
+                        <span class="nav-link-text ms-1">Detail Kandidat</span>
                     </a>
                 </li>
             @endcan
@@ -180,6 +180,15 @@
                         href="{{ route('ahp.show') }}">
                         <i class="material-symbols-rounded opacity-5">calculate</i>
                         <span class="nav-link-text ms-1">Perhitungan Kriteria</span>
+                    </a>
+                </li>
+            @endcan
+            @can('role:AdminUnit')
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('nilaikandidat*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                        href="{{ route('kandidatadmin.listlowongan') }}">
+                        <i class="material-symbols-rounded opacity-5">person_heart</i>
+                        <span class="nav-link-text ms-1">Hasil Penilaian</span>
                     </a>
                 </li>
             @endcan

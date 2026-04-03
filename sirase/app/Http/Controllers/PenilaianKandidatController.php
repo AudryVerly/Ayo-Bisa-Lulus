@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Lowongan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -157,43 +158,140 @@ class PenilaianKandidatController extends Controller
         return redirect()->route('penilaian.show')->with('success', 'Penilaian berhasil disimpan');
     }
 
-    public function detailKandidat(string $id){
+    public function detailKandidat(string $id)
+    {
         $idStaff = Auth::user()->staffUnit()->first();
         $dataKandidat = DB::table('wawancara_penilai as wp')
-                        ->join('jadwal_wawancara as jw','wp.idJadwalWawancara','=','jw.id')
-                        ->join('pendaftaran as p', 'jw.idPendaftaran','=','p.id')
-                        ->join('lowongan as l','p.idLowongan','=','l.id')
-                        ->join('mahasiswa as m','p.idMahasiswa','=','m.id')
-                        ->join('users as u','m.idUser','=', 'u.id')
-                        ->join('staffUnit as sf','wp.idStaffUnit','=','sf.id')
-                        ->join('users as up','up.id','=','sf.idUser')
-                        ->join('penilaian_kandidat as pk','wp.id','=','pk.idWawancaraPenilai')
-                        ->where('wp.id', $id)
-                        ->where('wp.idStaffUnit', $idStaff->id)
-                        ->select(
-                            'wp.id',
-                            'u.name as namaKandidat',
-                            'l.judulLowongan as judulLowongan',
-                            'l.posisiLowongan as posisiLowongan',
-                            'jw.tanggal_wawancara as tanggalWawancara',
-                            'wp.status as status',
-                            'pk.nilaiFinal as nilaiFinal',
-                            'pk.catatan as catatan',
-                            'up.name as namaPewawanacara'
-                        )
-                        ->first();
+            ->join('jadwal_wawancara as jw', 'wp.idJadwalWawancara', '=', 'jw.id')
+            ->join('pendaftaran as p', 'jw.idPendaftaran', '=', 'p.id')
+            ->join('lowongan as l', 'p.idLowongan', '=', 'l.id')
+            ->join('mahasiswa as m', 'p.idMahasiswa', '=', 'm.id')
+            ->join('users as u', 'm.idUser', '=', 'u.id')
+            ->join('staffUnit as sf', 'wp.idStaffUnit', '=', 'sf.id')
+            ->join('users as up', 'up.id', '=', 'sf.idUser')
+            ->join('penilaian_kandidat as pk', 'wp.id', '=', 'pk.idWawancaraPenilai')
+            ->where('wp.id', $id)
+            ->where('wp.idStaffUnit', $idStaff->id)
+            ->select(
+                'wp.id',
+                'u.name as namaKandidat',
+                'l.judulLowongan as judulLowongan',
+                'l.posisiLowongan as posisiLowongan',
+                'jw.tanggal_wawancara as tanggalWawancara',
+                'wp.status as status',
+                'pk.nilaiFinal as nilaiFinal',
+                'pk.catatan as catatan',
+                'up.name as namaPewawanacara'
+            )
+            ->first();
         $nilaiDetail = DB::table('penilaian_setiap_bobot as pb')
-                       ->join('penilaian_kandidat as pk','pb.idPenilaianKandidat','=','pk.id')
-                       ->join('bobot_kriteria as bk','pb.idBobotKriteria','=','bk.id')
-                       ->join('kriteria as k','bk.idKriteria','=','k.id')
-                       ->where('pk.idWawancaraPenilai', $id)
-                       ->select(
-                        'k.namaKriteria',
-                        'pb.nilaiAwal',
-                        'pb.nilaiAkhir',
-                        'bk.nilaiBobot as bobot'
-                       )
-                       ->get();
-        return view('penilaiankandidat.detailnilaikandidat',compact('dataKandidat','nilaiDetail'));
+            ->join('penilaian_kandidat as pk', 'pb.idPenilaianKandidat', '=', 'pk.id')
+            ->join('bobot_kriteria as bk', 'pb.idBobotKriteria', '=', 'bk.id')
+            ->join('kriteria as k', 'bk.idKriteria', '=', 'k.id')
+            ->where('pk.idWawancaraPenilai', $id)
+            ->select(
+                'k.namaKriteria',
+                'pb.nilaiAwal',
+                'pb.nilaiAkhir',
+                'bk.nilaiBobot as bobot'
+            )
+            ->get();
+
+        return view('penilaiankandidat.detailnilaikandidat', compact('dataKandidat', 'nilaiDetail'));
+    }
+
+    public function showLowonganAdmin()
+    {
+        $idUnit = Auth::user()->staffUnit()->pluck('idUnit')->first();
+        $lowongan = Lowongan::with(['unit'])
+            ->where('idUnit', $idUnit)
+                    // ini kita tunjukkin lowongan yang dah tutup supaya gak salah tekan keterima
+            ->where('status', 0)
+            ->get();
+
+        return view('penilaiankandidat.listlowongannilai', compact('lowongan'));
+    }
+
+    public function kandidatPerLowongan($idLowongan)
+    {
+        $lowongan = DB::table('lowongan')
+            ->where('id', $idLowongan)
+            ->first();
+        $kandidat = DB::table('pendaftaran as p')
+            ->join('mahasiswa as m', 'p.idMahasiswa', '=', 'm.id')
+            ->join('users as u', 'm.idUser', '=', 'u.id')
+            ->leftJoin('penilaian_kandidat as pk', 'p.id', '=', 'pk.idPendaftaran')
+            ->where('p.idLowongan', $idLowongan)
+            ->select(
+                'p.id as idPendaftaran',
+                'u.name as namaKandidat',
+
+                DB::raw('COALESCE(AVG(pk.nilaiFinal),0) as nilaiAkhir'),
+                DB::raw('COUNT(pk.id) as jumlahPenilai')
+            )
+            ->groupBy('p.id', 'u.name')
+            ->orderByRaw('
+                    CASE 
+                        WHEN COUNT(pk.id) = 0 THEN 1
+                        ELSE 0
+                    END
+            ')
+            ->orderBy('nilaiAkhir')
+            ->get();
+
+        return view('penilaiankandidat.nilaikandidatadmin', compact('kandidat', 'lowongan'));
+    }
+
+    public function showDetailKandidatAdmin($idPendaftaran)
+    {
+        $kandidat = DB::table('pendaftaran as p')
+            ->join('mahasiswa as m', 'p.idMahasiswa', '=', 'm.id')
+            ->join('users as u', 'u.id', '=', 'm.idUser')
+            ->join('lowongan as l', 'p.idLowongan', '=', 'l.id')
+            ->where('p.id', $idPendaftaran)
+            ->select(
+                'p.id',
+                'u.name as namaKandidat',
+                'l.judulLowongan',
+                'l.posisiLowongan',
+            )
+            ->first();
+        $penilaian = DB::table('penilaian_kandidat as pk')
+            ->join('wawancara_penilai as wp', 'pk.idWawancaraPenilai', '=', 'wp.id')
+            ->join('jadwal_wawancara as jw', 'jw.id', '=', 'wp.idJadwalWawancara')
+            ->join('staffUnit as sf', 'wp.idStaffUnit', '=', 'sf.id')
+            ->join('users as u', 'sf.idUser', '=', 'u.id')
+            ->select(
+                'pk.id as idPenilaian',
+                'pk.nilaiFinal',
+                'pk.catatan',
+                'u.name as namaPenilai',
+                'jw.tanggal_wawancara',
+            )
+            ->get();
+
+        $summary = DB::table('penilaian_kandidat')
+            ->where('idPendaftaran', $idPendaftaran)
+            ->select(
+                DB::raw('COALESCE(AVG(nilaiFinal),0) as nilaiAkhir'),
+                DB::raw('COUNT(id) as jumlahPenilai')
+            )
+            ->first();
+        $detailKriteria = DB::table('penilaian_setiap_bobot as pb')
+            ->join('penilaian_kandidat as pk', 'pk.id', '=', 'pb.idPenilaianKandidat')
+            ->join('bobot_kriteria as bk', 'bk.id', '=', 'pb.idBobotKriteria')
+            ->join('kriteria as k', 'bk.idKriteria', '=', 'k.id')
+            ->where('pk.idPendaftaran', $idPendaftaran)
+            ->select(
+                'pb.idPenilaianKandidat',
+                'k.namaKriteria',
+                'pb.nilaiAwal',
+                'pb.nilaiAkhir',
+                'bk.nilaiBobot'
+            )
+            ->get()
+            ->groupBy('idPenilaianKandidat');
+
+        return view('penilaiankandidat.detailnilaikandidatadmin', compact('kandidat', 'penilaian', 'detailKriteria','summary'));
     }
 }

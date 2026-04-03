@@ -112,6 +112,10 @@ Route::middleware(['auth','role:AdminUnit'])->group(function(){
 
   Route::get('/AHP',[AHPController::class, 'index'])->name('ahp.show');
   Route::post('/AHP/store',[AHPController::class,'storeBobot'])->name('ahp.store');
+
+  Route::get('/nilaikandidat/listlowongan',[PenilaianKandidatController::class,'showLowonganAdmin'])->name('kandidatadmin.listlowongan');
+  Route::get('/nilaikandidat/liskandidat/{id}',[PenilaianKandidatController::class,'kandidatPerLowongan'])->name('kandidatadmin.listkandidat');
+  Route::get('/nilaikandidat/detailnilaikandidat/{idPendaftaran}',[PenilaianKandidatController::class,'showDetailKandidatAdmin'])->name('kandidatadmin.detailnilaikandidat');
 });
 Route::middleware(['auth','role:StaffUnit'])->group(function(){
    Route::get('/dashboardStaff',[DashboardStaffUnitController::class, 'index'])->name('staff.dashboard');

@@ -55,8 +55,20 @@ class WawancaraController extends Controller
             ->where('u.role', '!=', 'AdminUnit')
             ->whereNotIn('s.id', $staffSudahMenulai)
             ->get();
+        $jumlahPenilaiFix = null;
 
-        return view('setwawancara.invtwawancara', compact('pendaftaran', 'penilai', 'idProgressTahapan'));
+        $jadwalKandidat = DB::table('jadwal_wawancara')
+            ->where('idPendaftaran', $idPendaftaran)
+            ->where('status', '!=', 'batal')
+            ->pluck('id');
+        if ($jadwalKandidat->count() > 0) {
+            $jumlahPenilaiFix = DB::table('wawancara_penilai')
+                ->where('idJadwalWawancara', $jadwalKandidat->first())
+                ->where('status', '!=', 'gagal')
+                ->count();
+        }
+
+        return view('setwawancara.invtwawancara', compact('pendaftaran', 'penilai', 'idProgressTahapan', 'jumlahPenilaiFix'));
     }
 
     public function storeData(Request $request)
@@ -87,8 +99,55 @@ class WawancaraController extends Controller
             'keterangan' => 'Keterangan',
         ]);
 
-        DB::transaction(function () use ($request) {
+        // dd($request->tim_penilai);
 
+        $lowongan = DB::table('pendaftaran as p')
+            ->join('lowongan as l', 'p.idLowongan', '=', 'l.id')
+            ->select(
+                'l.batasPendaftaran',
+                'l.mulaiKerja'
+            )
+            ->where('p.id', $request->idPendaftaran)
+            ->first();
+
+        if (! $lowongan) {
+            abort(404, 'Lowongan tidak ditemukan');
+        }
+
+        $tanggalWawancara = \Carbon\Carbon::parse($request->tanggal_wawancara);
+        $batasPendaftaran = \Carbon\Carbon::parse($lowongan->batasPendaftaran);
+        $mulaiKerja = \Carbon\Carbon::parse($lowongan->mulaiKerja);
+
+        if ($tanggalWawancara->lte($batasPendaftaran)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Wawancara harus setelah batas pendaftaran',
+            ], 422);
+        }
+
+        $batasWawancara = $mulaiKerja->copy()->subDays(3);
+        if ($tanggalWawancara->gt($batasWawancara)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Wawancara maksimal H-3 sebelum mulai kerja',
+            ], 422);
+        }
+
+        // validasi jumlah penilai
+        $jumlahPenilaiFix = $this->getJumlahPenilaiFix($request->idPendaftaran);
+        $timPenilai = $request->tim_penilai ?? [];
+        $jumlahSekarang = is_array($timPenilai) ? count($timPenilai) : 1;
+
+        dd($jumlahPenilaiFix, $jumlahSekarang);
+
+        if ($jumlahPenilaiFix !== null && $jumlahSekarang != $jumlahPenilaiFix) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Jumlah penilai harus konsisten ('.$jumlahPenilaiFix.' orang)',
+            ], 422);
+        }
+
+        DB::transaction(function () use ($request) {
             $pendaftaran = DB::table('pendaftaran as p')
                 ->join('mahasiswa as m', 'p.idMahasiswa', '=', 'm.id')
                 ->join('users as u', 'm.idUser', '=', 'u.id')
@@ -171,7 +230,28 @@ class WawancaraController extends Controller
             Mail::to($pendaftaran->email)->send(new InterviewCandidateMail($dataEmailKandidat));
         });
 
-        return redirect()->back()->with('success', 'Field berhasil ditambahkan');
+        return response()->json([
+            'status' => true,
+            'message' => 'Jadwal wawancara berhasil dibuat',
+        ]);
+    }
+
+    private function getJumlahPenilaiFix($idPendaftaran)
+    {
+        $jadwal = DB::table('jadwal_wawancara')
+            ->where('idPendaftaran', $idPendaftaran)
+            ->where('status', '!=', 'batal')
+            ->orderByDesc('id')
+            ->get();
+
+        if (! $jadwal) {
+            return null;
+        }
+
+        return DB::table('wawancara_penilai')
+            ->where('idJadwalWawancara', $jadwal->id)
+            ->where('status', '!=', 'gagal')
+            ->count();
     }
 
     public function confirmJadwal($idpewawancara, $aksi, Request $request)
@@ -238,7 +318,7 @@ class WawancaraController extends Controller
                     ->join('lowongan as l', 'l.id', '=', 'p.idLowongan')
                     ->join('jadwal_wawancara as j', 'j.idPendaftaran', '=', 'p.id')
                     ->select('u.email',
-                        '.name as namaMahasiswa',
+                        'u.name as namaMahasiswa',
                         'l.judulLowongan as namaLowongan')
                     ->where('p.id', $jadwal->idPendaftaran)
                     ->first();
@@ -410,9 +490,9 @@ class WawancaraController extends Controller
                 'u.name as namaMahasiswa'
             )
             ->where('w.idStaffUnit', $idStaffUnit)
-            ->where('w.status','!=','gagal')
+            ->where('w.status', '!=', 'gagal')
             ->get();
 
-        return view('staffUnitPage.listwawancarastaff',compact('jadwal'));
+        return view('staffUnitPage.listwawancarastaff', compact('jadwal'));
     }
 }

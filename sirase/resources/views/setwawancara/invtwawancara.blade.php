@@ -175,8 +175,9 @@
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script>
+        let jumlahPenilaiFix = {{ $jumlahPenilaiFix ?? 'null' }};
+        
         $(document).ready(function() {
             let calendarEl = document.getElementById('calendar');
             let dataWawancara = [];
@@ -230,6 +231,23 @@
                 }
             });
 
+            $('input[name="tim_penilai[]"]').on('change', function() {
+
+                if (jumlahPenilaiFix === null) return;
+
+                let checked = $('input[name="tim_penilai[]"]:checked');
+
+                if (checked.length > jumlahPenilaiFix) {
+                    this.checked = false;
+
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Batas Penilai',
+                        text: 'Jumlah penilai harus ' + jumlahPenilaiFix + ' orang'
+                    });
+                }
+            });
+
             let tanggalvent = [];
 
             $.get("{{ route('jadwal.alljadwal') }}", function(data) {
@@ -262,6 +280,74 @@
 
             });
             calendar.render();
+        });
+
+        $('#formwawancara').on('submit', function(e) {
+            e.preventDefault();
+
+            let checked = $('input[name="tim_penilai[]"]:checked').length;
+            if (checked === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Oops',
+                    text: 'Minimal pilih 1 penilai'
+                });
+                return;
+            }
+
+            if (jumlahPenilaiFix !== null && checked !== jumlahPenilaiFix) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Tidak Sesuai',
+                    text: 'Jumlah penilai harus ' + jumlahPenilaiFix + ' orang'
+                });
+                return;
+            }
+
+            // let form = $(this);
+            let formData = $(this).serialize();
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+
+                success: function(response) {
+
+                    if (response.status === false) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: response.message
+                        });
+                        return;
+                    }
+
+                    // $('#modalwawancara').modal('hide');
+                    let modal = bootstrap.Modal.getInstance(document.getElementById('modalwawancara'));
+                    if (modal) modal.hide();
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil',
+                        text: 'Jadwal wawancara berhasil dibuat',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+
+                    $('#modalwawancara').modal('hide');
+                },
+                error: function(xhr) {
+                    $('#modalwawancara').modal('hide');
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: xhr.responseJSON?.message ?? 'Terjadi kesalahan'
+                    });
+                }
+
+            });
         });
 
         $('#btnCancelJadwal').on('click', function() {
@@ -321,6 +407,18 @@
 
             });
 
+        });
+
+        $('#modalwawancara').on('hidden.bs.modal', function() {
+            let form = $('#formwawancara');
+
+            form[0].reset();
+
+            // paksa bersihin semua input
+            form.find('input[type="text"], input[type="date"], input[type="time"], textarea').val('');
+
+            // uncheck checkbox
+            form.find('input[type="checkbox"]').prop('checked', false);
         });
     </script>
 @endpush

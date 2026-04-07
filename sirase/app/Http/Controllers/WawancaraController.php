@@ -73,6 +73,7 @@ class WawancaraController extends Controller
 
     public function storeData(Request $request)
     {
+        // dd($request->idPendaftaran);
         $request->validate([
             'idPendaftaran' => 'required',
             'idProgressTahapan' => 'required',
@@ -138,7 +139,7 @@ class WawancaraController extends Controller
         $timPenilai = $request->tim_penilai ?? [];
         $jumlahSekarang = is_array($timPenilai) ? count($timPenilai) : 1;
 
-        dd($jumlahPenilaiFix, $jumlahSekarang);
+        // dd($jumlahPenilaiFix, $jumlahSekarang);
 
         if ($jumlahPenilaiFix !== null && $jumlahSekarang != $jumlahPenilaiFix) {
             return response()->json([
@@ -238,20 +239,28 @@ class WawancaraController extends Controller
 
     private function getJumlahPenilaiFix($idPendaftaran)
     {
-        $jadwal = DB::table('jadwal_wawancara')
-            ->where('idPendaftaran', $idPendaftaran)
-            ->where('status', '!=', 'batal')
-            ->orderByDesc('id')
-            ->get();
+        $lowongan = DB::table('pendaftaran')
+            ->where('id', $idPendaftaran)
+            ->first();
+
+        if (! $lowongan) {
+            return null;
+        }
+        $jadwal = DB::table('jadwal_wawancara as j')
+            ->join('pendaftaran as p', 'j.idPendaftaran', '=', 'p.id')
+            ->where('p.idLowongan', $lowongan->idLowongan)
+            ->where('j.status', '!=', 'batal')
+            ->pluck('j.id');
 
         if (! $jadwal) {
             return null;
         }
 
         return DB::table('wawancara_penilai')
-            ->where('idJadwalWawancara', $jadwal->id)
+            ->whereIn('idJadwalWawancara', $jadwal)
             ->where('status', '!=', 'gagal')
-            ->count();
+            ->distinct('idStaffUnit')
+            ->count('idStaffUnit');
     }
 
     public function confirmJadwal($idpewawancara, $aksi, Request $request)
@@ -476,6 +485,7 @@ class WawancaraController extends Controller
         $idStaffUnit = Auth::user()->staffUnit->first()->id;
         $jadwal = DB::table('jadwal_wawancara as j')
             ->join('pendaftaran as p', 'j.idPendaftaran', '=', 'p.id')
+            ->join('lowongan as l', 'l.id', '=', 'p.idLowongan')
             ->join('mahasiswa as m', 'm.id', '=', 'p.idMahasiswa')
             ->join('users as u', 'u.id', '=', 'm.idUser')
             ->join('wawancara_penilai as w', 'w.idJadwalWawancara', '=', 'j.id')
@@ -487,7 +497,8 @@ class WawancaraController extends Controller
                 'j.lokasi as lokasi',
                 'j.link_wawancara as link',
                 'w.status as statusPenilai',
-                'u.name as namaMahasiswa'
+                'u.name as namaMahasiswa',
+                'l.judulLowongan as namaLowongan'
             )
             ->where('w.idStaffUnit', $idStaffUnit)
             ->where('w.status', '!=', 'gagal')

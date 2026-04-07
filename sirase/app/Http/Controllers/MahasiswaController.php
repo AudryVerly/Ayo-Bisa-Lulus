@@ -38,7 +38,7 @@ class MahasiswaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'idUser' => 'requiredexists:users,id',
+            'idUser' => 'required|exists:users,id',
             'nrp' => 'required|integer',
             'fakultas' => 'required',
             'jurusan' => 'required',

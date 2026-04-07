@@ -30,7 +30,7 @@ class TahapRekrutmenController extends Controller
     {
         $lowongan = Lowongan::findOrFail($request->idLowongan);
 
-        if($this->batasPendaftaran($lowongan)){
+        if($this->batasPendaftaran($lowongan->id)){
             return back()->with('error','Tidak Bisa menambah Tahapan karena Proses Masing Masing Kandidat akan dimulai');
         }
         $request ->validate([

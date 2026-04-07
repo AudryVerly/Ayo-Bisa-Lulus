@@ -41,7 +41,7 @@
         $(document).ready(function() {
             let dataWawancara = @json($jadwal);
 
-            let calendar = new FullCalendar.Calendar($('#calendar')[0], {
+            let calendar = new FullCalendar.Calendar($('#calendar')[0] {
                 initialView: 'dayGridMonth',
                 headerToolbar: {
                     left: 'prev,next today',

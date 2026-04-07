@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AHPController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardAdminUnitController;
 use App\Http\Controllers\DashboardMahasiswaController;
 use App\Http\Controllers\DashboardStaffUnitController;
 use App\Http\Controllers\FormulirController;
@@ -60,7 +61,8 @@ Route::middleware(['auth','role:Mahasiswa'])->group(function(){
 });
 
 Route::middleware(['auth','role:AdminUnit'])->group(function(){
-   Route::get('/dashboardAdminUnit', function () {return view('adminUnitPage.dashboard');})->name('adminunit.dashboard');
+   Route::get('/dashboardAdminUnit',[DashboardAdminUnitController::class, 'index'])->name('adminUnit.dashboard');
+
    Route::get('/lowongans',[LowonganController::class,'index'])->name('lowongans.index');
    Route::get('/lowongans/{id}/edit', [LowonganController::class, 'edit'])->name('lowongans.edit');
    Route::post('/lowongans/{id}',[LowonganController::class, 'update'])->name('lowongans.update');

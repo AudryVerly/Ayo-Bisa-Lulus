@@ -32,10 +32,14 @@ class DashboardAdminUnitController extends Controller
                 $q->whereNull('t.id')
                     ->orWhereNull('kf.id');
             })
-            ->select('l.*')
+            ->select(
+                'l.id',
+                'l.judulLowongan as namaLowongan',
+                DB::raw('CASE WHEN t.id IS NULL THEN 1 ELSE 0 END as kurang_tahapan'),
+                DB::raw('CASE WHEN kf.id IS NULL THEN 1 ELSE 0 END as kurang_formulir')
+            )
             ->distinct()
             ->get();
-
         // jadwalWawancara
         $jadwal = DB::table('jadwal_wawancara as jw')
             ->join('pendaftaran as p', 'jw.idPendaftaran', '=', 'p.id')
@@ -56,6 +60,7 @@ class DashboardAdminUnitController extends Controller
             ->join('users as u', 'u.id', '=', 'm.idUser')
             ->leftJoin('jadwal_wawancara as jw', 'jw.idPendaftaran', '=', 'p.id')
             ->leftJoin('penilaian_kandidat as pk', 'pk.idPendaftaran', '=', 'p.id')
+            ->leftJoin('wawancara_penilai as wp', 'wp.idJadwalWawancara', '=', 'jw.id')
             ->where('l.idUnit', $idUnit)
             ->whereDate('l.batasPendaftaran', '<', now())
             ->where(function ($q) {
@@ -63,27 +68,32 @@ class DashboardAdminUnitController extends Controller
                     ->orWhereNull('pk.nilaiFinal');
             })
             ->select(
+                'p.id as idPendaftaran',
                 'u.name as namaKandidat',
                 'l.judulLowongan as namaLowongan',
-                DB::raw('CASE 
-                WHEN jw.id IS NULL THEN "Belum Ada Jadwal"
-                ELSE "Belum Dinilai"
-                END as status')
+                DB::raw('COUNT(DISTINCT wp.idStaffUnit) as jumlahPenilai'),
+                DB::raw("
+                    COUNT(DISTINCT CASE 
+                    WHEN wp.status = 'sudah' THEN wp.idStaffUnit 
+                    END) as sudahMenilai
+                "),
+                DB::raw('CASE WHEN jw.id is NULL THEN 1 ELSE 0 END as belumadajadwal'),
+                DB::raw('CASE WHEN pk.nilaiFinal is NULL THEN 1 ELSE 0 END as belumdinilai'),
             )
-            ->distinct()
+            ->groupBy('p.id', 'u.name', 'l.judulLowongan', 'jw.id','pk.nilaiFinal')
             ->get();
         $events = [];
         foreach ($lowongan as $l) {
             $events[] = [
-                'title' => 'Buka - '.$l->judulLowongan,
+                'title' => 'Buka - Lowongan '.$l->judulLowongan,
                 'start' => $l->awalPendaftaran,
                 'color' => 'green',
             ];
 
             $events[] = [
-                'title' => 'Tutup - '.$l->judulLowongan,
+                'title' => 'Tutup - Lowongan '.$l->judulLowongan,
                 'start' => $l->batasPendaftaran,
-                'color' => 'green',
+                'color' => 'red',
             ];
         }
 
@@ -92,6 +102,11 @@ class DashboardAdminUnitController extends Controller
                 'title' => 'Wawancara - '.$j->namaKandidat,
                 'start' => $j->tanggal_wawancara,
                 'color' => 'blue',
+                'extendedProps' => [
+                    'kandidat' => $j->namaKandidat,
+                    'lowongan' => $j->namaLowongan,
+                    'tipe' => 'wawancara',
+                ],
             ];
         }
 
@@ -100,7 +115,6 @@ class DashboardAdminUnitController extends Controller
             'totalLowongan',
             'lowonganAktif',
             'lowonganTutup',
-            'lowonganBelumLengkap',
             'lowonganBelumLengkap',
             'kandidatPerluTindakan',
             'events'));

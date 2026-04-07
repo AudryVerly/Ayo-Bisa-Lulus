@@ -61,7 +61,7 @@ Route::middleware(['auth','role:Mahasiswa'])->group(function(){
 });
 
 Route::middleware(['auth','role:AdminUnit'])->group(function(){
-   Route::get('/dashboardAdminUnit',[DashboardAdminUnitController::class, 'index'])->name('adminUnit.dashboard');
+   Route::get('/dashboardAdminUnit',[DashboardAdminUnitController::class, 'index'])->name('adminunit.dashboard');
 
    Route::get('/lowongans',[LowonganController::class,'index'])->name('lowongans.index');
    Route::get('/lowongans/{id}/edit', [LowonganController::class, 'edit'])->name('lowongans.edit');

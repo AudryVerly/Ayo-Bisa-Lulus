@@ -33,7 +33,7 @@
             @can('role:AdminUnit')
                 <li class="nav-item">
                     <a class="nav-link {{ request()->is('dashboardAdminUnit*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
-                        href="{{ route('adminUnit.dashboard') }}">
+                        href="{{ route('adminunit.dashboard') }}">
                         <i class="material-symbols-rounded opacity-5">dashboard</i>
                         <span class="nav-link-text ms-1">Dashboard</span>
                     </a>

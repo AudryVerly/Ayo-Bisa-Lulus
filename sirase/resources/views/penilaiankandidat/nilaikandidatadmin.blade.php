@@ -13,6 +13,12 @@
                 </div>
 
                 <div class="card-body px-2 pb-2">
+                    @if (!$semuaDinilai)
+                        <div class="alert alert-danger text-center mb-3 text-white">
+                            Semua kandidat harus dinilai terlebih dahulu sebelum menentukan hasil.
+                        </div>
+                    @endif
+
                     <div class="table-responsive p-0">
                         <table id="tablelistkandidat" class="table align-items-center mb-0">
                             <thead class="bg-light">
@@ -30,11 +36,12 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($kandidat as $index => $k)
+                                @foreach ($kandidat as $index => $k)
                                     <tr>
                                         <td class="text-sm" style="text-align: center;">{{ $index + 1 }}</td>
                                         <td class="text-sm" style="text-align: center;">{{ $k->namaKandidat }}</td>
-                                        <td class="text-sm" style="text-align: center;">{{ $k->jumlahPenilai }}</td>
+                                        <td class="text-sm" style="text-align: center;">{{ $k->jumlahPenilai }} /
+                                            {{ $k->totalPenilai }}</td>
                                         <td class="text-sm" style="text-align: center;">
                                             @if ($k->jumlahPenilai == 0)
                                                 <span class="badge bg-gradient-danger text-white px-3 py-2">Belum
@@ -45,25 +52,26 @@
                                         </td>
                                         <td>
                                             <div class="d-flex justify-content-center gap-2">
-                                                <a href="" class="btn bg-gradient-success btn-sm text-white">
-                                                    Lolos
-                                                </a>
-                                                <a href="" class="btn bg-gradient-danger btn-sm text-white">
-                                                    Tolak
-                                                </a>
-                                                <a href="{{ route('kandidatadmin.detailnilaikandidat',$k->idPendaftaran) }}" class="btn bg-gradient-info btn-sm text-white">
+                                                @if ($semuaDinilai)
+                                                    <a href="" class="btn bg-gradient-success btn-sm text-white">
+                                                        Lolos
+                                                    </a>
+                                                    <a href="" class="btn bg-gradient-danger btn-sm text-white">
+                                                        Tolak
+                                                    </a>
+                                                @else
+                                                    <button class="btn btn-secondary btn-sm text-white" disabled>
+                                                        Tunggu Penilaian
+                                                    </button>
+                                                @endif
+                                                <a href="{{ route('kandidatadmin.detailnilaikandidat', $k->idPendaftaran) }}"
+                                                    class="btn bg-gradient-info btn-sm text-white">
                                                     Detail Nilai
                                                 </a>
                                             </div>
                                         </td>
                                     </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="5" class="text-center text-muted py-3">
-                                            Belum ada kandidat
-                                        </td>
-                                    </tr>
-                                @endforelse
+                                @endforeach
                             </tbody>
                             </thead>
                         </table>
@@ -83,6 +91,7 @@
             $('#tablelistkandidat').DataTable({
                 language: {
                     url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json",
+                    emptyTable: "Belum ada kandidat",
                     paginate: {
                         previous: "<",
                         next: ">",

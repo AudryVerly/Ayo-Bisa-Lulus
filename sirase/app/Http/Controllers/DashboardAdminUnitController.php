@@ -77,31 +77,44 @@ class DashboardAdminUnitController extends Controller
             ->leftJoin('wawancara_penilai as wp', 'wp.idJadwalWawancara', '=', 'jw.id')
             ->where('l.idUnit', $idUnit)
             ->whereDate('l.batasPendaftaran', '<', now())
-            ->where(function ($q) {
-                $q->whereNull('jw.id')
-                    ->orWhereNull('pk.nilaiFinal');
-            })
             ->select(
                 'p.id as idPendaftaran',
                 'u.name as namaKandidat',
                 'l.judulLowongan as namaLowongan',
+
+                DB::raw('COUNT(DISTINCT jw.id) as jumlahJadwal'),
                 DB::raw('COUNT(DISTINCT wp.idStaffUnit) as jumlahPenilai'),
-                DB::raw("
-                    COUNT(DISTINCT CASE 
-                    WHEN wp.status = 'sudah' THEN wp.idStaffUnit 
-                    END) as sudahMenilai
-                "),
-                DB::raw('CASE WHEN jw.id is NULL THEN 1 ELSE 0 END as belumadajadwal'),
-                DB::raw('CASE WHEN pk.nilaiFinal is NULL THEN 1 ELSE 0 END as belumdinilai'),
+
+                DB::raw('COUNT(DISTINCT CASE 
+            WHEN wp.status = "sudah" THEN wp.idStaffUnit 
+        END) as sudahMenilai'),
+
+                DB::raw('CASE WHEN COUNT(jw.id) = 0 THEN 1 ELSE 0 END as belumadajadwal'),
+                DB::raw('CASE WHEN pk.nilaiFinal IS NULL THEN 1 ELSE 0 END as belumdinilai')
             )
-            ->groupBy('p.id', 'u.name', 'l.judulLowongan', 'jw.id', 'pk.nilaiFinal')
+            ->groupBy(
+                'p.id',
+                'u.name',
+                'l.judulLowongan',
+                'pk.nilaiFinal'
+            )
+            ->havingRaw('
+                (COUNT(jw.id) = 0)
+                OR (COUNT(DISTINCT wp.idStaffUnit) = 0)
+                OR (
+                    COUNT(DISTINCT CASE 
+                        WHEN wp.status = "sudah" THEN wp.idStaffUnit 
+                    END) < COUNT(DISTINCT wp.idStaffUnit)
+                )
+                OR (pk.nilaiFinal IS NULL)
+            ')
             ->get();
         $events = [];
         foreach ($lowongan as $l) {
             $events[] = [
                 'title' => 'Buka - Lowongan '.$l->judulLowongan,
                 'start' => $l->awalPendaftaran,
-                'color' => 'green',
+                'color' => 'blue',
             ];
 
             $events[] = [
@@ -115,7 +128,7 @@ class DashboardAdminUnitController extends Controller
             $events[] = [
                 'title' => 'Wawancara - '.$j->namaKandidat,
                 'start' => $j->tanggal_wawancara,
-                'color' => $j->status == 'selesai' ? 'gray' : 'blue',
+                'color' => $j->status == 'selesai' ? 'green' : 'blue',
                 'extendedProps' => [
                     'kandidat' => $j->namaKandidat,
                     'lowongan' => $j->namaLowongan,

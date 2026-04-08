@@ -220,26 +220,58 @@ class PenilaianKandidatController extends Controller
         $kandidat = DB::table('pendaftaran as p')
             ->join('mahasiswa as m', 'p.idMahasiswa', '=', 'm.id')
             ->join('users as u', 'm.idUser', '=', 'u.id')
-            ->leftJoin('penilaian_kandidat as pk', 'p.id', '=', 'pk.idPendaftaran')
+            ->leftjoin('jadwal_wawancara as jw', 'jw.idPendaftaran', '=', 'p.id')
+            ->leftJoin('wawancara_penilai as wp', 'wp.idJadwalWawancara', '=', 'jw.id')
+            ->leftJoin('penilaian_kandidat as pk', 'pk.idWawancaraPenilai', '=', 'wp.id')
             ->where('p.idLowongan', $idLowongan)
             ->select(
                 'p.id as idPendaftaran',
                 'u.name as namaKandidat',
 
+                // nilai akhir kandidat
                 DB::raw('COALESCE(AVG(pk.nilaiFinal),0) as nilaiAkhir'),
-                DB::raw('COUNT(pk.id) as jumlahPenilai')
+                DB::raw('
+                    COUNT(DISTINCT CASE 
+                        WHEN pk.id IS NOT NULL
+                        THEN wp.idStaffUnit
+                    END) as jumlahPenilai
+                '),
+
+                //jumlah penilai seharusnya
+                DB::raw("
+                     COUNT(DISTINCT CASE 
+                        WHEN wp.status IN ('terjadwal','sudah') 
+                        THEN wp.idStaffUnit 
+                    END) as totalPenilai
+                ")
             )
             ->groupBy('p.id', 'u.name')
-            ->orderByRaw('
-                    CASE 
-                        WHEN COUNT(pk.id) = 0 THEN 1
-                        ELSE 0
-                    END
-            ')
-            ->orderBy('nilaiAkhir')
+             // Yang belum lengkap penilaian ditaruh bawah
+            ->orderByRaw("
+                CASE 
+                    WHEN COUNT(DISTINCT CASE 
+                        WHEN pk.id IS NOT NULL THEN wp.idStaffUnit 
+                    END)
+                    <
+                    COUNT(DISTINCT CASE 
+                        WHEN wp.status IN ('terjadwal','selesai') THEN wp.idStaffUnit 
+                    END)
+                    THEN 1
+                    ELSE 0
+                END
+            ")
+            ->orderByDesc('nilaiAkhir')
             ->get();
+        $semuaDinilai = DB::table('wawancara_penilai as wp')
+            ->leftJoin('penilaian_kandidat as pk', 'pk.idWawancaraPenilai', '=', 'wp.id')
+            ->join('jadwal_wawancara as jw', 'jw.id', '=', 'wp.idJadwalWawancara')
+            ->join('pendaftaran as p', 'p.id', '=', 'jw.idPendaftaran')
+            ->where('p.idLowongan', $idLowongan)
+            ->whereIn('wp.status', ['terjadwal', 'selesai'])
+            ->whereNull('pk.id') // ini kalau kasus belum ada yang menilai
+            ->doesntExist(); // true kalau semuanya dinilai
 
-        return view('penilaiankandidat.nilaikandidatadmin', compact('kandidat', 'lowongan'));
+        return view('penilaiankandidat.nilaikandidatadmin', compact('kandidat', 'lowongan', 'semuaDinilai'));
     }
 
     public function showDetailKandidatAdmin($idPendaftaran)
@@ -256,32 +288,37 @@ class PenilaianKandidatController extends Controller
                 'l.posisiLowongan',
             )
             ->first();
-        $penilaian = DB::table('penilaian_kandidat as pk')
-            ->join('wawancara_penilai as wp', 'pk.idWawancaraPenilai', '=', 'wp.id')
+        $penilaian = DB::table('wawancara_penilai as wp')
+            ->leftJoin('penilaian_kandidat as pk', 'pk.idWawancaraPenilai', '=', 'wp.id')
             ->join('jadwal_wawancara as jw', 'jw.id', '=', 'wp.idJadwalWawancara')
             ->join('staffUnit as sf', 'wp.idStaffUnit', '=', 'sf.id')
             ->join('users as u', 'sf.idUser', '=', 'u.id')
+            ->where('jw.idPendaftaran', $idPendaftaran)
             ->select(
+                'wp.id as idWawancaraPenilai',
                 'pk.id as idPenilaian',
-                'pk.nilaiFinal',
+                DB::raw('COALESCE(pk.nilaiFinal, 0) as nilaiFinal'),
                 'pk.catatan',
                 'u.name as namaPenilai',
                 'jw.tanggal_wawancara',
             )
             ->get();
 
-        $summary = DB::table('penilaian_kandidat')
-            ->where('idPendaftaran', $idPendaftaran)
+        $summary = DB::table('wawancara_penilai as wp')
+            ->leftJoin('penilaian_kandidat as pk', 'pk.idWawancaraPenilai', '=', 'wp.id')
+            ->join('jadwal_wawancara as jw', 'jw.id', '=', 'wp.idJadwalWawancara')
+            ->where('jw.idPendaftaran', $idPendaftaran)
             ->select(
-                DB::raw('COALESCE(AVG(nilaiFinal),0) as nilaiAkhir'),
-                DB::raw('COUNT(id) as jumlahPenilai')
+                DB::raw('COALESCE(AVG(pk.nilaiFinal), 0) as nilaiAkhir'),
+                DB::raw('COUNT(wp.id) as jumlahPenilai')
             )
             ->first();
         $detailKriteria = DB::table('penilaian_setiap_bobot as pb')
             ->join('penilaian_kandidat as pk', 'pk.id', '=', 'pb.idPenilaianKandidat')
             ->join('bobot_kriteria as bk', 'bk.id', '=', 'pb.idBobotKriteria')
             ->join('kriteria as k', 'bk.idKriteria', '=', 'k.id')
-            ->where('pk.idPendaftaran', $idPendaftaran)
+            ->join('jadwal_wawancara as jw', 'jw.id', '=', 'pk.idWawancaraPenilai')
+            ->where('jw.idPendaftaran', $idPendaftaran)
             ->select(
                 'pb.idPenilaianKandidat',
                 'k.namaKriteria',
@@ -292,6 +329,6 @@ class PenilaianKandidatController extends Controller
             ->get()
             ->groupBy('idPenilaianKandidat');
 
-        return view('penilaiankandidat.detailnilaikandidatadmin', compact('kandidat', 'penilaian', 'detailKriteria','summary'));
+        return view('penilaiankandidat.detailnilaikandidatadmin', compact('kandidat', 'penilaian', 'detailKriteria', 'summary'));
     }
 }

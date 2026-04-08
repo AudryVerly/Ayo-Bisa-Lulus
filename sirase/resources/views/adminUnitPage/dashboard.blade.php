@@ -161,15 +161,22 @@
                 displayEventEnd: true,
 
                 eventClick: function(info) {
+                    console.log(info.event.extendedProps); // DEBUG
+
                     let data = info.event.extendedProps || {};
                     let html = '';
 
                     if (data.tipe === 'wawancara') {
-                        html: `
+                        html = `
                             <b>Kandidat:</b> ${data.kandidat ?? '-'} <br>
                             <b>Lowongan:</b> ${data.lowongan ?? '-'} <br>
+                            <b>Pewawancara:</b> ${data.pewawancara ?? '-'}<br>
+                            <b>Statu wawancara:</b> ${data.status ?? '-'}<br>
                             <b>Tipe:</b> ${data.tipe ?? '-'}
                         `;
+                    }
+                    else {
+                        html = `<b>Event:</b> ${info.event.title}`;
                     }
 
                     Swal.fire({

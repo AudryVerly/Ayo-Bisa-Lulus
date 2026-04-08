@@ -46,12 +46,26 @@ class DashboardAdminUnitController extends Controller
             ->join('mahasiswa as m', 'm.id', '=', 'p.idMahasiswa')
             ->join('users as u', 'u.id', '=', 'm.idUser')
             ->join('lowongan as l', 'p.idLowongan', '=', 'l.id')
+            ->leftJoin('wawancara_penilai as wp', 'wp.idJadwalWawancara', '=', 'jw.id')
+            ->leftJoin('staffUnit as su', 'su.id', '=', 'wp.idStaffUnit')
+            ->leftJoin('users as us', 'us.id', '=', 'su.idUser')
             ->where('l.idUnit', $idUnit)
-            ->where('jw.status', '=', 'terjadwal')
+            ->whereIn('jw.status', ['terjadwal', 'selesai'])
             ->select(
+                'jw.id',
                 'jw.tanggal_wawancara',
+                'jw.status',
                 'u.name as namaKandidat',
-                'l.judulLowongan as namaLowongan')
+                'l.judulLowongan as namaLowongan',
+                DB::raw('GROUP_CONCAT(DISTINCT us.name SEPARATOR ", ") as pewawancara')
+            )
+            ->groupBy(
+                'jw.id',
+                'jw.tanggal_wawancara',
+                'jw.status',
+                'u.name',
+                'l.judulLowongan'
+            )
             ->get();
         // kandidat belum nilai
         $kandidatPerluTindakan = DB::table('pendaftaran as p')
@@ -80,7 +94,7 @@ class DashboardAdminUnitController extends Controller
                 DB::raw('CASE WHEN jw.id is NULL THEN 1 ELSE 0 END as belumadajadwal'),
                 DB::raw('CASE WHEN pk.nilaiFinal is NULL THEN 1 ELSE 0 END as belumdinilai'),
             )
-            ->groupBy('p.id', 'u.name', 'l.judulLowongan', 'jw.id','pk.nilaiFinal')
+            ->groupBy('p.id', 'u.name', 'l.judulLowongan', 'jw.id', 'pk.nilaiFinal')
             ->get();
         $events = [];
         foreach ($lowongan as $l) {
@@ -101,10 +115,12 @@ class DashboardAdminUnitController extends Controller
             $events[] = [
                 'title' => 'Wawancara - '.$j->namaKandidat,
                 'start' => $j->tanggal_wawancara,
-                'color' => 'blue',
+                'color' => $j->status == 'selesai' ? 'gray' : 'blue',
                 'extendedProps' => [
                     'kandidat' => $j->namaKandidat,
                     'lowongan' => $j->namaLowongan,
+                    'pewawancara' => $j->pewawancara,
+                    'status' => $j->status,
                     'tipe' => 'wawancara',
                 ],
             ];

@@ -22,6 +22,7 @@ class DashboardMahasiswaController extends Controller
                   ->join('lowongan as l','p.idLowongan', '=', 'l.id')
                   ->where('p.idMahasiswa', $idMahasiswa)
                   ->where('j.status', 'terjadwal')
+                  ->whereDate('j.tanggal_wawancara', '>=', now())
                   ->select(
                     'j.tanggal_wawancara as tanggal',
                     'j.waktu_mulai as mulai',

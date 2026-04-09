@@ -295,7 +295,7 @@
                 return;
             }
 
-            if (jumlahPenilaiFix !== null && checked !== jumlahPenilaiFix) {
+            if (jumlahPenilaiFix !== null && checked > jumlahPenilaiFix) {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Tidak Sesuai',

@@ -294,6 +294,7 @@ class PenilaianKandidatController extends Controller
             ->join('staffUnit as sf', 'wp.idStaffUnit', '=', 'sf.id')
             ->join('users as u', 'sf.idUser', '=', 'u.id')
             ->where('jw.idPendaftaran', $idPendaftaran)
+            ->where('wp.status', 'sudah')
             ->select(
                 'wp.id as idWawancaraPenilai',
                 'pk.id as idPenilaian',
@@ -308,6 +309,7 @@ class PenilaianKandidatController extends Controller
             ->leftJoin('penilaian_kandidat as pk', 'pk.idWawancaraPenilai', '=', 'wp.id')
             ->join('jadwal_wawancara as jw', 'jw.id', '=', 'wp.idJadwalWawancara')
             ->where('jw.idPendaftaran', $idPendaftaran)
+            ->where('wp.status','sudah')
             ->select(
                 DB::raw('COALESCE(AVG(pk.nilaiFinal), 0) as nilaiAkhir'),
                 DB::raw('COUNT(wp.id) as jumlahPenilai')
@@ -315,10 +317,13 @@ class PenilaianKandidatController extends Controller
             ->first();
         $detailKriteria = DB::table('penilaian_setiap_bobot as pb')
             ->join('penilaian_kandidat as pk', 'pk.id', '=', 'pb.idPenilaianKandidat')
+            ->join('wawancara_penilai as wp','wp.id','=','pk.idWawancaraPenilai')
+            ->join('jadwal_wawancara as jw', 'jw.id', '=', 'wp.idJadwalWawancara')
             ->join('bobot_kriteria as bk', 'bk.id', '=', 'pb.idBobotKriteria')
             ->join('kriteria as k', 'bk.idKriteria', '=', 'k.id')
-            ->join('jadwal_wawancara as jw', 'jw.id', '=', 'pk.idWawancaraPenilai')
             ->where('jw.idPendaftaran', $idPendaftaran)
+            // ->where('wp.status', 'sudah')
+            // ->where('wp.status'.'sudah')
             ->select(
                 'pb.idPenilaianKandidat',
                 'k.namaKriteria',

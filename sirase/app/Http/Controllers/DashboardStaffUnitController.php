@@ -32,7 +32,7 @@ class DashboardStaffUnitController extends Controller
             )
             ->where('w.idStaffUnit', $idStaffUnit)
             ->where('w.status','terjadwal')
-            ->where('j.tanggal_wawancara', '>=', now())
+            ->whereDate('j.tanggal_wawancara', '>=', now())
             ->orderBy('j.tanggal_wawancara')
             ->first();
 

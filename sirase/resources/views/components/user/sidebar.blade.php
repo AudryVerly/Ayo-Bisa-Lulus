@@ -111,7 +111,7 @@
                     </a>
                 </li>
             @endcan
-            @can('role:AdminUnit')
+            {{-- @can('role:AdminUnit')
                 <li class="nav-item">
                     <a class="nav-link {{ request()->is('penilaian*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
                         href="{{ route('timPenilai.utama') }}">
@@ -119,7 +119,7 @@
                         <span class="nav-link-text ms-1">Tim Penilai</span>
                     </a>
                 </li>
-            @endcan
+            @endcan --}}
             @can('role:AdminUnit')
                 <li class="nav-item">
                     <a class="nav-link {{ request()->is('kandidat*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"

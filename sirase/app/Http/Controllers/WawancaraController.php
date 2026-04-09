@@ -141,7 +141,7 @@ class WawancaraController extends Controller
 
         // dd($jumlahPenilaiFix, $jumlahSekarang);
 
-        if ($jumlahPenilaiFix !== null && $jumlahSekarang != $jumlahPenilaiFix) {
+        if ($jumlahPenilaiFix !== null && $jumlahSekarang > $jumlahPenilaiFix) {
             return response()->json([
                 'status' => false,
                 'message' => 'Jumlah penilai harus konsisten ('.$jumlahPenilaiFix.' orang)',

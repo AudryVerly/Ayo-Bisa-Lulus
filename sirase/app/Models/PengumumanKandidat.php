@@ -13,7 +13,8 @@ class PengumumanKandidat extends Model
         'nomor_surat',
         'status',
         'file_path',
-        'tanggal_publish'
+        'tanggal_publish',
+        'is_publish'
     ];
 
     public function pendaftaran(){

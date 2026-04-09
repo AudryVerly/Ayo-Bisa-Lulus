@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('pengumuman', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('idPendaftaran');
-            $table->string('nomor_surat');
+            $table->string('nomor_surat')->nullable();
             $table->enum('status',['Terima','Tolak']);
-            $table->text('file_path');
+            $table->text('file_path')->nullable();
             $table->date('tanggal_publish');
             $table->timestamps();
         });

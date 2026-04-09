@@ -12,6 +12,7 @@ use App\Http\Controllers\KriteriaController;
 use App\Http\Controllers\LowonganController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\pendaftaranController;
+use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\PenilaianKandidatController;
 use App\Http\Controllers\StaffUnitController;
 use App\Http\Controllers\TahapRekrutmenController;
@@ -118,6 +119,12 @@ Route::middleware(['auth','role:AdminUnit'])->group(function(){
   Route::get('/nilaikandidat/listlowongan',[PenilaianKandidatController::class,'showLowonganAdmin'])->name('kandidatadmin.listlowongan');
   Route::get('/nilaikandidat/liskandidat/{id}',[PenilaianKandidatController::class,'kandidatPerLowongan'])->name('kandidatadmin.listkandidat');
   Route::get('/nilaikandidat/detailnilaikandidat/{idPendaftaran}',[PenilaianKandidatController::class,'showDetailKandidatAdmin'])->name('kandidatadmin.detailnilaikandidat');
+
+  Route::get('/pengumuman/listLowongan',[PengumumanController::class,'showLowongan'])->name('pengumuman.listLowongan');
+  Route::post('/pengumuman/terima',[PengumumanController::class,'storePengumumanLolos'])->name('pengumuman.lolos');
+  Route::post('/pengumuman/tolak',[PengumumanController::class,'storeTolak'])->name('pengumuman.tolak');
+  Route::get('/pengumuman/listpengumuman/{idLowongan}',[PengumumanController::class,'showPengumuman'])->name('pengumuman.listPengumuman');
+
 });
 Route::middleware(['auth','role:StaffUnit'])->group(function(){
    Route::get('/dashboardStaff',[DashboardStaffUnitController::class, 'index'])->name('staff.dashboard');

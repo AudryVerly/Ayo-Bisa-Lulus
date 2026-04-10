@@ -4,41 +4,51 @@ namespace App\Http\Controllers;
 
 use App\Models\Lowongan;
 use App\Models\PengumumanKandidat;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class PengumumanController extends Controller
 {
-    public function showLowongan(){
+    public function showLowongan()
+    {
         $idUnit = Auth::user()->staffUnit()->pluck('idUnit')->first();
         $lowongan = Lowongan::with(['unit'])
-                    ->where('idUnit', $idUnit)
-                    //ini biar gak ke publish duluan
-                    ->where('status',0)
-                    ->get();
-        return view('pengumuman.listlowongan',compact('lowongan'));
+            ->where('idUnit', $idUnit)
+                    // ini biar gak ke publish duluan
+            ->where('status', 0)
+            ->get();
+
+        return view('pengumuman.listlowongan', compact('lowongan'));
     }
 
-    public function showPengumuman($idLowongan){
+    public function showPengumuman($idLowongan)
+    {
         $pengumuman = DB::table('pengumuman as pg')
-                      ->join('pendaftaran as p','p.id','=','pg.idPendaftaran')
-                      ->join('lowongan as l','p.idLowongan','=','l.id')
-                      ->join('mahasiswa as m','p.idMahasiswa','=','m.id')
-                      ->join('users as u','m.idUser','=','u.id')
-                      ->where('l.id',$idLowongan)
-                      ->select(
-                        'l.id as idLowongan',
-                        'l.judulLowongan',
-                        'u.name as namaKandidat',
-                        'pg.status',
-                        'pg.nomor_surat',
-                        'pg.file_path',
-                        'pg.is_publish'
-                      )
-                    ->get();
-        return view('pengumuman.listpengumuman',compact('pengumuman'));
+            ->join('pendaftaran as p', 'p.id', '=', 'pg.idPendaftaran')
+            ->join('lowongan as l', 'p.idLowongan', '=', 'l.id')
+            ->join('mahasiswa as m', 'p.idMahasiswa', '=', 'm.id')
+            ->join('users as u', 'm.idUser', '=', 'u.id')
+            ->where('l.id', $idLowongan)
+            ->select(
+                'pg.idPendaftaran',
+                'l.id as idLowongan',
+                'l.judulLowongan',
+                'p.id as idPendaftaran',
+                'u.name as namaKandidat',
+                'pg.status',
+                'pg.nomor_surat',
+                'pg.file_path',
+                'pg.is_publish'
+            )
+            ->get();
+        $judulLowongan = DB::table('lowongan')
+            ->where('id', $idLowongan)
+            ->value('judulLowongan');
+
+        return view('pengumuman.listpengumuman', compact('pengumuman','judulLowongan'));
     }
+
     public function storePengumumanLolos(Request $request)
     {
         $request->validate([
@@ -61,7 +71,7 @@ class PengumumanController extends Controller
             ->where('p.id', $request->idPendaftaran)
             ->select('l.judulLowongan')
             ->first();
-        
+
         $namaLowongan = strtolower($pendaftaran->judulLowongan);
         $namaLowongan = preg_replace('/[^a-z0-9]+/', '_', $namaLowongan);
         $namaLowongan = trim($namaLowongan, '_');
@@ -69,13 +79,13 @@ class PengumumanController extends Controller
         $pengumuman = PengumumanKandidat::updateOrCreate([
             'idPendaftaran' => $request->idPendaftaran,
         ],
-        [
-            'nomor_surat' => $request->nomorSurat,
-            'status' => 'Terima',
-            'file_path' => null,
-            'tanggal_publish' => null,
-            'is_publish' => 0,
-        ]
+            [
+                'nomor_surat' => $request->nomorSurat,
+                'status' => 'Terima',
+                'file_path' => null,
+                'tanggal_publish' => null,
+                'is_publish' => 0,
+            ]
         );
 
         if ($request->hasFile('surat')) {
@@ -99,13 +109,14 @@ class PengumumanController extends Controller
 
         PengumumanKandidat::updateOrCreate([
             'idPendaftaran' => $request->idPendaftaran,
-        ],[
+        ], [
             'nomor_surat' => null,
             'status' => 'Tolak',
             'file_path' => null,
             'tanggal_publish' => null,
             'is_publish' => 0,
         ]);
+
         return back()->with('success', 'Kandidat berhasil ditolak menunggu dipublish');
     }
 }

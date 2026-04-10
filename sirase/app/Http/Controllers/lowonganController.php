@@ -96,6 +96,7 @@ class LowonganController extends Controller
             'mulaiKerja' => 'required|date|after_or_equal:'.Carbon::parse($request->batasPendaftaran)->addDays(14)->format('Y-m-d'),
             // pastinya gak mungkin kerja cuman 1 hari 2 hari kan
             'akhirKerja' => 'required|date|after_or_equal: '.Carbon::parse($request->mulaiKerja)->addMonth()->format('Y-m-d'),
+            'kuota_diterima' => 'required|integer|min:1',
             'poster' => 'nullable|file|mimes:jpg,jpeg,png|max:20480',
         ], [
             'required' => 'Bagian :attribute wajib diisi.',
@@ -104,6 +105,7 @@ class LowonganController extends Controller
             'date' => 'Bagian :attribute harus berupa tanggal yang valid.',
             'min' => 'Bagian :attribute minimal bernilai :min bulan.',
             'max' => 'Bagian :attribute maksimal :max karakter.',
+            'kuota_diterima.min' => 'Bagian kuota_diterima min 1 orang',
             'after_or_equal' => 'Tanggal :attribute tidak sesuai dengan ketentuan periode lowongan.',
             'mulaiKerja.after_or_equal' => 'Tanggal mulai kerja setidaknya harus 14 hari setelah batas pendaftaran',
             'mulaiKerja.after_or_equal' => 'Tanggal akhir kerja setidaknya harus 1 bulan setelah mulai bekerja',
@@ -120,6 +122,7 @@ class LowonganController extends Controller
             'mulaiKerja' => 'tanggal mulai kerja',
             'akhirKerja' => 'tanggal akhir kerja',
             'poster' => 'poster lowongan',
+            'kuota_diterima' => 'kuota diterima',
         ]);
 
         $request['kualifikasi'] = trim(preg_replace('/\r\n|\r|\n/', "\n", $request['kualifikasi']));
@@ -135,6 +138,7 @@ class LowonganController extends Controller
             'batasPendaftaran' => $request->batasPendaftaran,
             'mulaiKerja' => $request->mulaiKerja,
             'akhirKerja' => $request->akhirKerja,
+            'kuota_diterima' => $request->kuota_diterima,
             'poster' => ' ',
             'status' => 0,
             'is_ready' => 0,
@@ -203,6 +207,7 @@ class LowonganController extends Controller
             'mulaiKerja' => 'required|date|after_or_equal:'.Carbon::parse($request->batasPendaftaran)->addDays(14)->format('Y-m-d'),
             // pastinya gak mungkin kerja cuman 1 hari 2 hari kan
             'akhirKerja' => 'required|date|after_or_equal: '.Carbon::parse($request->mulaiKerja)->addMonth()->format('Y-m-d'),
+            'kuota_diterima' => 'required|integer|min:1',
             'poster' => 'nullable|file|mimes:jpg,jpeg,png|max:20480',
         ], [
             'required' => 'Bagian :attribute wajib diisi.',
@@ -211,6 +216,7 @@ class LowonganController extends Controller
             'date' => 'Bagian :attribute harus berupa tanggal yang valid.',
             'min' => 'Bagian :attribute minimal bernilai :min.',
             'max' => 'Bagian :attribute maksimal :max karakter.',
+            'kuota_diterima.min' => 'Bagian kuota_diterima min 1 orang',
             'after_or_equal' => 'Tanggal :attribute tidak sesuai dengan ketentuan periode lowongan.',
             'mulaiKerja.after_or_equal' => 'Tanggal mulai kerja setidaknya harus 14 hari setelah batas pendaftaran',
             'mulaiKerja.after_or_equal' => 'Tanggal akhir kerja setidaknya harus 1 bulan setelah mulai bekerja',
@@ -227,6 +233,7 @@ class LowonganController extends Controller
             'mulaiKerja' => 'tanggal mulai kerja',
             'akhirKerja' => 'tanggal akhir kerja',
             'poster' => 'poster lowongan',
+            'kuota_diterima' => 'kuota diterima',
         ]);
 
         // ini supaya dia bisa memsiahkan spasi, whitespace dan koma
@@ -277,6 +284,7 @@ class LowonganController extends Controller
             'batasPendaftaran' => $request->batasPendaftaran,
             'mulaiKerja' => $request->mulaiKerja,
             'akhirKerja' => $request->akhirKerja,
+            'kuota_diterima' => $request->kuota_diterima,
             'poster' => $posterPath,
         ]);
 

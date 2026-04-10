@@ -149,6 +149,10 @@
                                                                 {{ $lowongans->durasiKerja ?? '-' }} bulan
                                                             </div>
                                                             <div class="mb-2">
+                                                                <strong>Kuota Diterima: </strong>
+                                                                {{ $lowongans->kuota_diterima ?? '-' }}
+                                                            </div>
+                                                            <div class="mb-2">
                                                                 <strong>Periode Pendaftaran: </strong>
                                                                 {{ \Carbon\Carbon::parse($lowongans->awalPendaftaran)->translatedFormat('d F Y ') }}
                                                                 -

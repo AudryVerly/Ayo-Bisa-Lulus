@@ -99,6 +99,21 @@
                                 @enderror
                             </div>
                             <div class="form-group mb-2">
+                                <label for="kuota_diterima" class="form-label fw-bold text-secondary">Kuota_diterima</label>
+                                <i class="material-symbols-rounded text-secondary ms-0" data-bs-toggle="tooltip"
+                                    data-bs-placement="top"
+                                    title="Masukkan jumlah kuota kandidat yang mau diterima, minimal 1"
+                                    style="font-size: 1rem; cursor: help;">
+                                    info
+                                </i>
+                                <input type="number" id="kuota_diterima" name="kuota_diterima"
+                                    class="form-control border rounded-3 px-3 py-2 text-dark"
+                                    value="{{ old('kuota_diterima', $lowongan->kuota_diterima) }}">
+                                @error('kuota_diterima')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="form-group mb-2">
                                 <label for="awalPendaftaran" class="form-label fw-bold text-secondary">Awal
                                     Pendaftaran</label>
                                 <i class="material-symbols-rounded text-secondary ms-0" data-bs-toggle="tooltip"

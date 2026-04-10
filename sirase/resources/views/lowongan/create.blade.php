@@ -35,8 +35,7 @@
                                     info
                                 </i>
                                 <input type="text" id="judulLowongan" name="judulLowongan"
-                                    class="form-control border rounded-3 px-3 py-2"
-                                    value ="{{ old('judulLowongan') }}">
+                                    class="form-control border rounded-3 px-3 py-2" value ="{{ old('judulLowongan') }}">
                                 @error('judulLowongan')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -85,8 +84,7 @@
                                     info
                                 </i>
                                 <input type="text" id="posisiLowongan" name="posisiLowongan"
-                                    class="form-control border rounded-3 px-3 py-2"
-                                    value="{{ old('posisiLowongan') }}">
+                                    class="form-control border rounded-3 px-3 py-2" value="{{ old('posisiLowongan') }}">
                                 @error('posisiLowongan')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -103,7 +101,21 @@
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
-
+                            <div class="form-group mb-2">
+                                <label for="kuota_diterima" class="form-label fw-bold text-secondary">Kuota_diterima</label>
+                                <i class="material-symbols-rounded text-secondary ms-0" data-bs-toggle="tooltip"
+                                    data-bs-placement="top"
+                                    title="Masukkan jumlah kuota kandidat yang mau diterima, minimal 1"
+                                    style="font-size: 1rem; cursor: help;">
+                                    info
+                                </i>
+                                <input type="number" id="kuota_diterima" name="kuota_diterima"
+                                    class="form-control border rounded-3 px-3 py-2 text-dark"
+                                    value="{{ old('kuota_diterima') }}">
+                                @error('kuota_diterima')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
                             <div class="form-group mb-2">
                                 <label for="awalPendaftaran" class="form-label fw-bold text-secondary">Awal
                                     Pendaftaran</label>
@@ -113,8 +125,7 @@
                                     info
                                 </i>
                                 <input type="date" id="awalPendaftaran" name="awalPendaftaran"
-                                    class="form-control border rounded-3 px-3 py-2"
-                                    value="{{ old('awalPendaftaran') }}">
+                                    class="form-control border rounded-3 px-3 py-2" value="{{ old('awalPendaftaran') }}">
                                 @error('awalPendaftaran')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -146,8 +157,7 @@
                                     info
                                 </i>
                                 <input type="date" id="mulaiKerja" name="mulaiKerja"
-                                    class="form-control border rounded-3 px-3 py-2"
-                                    value="{{ old('mulaiKerja') }}">
+                                    class="form-control border rounded-3 px-3 py-2" value="{{ old('mulaiKerja') }}">
                                 @error('mulaiKerja')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -162,8 +172,7 @@
                                     info
                                 </i>
                                 <input type="date" id="akhirKerja" name="akhirKerja"
-                                    class="form-control border rounded-3 px-3 py-2"
-                                    value="{{ old('akhirKerja') }}">
+                                    class="form-control border rounded-3 px-3 py-2" value="{{ old('akhirKerja') }}">
                                 @error('akhirKerja')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror

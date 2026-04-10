@@ -9,6 +9,14 @@
                     <div
                         class="bg-gradient-dark shadow-dark border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center px-4">
                         <h6 class="text-white text-capitalize m-0">List Kandidat - {{ $judulLowongan ?? '-' }}</h6>
+
+                        <form action="" method="POST">
+                            @csrf
+                            <input type="hidden" name="idLowongan" value="{{ $pengumuman[0]->idLowongan ?? '' }}">
+                            <button type="submit" class="btn bg-white text-dark border shadow-sm">
+                                Publish Semua
+                            </button>
+                        </form>
                     </div>
                 </div>
 
@@ -29,8 +37,8 @@
                                         style="text-align: center;">Status</th>
                                     <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
                                         style="text-align: center;">Tanggal Publish</th>
-                                    <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
-                                        style="text-align: center;">Aksi</th>
+                                    {{-- <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
+                                        style="text-align: center;">Aksi</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -53,13 +61,13 @@
                                             @if ($p->status == 'Terima')
                                                 <span class="badge bg-success px-3 py-2">Lolos</span>
                                             @else
-                                                <span class="badge bg-success px-3 py-2">Tolak</span>
+                                                <span class="badge bg-danger px-3 py-2">Tolak</span>
                                             @endif
                                         </td>
                                         <td class="text-sm" style="text-align: center;">
                                             {{ \Carbon\Carbon::parse($p->tanggal_publish)->translatedFormat('d M Y') ?? '-' }}
                                         </td>
-                                        <td class="text-sm" style="text-align: center;">
+                                        {{-- <td class="text-sm" style="text-align: center;">
                                             @if ($p->is_publish == 0)
                                                 <form action="" method="POST">
                                                     @csrf
@@ -75,7 +83,7 @@
                                                     Sudah Publish
                                                 </span>
                                             @endif
-                                        </td>
+                                        </td> --}}
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -95,7 +103,7 @@
         $(document).ready(function() {
             $('#tableKandidatPengumuman').DataTable({
                 language: {
-                    emptyTable:"Belum ada kandidat",
+                    emptyTable: "Belum ada kandidat",
                     url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json",
                     paginate: {
                         previous: "<",

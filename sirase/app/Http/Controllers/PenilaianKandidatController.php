@@ -218,6 +218,13 @@ class PenilaianKandidatController extends Controller
         $lowongan = DB::table('lowongan')
             ->where('id', $idLowongan)
             ->first();
+        $kuota = $lowongan->kuota_diterima;
+
+        $jumlahDiterima = DB::table('pengumuman as pg')
+                          ->join('pendaftaran as p','p.id','=','pg.idPendaftaran')
+                          ->where('p.idLowongan', $idLowongan)
+                          ->where('pg.status','Terima')
+                          ->count();
         $kandidat = DB::table('pendaftaran as p')
             ->join('mahasiswa as m', 'p.idMahasiswa', '=', 'm.id')
             ->join('users as u', 'm.idUser', '=', 'u.id')
@@ -276,7 +283,7 @@ class PenilaianKandidatController extends Controller
             ->doesntExist(); // true kalau semuanya dinilai
         
 
-        return view('penilaiankandidat.nilaikandidatadmin', compact('kandidat', 'lowongan', 'semuaDinilai'));
+        return view('penilaiankandidat.nilaikandidatadmin', compact('kandidat', 'lowongan', 'semuaDinilai','jumlahDiterima','kuota'));
     }
 
     public function showDetailKandidatAdmin($idPendaftaran)

@@ -38,6 +38,7 @@ class PengumumanController extends Controller
                 'u.name as namaKandidat',
                 'pg.status',
                 'pg.nomor_surat',
+                'pg.tanggal_publish',
                 'pg.file_path',
                 'pg.is_publish'
             )

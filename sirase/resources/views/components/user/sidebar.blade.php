@@ -206,7 +206,7 @@
                     <a class="nav-link {{ request()->is('pengumuman*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
                         href="{{ route('pengumuman.listLowongan') }}">
                         <i class="material-symbols-rounded opacity-5">brand_awareness</i>
-                        <span class="nav-link-text ms-1">Hasil Penilaian</span>
+                        <span class="nav-link-text ms-1">Pengumuman</span>
                     </a>
                 </li>
             @endcan

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lowongan;
+use App\Models\PengumumanKandidat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -223,10 +224,13 @@ class PenilaianKandidatController extends Controller
             ->leftjoin('jadwal_wawancara as jw', 'jw.idPendaftaran', '=', 'p.id')
             ->leftJoin('wawancara_penilai as wp', 'wp.idJadwalWawancara', '=', 'jw.id')
             ->leftJoin('penilaian_kandidat as pk', 'pk.idWawancaraPenilai', '=', 'wp.id')
+            ->leftJoin('pengumuman as pg','pg.idPendaftaran','=','p.id')
             ->where('p.idLowongan', $idLowongan)
             ->select(
                 'p.id as idPendaftaran',
                 'u.name as namaKandidat',
+                'pg.status',
+                'pg.is_publish',
 
                 // nilai akhir kandidat
                 DB::raw('COALESCE(AVG(pk.nilaiFinal),0) as nilaiAkhir'),
@@ -245,8 +249,8 @@ class PenilaianKandidatController extends Controller
                     END) as totalPenilai
                 ")
             )
-            ->groupBy('p.id', 'u.name')
-             // Yang belum lengkap penilaian ditaruh bawah
+            ->groupBy('p.id', 'u.name','pg.status','pg.is_publish')
+            // Yang belum lengkap penilaian ditaruh bawah
             ->orderByRaw("
                 CASE 
                     WHEN COUNT(DISTINCT CASE 
@@ -270,6 +274,7 @@ class PenilaianKandidatController extends Controller
             ->whereIn('wp.status', ['terjadwal', 'selesai'])
             ->whereNull('pk.id') // ini kalau kasus belum ada yang menilai
             ->doesntExist(); // true kalau semuanya dinilai
+        
 
         return view('penilaiankandidat.nilaikandidatadmin', compact('kandidat', 'lowongan', 'semuaDinilai'));
     }
@@ -333,7 +338,7 @@ class PenilaianKandidatController extends Controller
             )
             ->get()
             ->groupBy('idPenilaianKandidat');
-
+        
         return view('penilaiankandidat.detailnilaikandidatadmin', compact('kandidat', 'penilaian', 'detailKriteria', 'summary'));
     }
 }

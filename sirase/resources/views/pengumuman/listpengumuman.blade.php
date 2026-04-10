@@ -22,7 +22,7 @@
                                     <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
                                         style="text-align: center;">Nama Kandidat</th>
                                     <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
-                                        style="text-align: center;">Nomorr Surat</th>
+                                        style="text-align: center;">Nomor Surat</th>
                                     <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
                                         style="text-align: center;">Surat</th>
                                     <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"

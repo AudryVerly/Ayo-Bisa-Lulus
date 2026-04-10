@@ -18,6 +18,7 @@ class Lowongan extends Model
                             'batasPendaftaran',
                             'mulaiKerja',
                             'akhirKerja',
+                            'kuota_diterima',
                             'status',
                             'poster',
                             'is_ready'];

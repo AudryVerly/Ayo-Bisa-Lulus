@@ -32,6 +32,10 @@
                                     <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
                                         style="text-align: center;">Nilai Akhir</th>
                                     <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
+                                        style="text-align: center;">Status</th>
+                                    <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
+                                        style="text-align: center;">Pengumuman</th>
+                                    <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
                                         style="text-align: center;">Aksi</th>
                                 </tr>
                             </thead>
@@ -48,6 +52,24 @@
                                                     dinilai</span>
                                             @else
                                                 {{ $k->nilaiAkhir }}
+                                            @endif
+                                        </td>
+                                        <td class="text-sm" style="text-align: center;">
+                                            @if ($k->status == 'Terima')
+                                                <span class="badge bg-success">Lolos</span>
+                                            @elseif ($k->status == 'Tolak')
+                                                <span class="badge bg-success">Lolos</span>
+                                            @else
+                                                <span class="badge bg-dark">Belum Dipilih</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-sm" style="text-align: center;">
+                                            @if (is_null($k->status))
+                                                <span class="badge bg-dark">Belum Memilih</span>
+                                            @elseif ($k->is_publish == 1)
+                                                <span class="badge bg-info">Published</span>
+                                            @else
+                                                <span class="badge bg-warning text-dark">Draft</span>
                                             @endif
                                         </td>
                                         <td>
@@ -80,7 +102,6 @@
                                     </tr>
                                 @endforeach
                             </tbody>
-                            </thead>
                         </table>
                     </div>
                 </div>
@@ -187,7 +208,7 @@
                 confirmButtonText: 'Ya, Tolak',
                 cancelButtonText: 'Batal'
             }).then((result) => {
-                if(result.isConfirmed){
+                if (result.isConfirmed) {
                     form.submit();
                 }
             });

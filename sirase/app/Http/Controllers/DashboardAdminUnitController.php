@@ -109,6 +109,63 @@ class DashboardAdminUnitController extends Controller
                 OR (pk.nilaiFinal IS NULL)
             ')
             ->get();
+
+        $progressKandidat = DB::table('pendaftaran as p')
+            ->join('lowongan as l', 'p.idLowongan', '=', 'l.id')
+            ->join('mahasiswa as m', 'm.id', '=', 'p.idMahasiswa')
+            ->join('users as u', 'u.id', '=', 'm.idUser')
+            ->leftJoin('progress_tahapan_kandidat as pt', 'pt.idPendaftaran', '=', 'p.id')
+            ->leftJoin('tahap_rekrutmen as tr', 'tr.id', '=', 'pt.idTahapRekrutmen')
+            ->where('l.idUnit', $idUnit)
+            ->select(
+                'l.id as idLowongan',
+                'p.id as idPendaftaran',
+                'u.name as namaKandidat',
+                'l.judulLowongan',
+
+                DB::raw('MAX(tr.urutan) as maxUrutan'),
+
+                DB::raw('MAX(CASE 
+                            WHEN pt.status = "Proses" THEN tr.name
+                             END) as tahapProses'),
+
+                DB::raw('MAX(CASE 
+                            WHEN pt.status = "Lulus" THEN tr.name
+                            END) as tahapSelesai'),
+
+                DB::raw('COUNT(pt.id) as totalTahap'),
+
+                DB::raw('COUNT(CASE 
+                    WHEN pt.status = "Lulus" THEN 1 
+                END) as totalTahapSelesai'),
+
+                DB::raw('(
+                    SELECT COUNT(*)
+                    FROM tahap_rekrutmen tr2
+                    WHERE tr2.idLowongan = l.id
+                ) as totalTahapLowongan')
+            )
+            ->groupBy('l.id', 'p.id', 'u.name', 'l.judulLowongan')
+            ->get();
+
+        foreach ($progressKandidat as $k) {
+            $k->progressCount = $k->totalTahapSelesai.' / '.$k->totalTahapLowongan;
+
+            if ($k->totalTahap == 0) {
+                $k->statusProgress = 'Belum mulai';
+                $k->tahapSekarang = '-';
+            } elseif ($k->tahapProses) {
+                $k->statusProgress = 'Sedang proses';
+                $k->tahapSekarang = $k->tahapProses;
+            } elseif ($k->tahapSelesai) {
+                $k->statusProgress = 'Selesai';
+                $k->tahapSekarang = $k->tahapSelesai;
+            } else {
+                $k->statusProgress = 'Tidak diketahui';
+                $k->tahapSekarang = '-';
+            }
+        }
+
         $events = [];
         foreach ($lowongan as $l) {
             $events[] = [
@@ -146,6 +203,7 @@ class DashboardAdminUnitController extends Controller
             'lowonganTutup',
             'lowonganBelumLengkap',
             'kandidatPerluTindakan',
+            'progressKandidat',
             'events'));
     }
 }

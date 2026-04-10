@@ -243,7 +243,7 @@ class WawancaraController extends Controller
             ->where('id', $idPendaftaran)
             ->first();
 
-        if (! $lowongan) {
+        if (!$lowongan) {
             return null;
         }
         $jadwal = DB::table('jadwal_wawancara as j')
@@ -252,15 +252,17 @@ class WawancaraController extends Controller
             ->where('j.status', '!=', 'batal')
             ->pluck('j.id');
 
-        if (! $jadwal) {
+        if (!$jadwal->isEmpty()) {
             return null;
         }
 
-        return DB::table('wawancara_penilai')
+        $count = DB::table('wawancara_penilai')
             ->whereIn('idJadwalWawancara', $jadwal)
             ->where('status', '!=', 'gagal')
             ->distinct('idStaffUnit')
             ->count('idStaffUnit');
+
+        return $count > 0 ? $count : null;
     }
 
     public function confirmJadwal($idpewawancara, $aksi, Request $request)

@@ -125,6 +125,44 @@
                 </table>
             </div>
         </div>
+
+        {{-- Tahapan kandidat --}}
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+                <h5 class="fw-semibold mb-3">Tahapan kanadidat</h5>
+                <table id="tableTahapan" class="table align-items-center mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
+                                style="text-align: center;">Nama Kandidat</th>
+                            <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
+                                style="text-align: center;">Nama Lowongan</th>
+                            <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
+                                style="text-align: center;">Tahap</th>
+                            <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
+                                style="text-align: center;">Jumlah Tahapan</th>
+                            <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
+                                style="text-align: center;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($progressKandidat as $pk)
+                            <tr>
+                                <td class="text-sm" style="text-align: center;">{{ $pk->namaKandidat }}</td>
+                                <td class="text-sm" style="text-align: center;">{{ $pk->judulLowongan }}</td>
+                                <td class="text-sm" style="text-align: center;">{{ $pk->tahapSekarang }}</td>
+                                <td class="text-sm" style="text-align: center;">{{ $pk->progressCount }}</td>
+                                <td class="text-sm" style="text-align: center;">
+                                    <span class="badge bg-info">
+                                        {{ $pk->statusProgress }}
+                                    </span>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 @endsection
 @push('scripts')
@@ -174,8 +212,7 @@
                             <b>Statu wawancara:</b> ${data.status ?? '-'}<br>
                             <b>Tipe:</b> ${data.tipe ?? '-'}
                         `;
-                    }
-                    else {
+                    } else {
                         html = `<b>Event:</b> ${info.event.title}`;
                     }
 
@@ -213,6 +250,25 @@
                 language: {
                     url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json",
                     emptyTable: "Semua Kandidat Sudah Aman",
+                    paginate: {
+                        previous: "<",
+                        next: ">",
+                    }
+                },
+                lengthMenu: [5, 10, 25, 50, 100],
+                columnDefs: [
+                    //ini supaya tabel index terakhir gak bisa disort
+                    {
+                        orderable: false,
+                        targets: -1
+                    }
+                ]
+            });
+
+            $('#tableTahapan').DataTable({
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json",
+                    emptyTable: "Semua Tahapan sudah aman",
                     paginate: {
                         previous: "<",
                         next: ">",

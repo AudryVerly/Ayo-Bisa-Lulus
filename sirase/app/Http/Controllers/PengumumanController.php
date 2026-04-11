@@ -47,57 +47,72 @@ class PengumumanController extends Controller
             ->where('id', $idLowongan)
             ->value('judulLowongan');
 
-        return view('pengumuman.listpengumuman', compact('pengumuman','judulLowongan'));
+        return view('pengumuman.listpengumuman', compact('pengumuman', 'judulLowongan'));
     }
 
     public function storePengumumanLolos(Request $request)
     {
         $request->validate([
             'idPendaftaran' => 'required',
-            'nomorSurat' => 'required|string',
-            'surat' => 'nullable|file|mimes:pdf|max:20480',
         ], [
             'required' => 'Bagian :attribute wajib diisi.',
-            'string' => 'Bagian :attribute harus berupa teks.',
-            'surat.mimes' => 'Surat harus berformat PDF',
-            'surat.max' => 'Ukuran surat maksimal 20 MB',
         ], [
             'idPendaftaran' => 'id pendaftaran',
-            'nomorSurat' => 'nomor surat',
-            'surat' => 'surat',
         ]);
 
         $pendaftaran = DB::table('pendaftaran as p')
+            ->join('mahasiswa as m', 'p.idMahasiswa', '=', 'm.id')
             ->join('lowongan as l', 'p.idLowongan', '=', 'l.id')
             ->where('p.id', $request->idPendaftaran)
-            ->select('l.judulLowongan')
+            ->select(
+                'p.id',
+                'p.idMahasiswa',
+                'l.judulLowongan',
+                'l.mulaiKerja',
+                'l.akhirKerja'
+            )
             ->first();
 
-        $namaLowongan = strtolower($pendaftaran->judulLowongan);
-        $namaLowongan = preg_replace('/[^a-z0-9]+/', '_', $namaLowongan);
-        $namaLowongan = trim($namaLowongan, '_');
+        $sudahDiterima = DB::table('pengumuman as pg')
+            ->join('pendaftaran as p', 'pg.idPendaftaran', '=', 'p.id')
+            ->join('lowongan as l', 'p.idLowongan', '=', 'l.id')
+            ->where('p.idMahasiswa', $pendaftaran->idMahasiswa)
+            ->where('pg.status', 'Terima')
+            ->whereDate('l.akhirKerja', '>=', now())
+            ->exists();
+        if ($sudahDiterima) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Wawancara maksimal H-3 sebelum mulai kerja',
+            ], 422);
+        }
 
-        $pengumuman = PengumumanKandidat::updateOrCreate([
+        // $namaLowongan = strtolower($pendaftaran->judulLowongan);
+        // $namaLowongan = preg_replace('/[^a-z0-9]+/', '_', $namaLowongan);
+        // $namaLowongan = trim($namaLowongan, '_');
+
+        PengumumanKandidat::updateOrCreate(
+        [
             'idPendaftaran' => $request->idPendaftaran,
         ],
-            [
-                'nomor_surat' => $request->nomorSurat,
-                'status' => 'Terima',
-                'file_path' => null,
-                'tanggal_publish' => null,
-                'is_publish' => 0,
-            ]
+        [
+            'nomor_surat' => null,
+            'status' => 'Terima',
+            'file_path' => null,
+            'tanggal_publish' => null,
+            'is_publish' => 0,
+        ]
         );
 
-        if ($request->hasFile('surat')) {
-            $file = $request->file('surat');
-            $extension = $file->getClientOriginalExtension();
-            $namaFile = 'pengumuman_'.$namaLowongan.'_'.$request->idPendaftaran.'_'.'.'.$extension;
+        // if ($request->hasFile('surat')) {
+        //     $file = $request->file('surat');
+        //     $extension = $file->getClientOriginalExtension();
+        //     $namaFile = 'pengumuman_'.$namaLowongan.'_'.$request->idPendaftaran.'_'.'.'.$extension;
 
-            $suratPath = $file->storeAs('pengumuman/'.$request->idPendaftaran, $namaFile, 'public');
+        //     $suratPath = $file->storeAs('pengumuman/'.$request->idPendaftaran, $namaFile, 'public');
 
-            $pengumuman->update(['file_path' => $suratPath]);
-        }
+        //     $pengumuman->update(['file_path' => $suratPath]);
+        // }
 
         return back()->with('success', 'Pengumuman berhasil disimpan dan menunggu waktu publish');
     }
@@ -110,7 +125,8 @@ class PengumumanController extends Controller
 
         PengumumanKandidat::updateOrCreate([
             'idPendaftaran' => $request->idPendaftaran,
-        ], [
+        ], 
+        [
             'nomor_surat' => null,
             'status' => 'Tolak',
             'file_path' => null,

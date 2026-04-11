@@ -9,14 +9,10 @@
                     <div
                         class="bg-gradient-dark shadow-dark border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center px-4">
                         <h6 class="text-white text-capitalize m-0">List Kandidat - {{ $judulLowongan ?? '-' }}</h6>
-
-                        <form action="" method="POST">
-                            @csrf
-                            <input type="hidden" name="idLowongan" value="{{ $pengumuman[0]->idLowongan ?? '' }}">
-                            <button type="submit" class="btn bg-white text-dark border shadow-sm">
-                                Publish Semua
-                            </button>
-                        </form>
+                        <button type="button" class="btn bg-white text-dark border shadow-sm btn-publish"
+                            data-bs-toggle="modal" data-bs-target="#modaltambahpengumuman">
+                            Publish Semua
+                        </button>
                     </div>
                 </div>
 
@@ -65,7 +61,7 @@
                                             @endif
                                         </td>
                                         <td class="text-sm" style="text-align: center;">
-                                            {{ \Carbon\Carbon::parse($p->tanggal_publish)->translatedFormat('d M Y') ?? '-' }}
+                                            {{ $p->tanggal_publish ? \Carbon\Carbon::parse($p->tanggal_publish)->translatedFormat('d M Y') : '-' }}
                                         </td>
                                         {{-- <td class="text-sm" style="text-align: center;">
                                             @if ($p->is_publish == 0)
@@ -94,6 +90,61 @@
         </div>
     </div>
 @endsection
+@push('modals')
+    <div class="modal fade" id="modaltambahpengumuman" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form action="" method="POST" enctype="multipart/form-data">
+                    <div>
+                        <div
+                            class="modal-header d-flex justify-content-between align-items-center bg-dark text-white px-4 py-3">
+                            <h5 class="modal-title text-white">Tambah Berkas Pengumuman</h5>
+                            <button type="button" class="btn-close btn-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="idLowongan" value="{{ $pengumuman[0]->idLowongan ?? '' }}">
+                            <div class="form-group mb-2">
+                                <label for="nomorSurat" class="form-label fw-bold text-secondary">Nomor Surat</label>
+                                <div class="custom-tooltip"
+                                    data-title="nomor surat dapat berupa nomor ST ataupun nomor surat pernyataan lolos bagi studentemployee">
+                                    <i class="material-symbols-rounded text-secondary ms-1"
+                                        style="font-size: 1rem;">info</i>
+                                </div>
+                                <input type="text" id="nomorSurat" name="nomorSurat"
+                                    class="form-control shadow-sm border rounded-3 px-3 py-2">
+                                @error('nomorSurat')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="form-group mb-2">
+                                <label for="filePath" class="form-label fw-bold text-secondary">Surat ST/Surat
+                                    Pernyataan</label>
+                                <div class="custom-tooltip"
+                                    data-title="Masukkan surat dalam bentuk PDF maksimal 20 MB,Surat dapat berupa ST atau keterangan lolos">
+                                    <i class="material-symbols-rounded text-secondary ms-1"
+                                        style="font-size: 1rem;">info</i>
+                                </div>
+                                <input type="file" id="surat" name="surat"
+                                    class="form-control shadow-sm border rounded-3 px-3 py-2">
+                                @error('file_path')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="text-end mt-4">
+                                <button type="submit" class="btn bg-gradient-success text-white px-4">
+                                    <i class="material-symbols-rounded text-sm">save</i><span
+                                        class="align-middle">&nbsp;&nbsp;Simpan</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+@endpush
 @push('scripts')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>

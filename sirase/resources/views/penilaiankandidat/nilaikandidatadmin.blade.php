@@ -29,6 +29,12 @@
                         </div>
                     @endif
 
+                    @if ($kandidat->where('is_publish', 1)->count() > 0)
+                        <div class="alert alert-success text-center text-white">
+                            Pengumuman sudah dipublish. Data tidak dapat diubah.
+                        </div>
+                    @endif
+
                     <div class="table-responsive p-0">
                         <table id="tablelistkandidat" class="table align-items-center mb-0">
                             <thead class="bg-light">
@@ -65,7 +71,11 @@
                                             @endif
                                         </td>
                                         <td class="text-sm" style="text-align: center;">
-                                            @if ($k->status == 'Terima')
+                                            @if ($k->isLocked)
+                                                <span class="badge bg-secondary">
+                                                    Sudah diterima di lowongan lain
+                                                </span>
+                                            @elseif ($k->status == 'Terima')
                                                 <span class="badge bg-success">Lolos</span>
                                             @elseif ($k->status == 'Tolak')
                                                 <span class="badge bg-success">Lolos</span>
@@ -74,7 +84,9 @@
                                             @endif
                                         </td>
                                         <td class="text-sm" style="text-align: center;">
-                                            @if (is_null($k->status))
+                                            @if ($k->isLocked)
+                                                <span class="badge bg-secondary">Tidak Berlaku</span>
+                                            @elseif (is_null($k->status))
                                                 <span class="badge bg-dark">Belum Memilih</span>
                                             @elseif ($k->is_publish == 1)
                                                 <span class="badge bg-info">Published</span>
@@ -84,49 +96,67 @@
                                         </td>
                                         <td>
                                             <div class="d-flex justify-content-center gap-2">
-                                                @if ($semuaDinilai)
-                                                    {{-- Kalau BELUM ADA STATUS --}}
-                                                    @if (is_null($k->status))
-                                                        <button type="button"
-                                                            class="btn bg-gradient-success btn-sm text-white btn-lolos"
-                                                            data-bs-toggle="modal" data-bs-target="#modaltambahpengumuman"
-                                                            data-idpendaftaran="{{ $k->idPendaftaran }}"
-                                                            {{ $jumlahDiterima >= $kuota ? 'disabled' : '' }}>
-                                                            Lolos
+
+                                                {{-- KALAU SUDAH PUBLISH --}}
+                                                @if ($k->is_publish == 1)
+                                                    <button class="btn bg-gradient-danger btn-sm text-white" disabled>
+                                                        Sudah Publish
+                                                    </button>
+
+                                                    {{-- KALAU BELUM PUBLISH --}}
+                                                @elseif ($semuaDinilai)
+                                                    {{-- LOCKED --}}
+                                                    @if (isset($k->isLocked) && $k->isLocked)
+                                                        <button class="btn bg-gradient-secondary btn-sm text-white" disabled>
+                                                            Tidak Bisa dipilih
                                                         </button>
+                                                    @else
+                                                        {{-- BELUM ADA STATUS --}}
+                                                        @if (is_null($k->status))
+                                                            <form action="{{ route('pengumuman.lolos') }}" method="POST">
+                                                                @csrf
+                                                                <input type="hidden" name="idPendaftaran"
+                                                                    value="{{ $k->idPendaftaran }}">
+                                                                <button class="btn bg-gradient-success btn-sm text-white"
+                                                                    {{ $jumlahDiterima >= $kuota ? 'disabled' : '' }}>
+                                                                    Lolos
+                                                                </button>
+                                                            </form>
 
-                                                        <form action="{{ route('pengumuman.tolak') }}" method="POST">
-                                                            @csrf
-                                                            <input type="hidden" name="idPendaftaran"
-                                                                value="{{ $k->idPendaftaran }}">
-                                                            <button type="submit"
-                                                                class="btn bg-gradient-danger btn-sm text-white">
-                                                                Tolak
-                                                            </button>
-                                                        </form>
-                                                    @endif
+                                                            <form action="{{ route('pengumuman.tolak') }}" method="POST">
+                                                                @csrf
+                                                                <input type="hidden" name="idPendaftaran"
+                                                                    value="{{ $k->idPendaftaran }}">
+                                                                <button class="btn bg-gradient-danger btn-sm text-white">
+                                                                    Tolak
+                                                                </button>
+                                                            </form>
+                                                        @endif
 
-                                                    {{-- Kalau SUDAH TERIMA --}}
-                                                    @if ($k->status == 'Terima')
-                                                        <form action="{{ route('pengumuman.tolak') }}" method="POST">
-                                                            @csrf
-                                                            <input type="hidden" name="idPendaftaran"
-                                                                value="{{ $k->idPendaftaran }}">
-                                                            <button type="submit" class="btn btn-warning btn-sm">
-                                                                Ubah ke Tolak
-                                                            </button>
-                                                        </form>
-                                                    @endif
+                                                        {{-- SUDAH TERIMA --}}
+                                                        @if ($k->status == 'Terima')
+                                                            <form action="{{ route('pengumuman.tolak') }}" method="POST">
+                                                                @csrf
+                                                                <input type="hidden" name="idPendaftaran"
+                                                                    value="{{ $k->idPendaftaran }}">
+                                                                <button class="btn btn-warning btn-sm">
+                                                                    Ubah ke Tolak
+                                                                </button>
+                                                            </form>
+                                                        @endif
 
-                                                    {{-- Kalau SUDAH TOLAK --}}
-                                                    @if ($k->status == 'Tolak')
-                                                        <button type="button"
-                                                            class="btn btn-warning btn-sm text-white btn-lolos"
-                                                            data-bs-toggle="modal" data-bs-target="#modaltambahpengumuman"
-                                                            data-idpendaftaran="{{ $k->idPendaftaran }}"
-                                                            {{ $jumlahDiterima >= $kuota ? 'disabled' : '' }}>
-                                                            Ubah ke Lolos
-                                                        </button>
+                                                        {{-- SUDAH TOLAK --}}
+                                                        @if ($k->status == 'Tolak')
+                                                            <form action="{{ route('pengumuman.lolos') }}" method="POST">
+                                                                @csrf
+                                                                <input type="hidden" name="idPendaftaran"
+                                                                    value="{{ $k->idPendaftaran }}">
+                                                                <button class="btn btn-warning btn-sm text-white"
+                                                                    {{ $jumlahDiterima >= $kuota ? 'disabled' : '' }}>
+                                                                    Ubah ke Lolos
+                                                                </button>
+                                                            </form>
+                                                        @endif
                                                     @endif
                                                 @else
                                                     <button class="btn btn-secondary btn-sm text-white" disabled>
@@ -134,6 +164,7 @@
                                                     </button>
                                                 @endif
 
+                                                {{-- DETAIL SELALU ADA --}}
                                                 <a href="{{ route('kandidatadmin.detailnilaikandidat', $k->idPendaftaran) }}"
                                                     class="btn bg-gradient-info btn-sm text-white">
                                                     Detail Nilai
@@ -150,7 +181,7 @@
         </div>
     </div>
 @endsection
-@push('modals')
+{{-- @push('modals')
     <div class="modal fade" id="modaltambahpengumuman" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -205,7 +236,7 @@
             </div>
         </div>
     </div>
-@endpush
+@endpush --}}
 @push('scripts')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
@@ -229,12 +260,6 @@
                     targets: -1
                 }]
             });
-        });
-
-        $(document).on('click', '.btn-lolos', function() {
-            let idPendaftaran = $(this).data('idpendaftaran');
-
-            $('#idPendaftaran').val(idPendaftaran);
         });
 
         $(document).on('submit', '.form-tolak', function(e) {

@@ -13,12 +13,18 @@ class PengumumanMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $nama;
+    public $status;
+    public $lowongan;
+
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct($nama, $status, $lowongan)
     {
-        //
+        $this->nama = $nama;
+        $this->status = $status;
+        $this->lowongan = $lowongan;
     }
 
     /**
@@ -27,7 +33,7 @@ class PengumumanMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Pengumuman Mail',
+            subject: 'Hasil Seleksi - ' . $this->lowongan,
         );
     }
 
@@ -37,7 +43,7 @@ class PengumumanMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'mail.pengumuman',
         );
     }
 

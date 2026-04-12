@@ -29,7 +29,7 @@
                                 </h5>
                             @elseif($pendaftaran->statusPendaftaran == 'ditolak')
                                 <h5 class="fw-bold text-danger mb-0">
-                                    DiTolak
+                                    Ditolak
                                 </h5>
                             @endif
                         </div>
@@ -131,6 +131,11 @@
                                                     Selamat! Kamu lolos tahap ini.
                                                 @elseif($tahap->status == 'Gagal')
                                                     Mohon maaf, kamu belum bisa lanjut.
+                                                    @if (!empty($tahap->catatan))
+                                                        <div class="text-danger mt-1" style="font-size: 12px;">
+                                                            Alasan: {{ $tahap->catatan }}
+                                                        </div>
+                                                    @endif
                                                 @elseif($tahap->status == 'Proses')
                                                     Sedang dalam peninjauan oleh tim terkait.
                                                 @else

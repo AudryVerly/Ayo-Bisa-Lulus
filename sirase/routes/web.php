@@ -124,6 +124,7 @@ Route::middleware(['auth','role:AdminUnit'])->group(function(){
   Route::post('/pengumuman/terima',[PengumumanController::class,'storePengumumanLolos'])->name('pengumuman.lolos');
   Route::post('/pengumuman/tolak',[PengumumanController::class,'storeTolak'])->name('pengumuman.tolak');
   Route::get('/pengumuman/listpengumuman/{idLowongan}',[PengumumanController::class,'showPengumuman'])->name('pengumuman.listPengumuman');
+  Route::post('/pengumuman/publish/{idLowongan}',[PengumumanController::class,'publish'])->name('pengumuman.publish');
 
 });
 Route::middleware(['auth','role:StaffUnit'])->group(function(){

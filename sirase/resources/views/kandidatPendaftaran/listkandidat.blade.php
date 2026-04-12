@@ -53,7 +53,7 @@
                                                     @elseif ($kan->statusPendaftaran == 'diterima')
                                                         <span
                                                             class="badge bg-gradient-success text-white px-3 py-2">DiTerima</span>
-                                                    @elseif ($kan > statusPendaftaran == 'ditolak')
+                                                    @elseif ($kan -> statusPendaftaran == 'ditolak')
                                                         <span
                                                             class="badge bg-gradient-danger text-white px-3 py-2">DiTolak</span>
                                                     @endif

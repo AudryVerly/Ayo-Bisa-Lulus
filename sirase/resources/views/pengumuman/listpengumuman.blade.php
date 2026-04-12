@@ -94,7 +94,9 @@
     <div class="modal fade" id="modaltambahpengumuman" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <form action="" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('pengumuman.publish', $pengumuman[0]->idLowongan ?? 0) }}" method="POST"
+                    enctype="multipart/form-data">
+                    @csrf
                     <div>
                         <div
                             class="modal-header d-flex justify-content-between align-items-center bg-dark text-white px-4 py-3">
@@ -102,7 +104,6 @@
                             <button type="button" class="btn-close btn-white" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">
-                            <input type="hidden" name="idLowongan" value="{{ $pengumuman[0]->idLowongan ?? '' }}">
                             <div class="form-group mb-2">
                                 <label for="nomorSurat" class="form-label fw-bold text-secondary">Nomor Surat</label>
                                 <div class="custom-tooltip"
@@ -117,7 +118,7 @@
                                 @enderror
                             </div>
                             <div class="form-group mb-2">
-                                <label for="filePath" class="form-label fw-bold text-secondary">Surat ST/Surat
+                                <label for="surat" class="form-label fw-bold text-secondary">Surat ST/Surat
                                     Pernyataan</label>
                                 <div class="custom-tooltip"
                                     data-title="Masukkan surat dalam bentuk PDF maksimal 20 MB,Surat dapat berupa ST atau keterangan lolos">
@@ -149,6 +150,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         $(document).ready(function() {
@@ -168,5 +170,23 @@
                 }]
             });
         });
+
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: "{{ session('success') }}",
+                timer: 2500,
+                showConfirmButton: false
+            });
+        @elseif (session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: "{{ session('error') }}",
+                timer: 2500,
+                showConfirmButton: false
+            });
+        @endif
     </script>
 @endpush

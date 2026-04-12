@@ -215,6 +215,7 @@ class PendaftaranController extends Controller
             //yang udah dilakukan sama semua 
             if(isset($progress[$tahap->id])){
                 $tahap->status = $progress[$tahap->id]->status;
+                $tahap->catatan = $progress[$tahap->id]->catatan;
             }else{
                 $tahap->status = 'Menunggu';
             }

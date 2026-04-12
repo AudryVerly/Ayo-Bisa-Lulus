@@ -30,6 +30,8 @@
                                             <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
                                                 style="text-align: center;">Status</th>
                                             <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
+                                                style="text-align: center;">Surat Tugas</th>
+                                            <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
                                                 style="text-align: center;">Aksi</th>
                                         </tr>
                                     </thead>
@@ -66,12 +68,22 @@
                                                         @endif
                                                     </div>
                                                 </td>
+                                                <td class="text-sm" style="text-align: center;">
+                                                    @if ($riwayat->statusPendaftaran == 'diterima' && !empty($riwayat->file_path))
+                                                        <a href="{{ asset('storage/' . $riwayat->file_path) }}" target="_blank"
+                                                            class="btn btn-sm btn-primary">
+                                                            👁️ Lihat
+                                                        </a>
+                                                    @else
+                                                        <span class="text-muted">-</span>
+                                                    @endif
+                                                </td>
                                                 <td>
                                                     <div class="d-flex justify-content-center gap-2"
                                                         style="text-align: center;">
                                                         {{-- ini tuh buat modal-> modal adalah kek popup di boostrap --}}
-                                                        <a href="{{ route('riwayatPendaftaran.detail',$riwayat->id) }}"
-                                                           class="btn btn-outline-info text-sm">
+                                                        <a href="{{ route('riwayatPendaftaran.detail', $riwayat->id) }}"
+                                                            class="btn btn-outline-info text-sm">
                                                             Detail
                                                         </a>
                                                     </div>

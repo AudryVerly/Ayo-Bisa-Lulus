@@ -160,13 +160,15 @@ class PendaftaranController extends Controller
         $riwayatPendaftaran = DB::table('pendaftaran as p')
                               ->join('lowongan as l','p.idLowongan','=','l.id')
                               ->join('unit as u','l.idUnit','=','u.id')
+                              ->leftJoin('pengumuman as pg','pg.idPendaftaran','=','p.id')
                               ->where('idMahasiswa', $idMahasiswa)
                               ->select('p.*',
                                         'l.judulLowongan as judul',
                                         'l.posisiLowongan as posisi',
                                         'l.mulaiKerja as mulai',
                                         'l.akhirKerja as akhir',
-                                        'u.name as unitname')
+                                        'u.name as unitname',
+                                        'pg.file_path')
                               ->get();
         return view('pendaftaran.riwayatpendaftaran', compact('riwayatPendaftaran'));
     }

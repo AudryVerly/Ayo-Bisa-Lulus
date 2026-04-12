@@ -154,6 +154,9 @@ class DashboardAdminUnitController extends Controller
             if ($k->totalTahap == 0) {
                 $k->statusProgress = 'Belum mulai';
                 $k->tahapSekarang = '-';
+            } elseif ($k->totalTahap > 0 && $k->totalTahapSelesai == 0) {
+                $k->statusProgress = 'Gagal';
+                $k->tahapSekarang = '-';
             } elseif ($k->tahapProses) {
                 $k->statusProgress = 'Sedang proses';
                 $k->tahapSekarang = $k->tahapProses;

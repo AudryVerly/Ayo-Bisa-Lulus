@@ -33,4 +33,8 @@ class Unit extends Model
         return $this->hasMany(PairwiseComparison::class, 'idUnit');
     }
 
+    public function kualitasKerja(){
+        return $this->hasMany(KualitasKerja::class, 'idUnit');
+    }
+
 }

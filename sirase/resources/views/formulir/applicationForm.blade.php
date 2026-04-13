@@ -71,7 +71,10 @@
 
                         <div class="text-end d-flex align-items-center gap-2">
                             @php
-                                $disableEdit = $lowongan->status == 1 || $f->jawabanFormulir()->count() > 0;
+                                $isDipakaiForm = $f->jawaban_formulir_count > 0;
+                                $isDipakaiBerkas = $f->berkas_pendaftaran_count > 0;
+
+                                $disableEdit = $lowongan->status == 1 || $isDipakaiForm || $isDipakaiBerkas;
                                 $tooltipEdit = $disableEdit
                                     ? ($lowongan->status == 1
                                         ? 'Lowongan sudah dibuka, field tidak bisa diedit'
@@ -92,11 +95,12 @@
                                 </button>
                             </span>
                             @php
-                                $disabledbutton = $lowongan->status == 1 || $f->jawabanFormulir()->count() > 0;
+                                $disabledbutton = $lowongan->status == 1 || $isDipakaiForm || $isDipakaiBerkas;
+
                                 $tooltipText = $disabledbutton
                                     ? ($lowongan->status == 1
                                         ? 'Lowongan sudah dibuka, field tidak bisa diubah'
-                                        : 'Field sudah dipakai pelamar, tidak bisa dinonaktifkan')
+                                        : 'Field sudah dipakai pelamar / berkas, tidak bisa dinonaktifkan')
                                     : '';
                             @endphp
                             <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $tooltipText }}"
@@ -120,10 +124,11 @@
                     @endphp
                     <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $tooltipAdd }}"
                         style="display:inline-block; width:100%;">
-                        <button class=" btn btn-outline-secondary btn-lg w-100 text-center py-3 {{ $disableAdd ? 'disabled' : '' }}" 
-                        data-bs-toggle="{{$disableAdd ? '' : 'modal'}}"
-                        data-bs-target="{{$disableAdd ? '' : '#modaladdfield'}}" 
-                        data-id-lowongan={{ $lowongan->id }}>
+                        <button
+                            class=" btn btn-outline-secondary btn-lg w-100 text-center py-3 {{ $disableAdd ? 'disabled' : '' }}"
+                            data-bs-toggle="{{ $disableAdd ? '' : 'modal' }}"
+                            data-bs-target="{{ $disableAdd ? '' : '#modaladdfield' }}"
+                            data-id-lowongan={{ $lowongan->id }}>
                             <i class="material-symbols-rounded text-dark">add_2</i>
                         </button>
                     </span>

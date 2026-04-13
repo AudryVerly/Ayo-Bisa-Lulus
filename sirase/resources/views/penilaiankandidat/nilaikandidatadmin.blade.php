@@ -78,7 +78,7 @@
                                             @elseif ($k->status == 'Terima')
                                                 <span class="badge bg-success">Lolos</span>
                                             @elseif ($k->status == 'Tolak')
-                                                <span class="badge bg-success">Lolos</span>
+                                                <span class="badge bg-danger">Tolak</span>
                                             @else
                                                 <span class="badge bg-dark">Belum Dipilih</span>
                                             @endif

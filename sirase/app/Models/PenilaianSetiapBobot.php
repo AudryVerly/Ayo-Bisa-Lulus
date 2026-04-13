@@ -11,6 +11,7 @@ class PenilaianSetiapBobot extends Model
     protected $fillable = [
         'idPenilaianKandidat',
         'idBobotKriteria',
+        'bobotKriteria',
         'nilaiAwal',
         'nilaiAkhir'
     ];

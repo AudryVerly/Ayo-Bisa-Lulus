@@ -53,7 +53,7 @@
                                         {{ $detail->nilaiAwal }}
                                     </td>
                                     <td class="text-sm" style="padding: 10px 16px; text-align: center;">
-                                        {{ $detail->nilaiBobot }}
+                                        {{ $detail->bobotKriteria }}
                                     </td>
                                     <td class="text-sm" style="padding: 10px 16px; text-align: center;">
                                         {{ $detail->nilaiAkhir }}

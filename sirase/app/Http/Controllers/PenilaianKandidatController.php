@@ -77,6 +77,11 @@ class PenilaianKandidatController extends Controller
 
     public function saveNilai(Request $request)
     {
+        $request->validate([
+            'idWawancaraPenilai' => 'required|integer',
+            'nilai' => 'required|array',
+        ]);
+
         DB::transaction(function () use ($request) {
 
             $wawancaraPenilai = DB::table('wawancara_penilai')
@@ -92,20 +97,32 @@ class PenilaianKandidatController extends Controller
 
             $idPendaftaran = $jadwal->idPendaftaran;
 
+            $dataUnit = DB::table('pendaftaran as p')
+                ->join('lowongan as l', 'p.idLowongan', '=', 'l.id')
+                ->where('p.id', $idPendaftaran)
+                ->select('l.idUnit')
+                ->first();
+
             // kita cek dulu double input nilai gak
             $nilaiExists = DB::table('penilaian_kandidat')
                 ->where('idWawancaraPenilai', $request->idWawancaraPenilai)
                 ->exists();
+
             if ($nilaiExists) {
                 abort(403, 'Sudah Pernah menilai kandidat ini');
             }
 
             // kita akan count datanya disini juga
             $bobotList = DB::table('bobot_kriteria')
+                ->where('idUnit', $dataUnit->idUnit)
+                ->where('is_active', 1)
                 ->pluck('nilaiBobot', 'id');
             $total = 0;
 
             foreach ($request->nilai as $idBobot => $nilai) {
+                if (! isset($bobotList[$idBobot])) {
+                    continue; // skip kalau bobot tidak valid
+                }
 
                 $bobot = $bobotList[$idBobot] ?? 0;
                 $hasil = ($nilai / 5) * $bobot;
@@ -129,6 +146,7 @@ class PenilaianKandidatController extends Controller
                 DB::table('penilaian_setiap_bobot')->insert([
                     'idPenilaianKandidat' => $idPenilaian,
                     'idBobotKriteria' => $idBobot,
+                    'bobotKriteria' => $bobot,
                     'nilaiAwal' => $nilai,
                     'nilaiAkhir' => $hasil,
                 ]);
@@ -193,7 +211,7 @@ class PenilaianKandidatController extends Controller
                 'k.namaKriteria',
                 'pb.nilaiAwal',
                 'pb.nilaiAkhir',
-                'bk.nilaiBobot as bobot'
+                'pb.bobotKriteria'
             )
             ->get();
 
@@ -227,7 +245,7 @@ class PenilaianKandidatController extends Controller
 
         $lockedMahasiswa = DB::table('pengumuman as pg')
             ->join('pendaftaran as p', 'pg.idPendaftaran', '=', 'p.id')
-            ->join('lowongan as l','p.idLowongan','=','l.id')
+            ->join('lowongan as l', 'p.idLowongan', '=', 'l.id')
             ->where('pg.status', 'Terima')
             ->where('p.idLowongan', '!=', $idLowongan)
             ->whereDate('l.akhirKerja', '>=', now())
@@ -266,7 +284,7 @@ class PenilaianKandidatController extends Controller
                     END) as totalPenilai
                 ")
             )
-            ->groupBy('p.id', 'u.name', 'pg.status', 'pg.is_publish','p.idMahasiswa')
+            ->groupBy('p.id', 'u.name', 'pg.status', 'pg.is_publish', 'p.idMahasiswa')
             // Yang belum lengkap penilaian ditaruh bawah
             ->orderByRaw("
                 CASE 
@@ -354,7 +372,7 @@ class PenilaianKandidatController extends Controller
                 'k.namaKriteria',
                 'pb.nilaiAwal',
                 'pb.nilaiAkhir',
-                'bk.nilaiBobot'
+                'pb.bobotKriteria'
             )
             ->get()
             ->groupBy('idPenilaianKandidat');

@@ -60,6 +60,8 @@ class KandidatPendaftaranController extends Controller
                                 ->get();
         
             $tahapIni = 'Menunggu';
+            $tahapTerakhir = null;
+            $semuaSelesai = true;
 
             //kita harus cek tahap per tahapan setiap mahasiswa
             foreach ($tahapan as $tahap){
@@ -74,6 +76,10 @@ class KandidatPendaftaranController extends Controller
                     }
                 }
 
+                if($statusTahap === 'Menunggu' || $statusTahap === 'Proses'){
+                    $semuaSelesai = false;
+                }
+
                 if($statusTahap === 'Proses'){
                     $tahapIni = $tahap->name;
                     break;
@@ -84,6 +90,13 @@ class KandidatPendaftaranController extends Controller
                 }
 
             }
+
+            if($semuaSelesai){
+                $tahapIni = 'Selesai';
+            }elseif($tahapTerakhir){
+                $tahapIni = $tahapTerakhir;
+            }
+            
             $item->tahapIni = $tahapIni;
         }
 

@@ -6,13 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class KualitasKerja extends Model
 {
-    protected $table = 'kualitas_kerja';
+    protected $table = 'kualitas_kinerja';
 
     protected $fillable = [
         'idUnit',
         'nilaiMin',
         'nilaiMax',
         'kategori',
+        'status'
     ];
 
     public function Unit(){

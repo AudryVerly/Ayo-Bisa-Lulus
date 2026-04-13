@@ -17,6 +17,7 @@ return new class extends Migration
             $table->double('nilaiMin');
             $table->double('nilaiMax');
             $table->string('kategori');
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
 
              $table->foreign('idUnit')->references('id')->on('unit')->onDelete('cascade');

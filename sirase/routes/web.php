@@ -14,6 +14,7 @@ use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\pendaftaranController;
 use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\PenilaianKandidatController;
+use App\Http\Controllers\PenilaianKinerjaController;
 use App\Http\Controllers\StaffUnitController;
 use App\Http\Controllers\TahapRekrutmenController;
 use App\Http\Controllers\TimPenilaiController;
@@ -125,6 +126,8 @@ Route::middleware(['auth','role:AdminUnit'])->group(function(){
   Route::post('/pengumuman/tolak',[PengumumanController::class,'storeTolak'])->name('pengumuman.tolak');
   Route::get('/pengumuman/listpengumuman/{idLowongan}',[PengumumanController::class,'showPengumuman'])->name('pengumuman.listPengumuman');
   Route::post('/pengumuman/publish/{idLowongan}',[PengumumanController::class,'publish'])->name('pengumuman.publish');
+
+  Route::get('/nilaikinerja/index',[PenilaianKinerjaController::class,'showNilaiKinerja'])->name('nilaiKinerja.index');
 
 });
 Route::middleware(['auth','role:StaffUnit'])->group(function(){

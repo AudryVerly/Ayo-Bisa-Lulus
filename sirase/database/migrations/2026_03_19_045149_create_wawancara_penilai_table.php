@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('idJadwalWawancara');
             $table->unsignedBigInteger('idStaffUnit');
-            $table->enum('status',['sudah','belum'])->default('belum');
+            $table->enum('status',['sudah','belum','terjadwal'])->default('belum');
             $table->timestamps();
 
             $table->foreign('idJadwalWawancara')->references('id')->on('jadwal_wawancara')->onDelete('cascade');

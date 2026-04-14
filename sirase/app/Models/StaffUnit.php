@@ -21,4 +21,8 @@ class StaffUnit extends Model
     public function jadwalWawancara(){
         return $this->belongsToMany(PenjadwalanWawancara::class, 'wawancara_penilai','idStaffUnit','idJdawalWawancara')->withPivot('status');
     }
+
+    public function tugas(){
+        return $this->hasMany(Tugas::class, 'idStaffUnit');
+    }
 }

@@ -26,7 +26,7 @@ class Unit extends Model
     }
 
     public function bobotKriteria(){
-        return $this->hasMany(BobotKriteria::class, 'idKriteria');
+        return $this->hasMany(BobotKriteria::class, 'idUnit');
     }
 
     public function pairwise(){
@@ -35,6 +35,10 @@ class Unit extends Model
 
     public function kualitasKerja(){
         return $this->hasMany(KualitasKerja::class, 'idUnit');
+    }
+
+    public function tugas(){
+        return $this->hasMany(Tugas::class, 'idUnit');
     }
 
 }

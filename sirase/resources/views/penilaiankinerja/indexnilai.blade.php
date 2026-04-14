@@ -416,13 +416,6 @@
 
                                     row.removeClass('table-secondary');
 
-                                    editBtn
-                                        .removeClass('btn-secondary disabled')
-                                        .addClass('bg-gradient-info text-white btn-edit')
-                                        .attr('data-bs-toggle', 'modal')
-                                        .attr('data-bs-target', '#modaleditkinerja')
-                                        .prop('disabled', false);
-
                                 } else {
 
                                     badge.removeClass('bg-gradient-success')
@@ -437,13 +430,6 @@
                                     `);
 
                                     row.addClass('table-secondary');
-
-                                    editBtn
-                                        .removeClass('bg-gradient-info text-white btn-edit')
-                                        .addClass('btn-secondary disabled')
-                                        .removeAttr('data-bs-toggle')
-                                        .removeAttr('data-bs-target')
-                                        .prop('disabled', true);
                                 }
                                 Swal.fire({
                                     icon: 'success',

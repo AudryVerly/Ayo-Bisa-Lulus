@@ -128,6 +128,9 @@ Route::middleware(['auth','role:AdminUnit'])->group(function(){
   Route::post('/pengumuman/publish/{idLowongan}',[PengumumanController::class,'publish'])->name('pengumuman.publish');
 
   Route::get('/nilaikinerja/index',[PenilaianKinerjaController::class,'showNilaiKinerja'])->name('nilaiKinerja.index');
+  Route::post('/nilaikinerja/storenilaikinerja',[PenilaianKinerjaController::class,'storeNilai'])->name('nilaiKinerja.store');
+  Route::post('/nilaikinerja/update/{id}',[PenilaianKinerjaController::class,'updateNilaiKinerja'])->name('nilaikinerja.update');
+  Route::post('/nilaikinerja/toggle/{id}',[PenilaianKinerjaController::class,'toggleStatus'])->name('nilaikerja.toggle');
 
 });
 Route::middleware(['auth','role:StaffUnit'])->group(function(){

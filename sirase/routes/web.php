@@ -141,6 +141,8 @@ Route::middleware(['auth','role:StaffUnit'])->group(function(){
    Route::get('/penilaiankandidat/{id}/form',[PenilaianKandidatController::class, 'showForm'])->name('penilaian.formMenilai');
    Route::post('/penilaiankandidat/hasilPenilaia',[PenilaianKandidatController::class, 'saveNilai'])->name('penilaian.hasilNilai');
    Route::get('/penilaiankandidat/detailNilaiKandidat/{id}',[PenilaianKandidatController::class, 'detailKandidat'])->name('penilaian.detailNilaiKandidat');
+
+   Route::get('/tugasunit/lisunit',[PenilaianKinerjaController::class,'listUnitTugas'])->name('tugas.listunit');
 });
 
 Route::middleware(['auth','role:SuperAdmin'])->group(function(){

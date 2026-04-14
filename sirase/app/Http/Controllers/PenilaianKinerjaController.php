@@ -118,4 +118,12 @@ class PenilaianKinerjaController extends Controller
             'id' => $id,
         ]);
     }
+
+    public function listUnitTugas(){
+        $unitId = Auth::user()->staffUnit()->pluck('idUnit');
+
+        $unit = Unit::whereIn('id',$unitId)->get();
+
+        return view ('penilaiankinerja.listunit',compact('unit'));
+    }
 }

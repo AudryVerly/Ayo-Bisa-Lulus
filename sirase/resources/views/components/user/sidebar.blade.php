@@ -219,6 +219,15 @@
                     </a>
                 </li>
             @endcan
+            @can('role:StaffUnit')
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('tugasunit*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                        href="{{ route('tugas.listunit') }}">
+                        <i class="material-symbols-rounded opacity-5">task</i>
+                        <span class="nav-link-text ms-1">Tugas Student Employee</span>
+                    </a>
+                </li>
+            @endcan
             <hr class="horizontal dark mt-4 mb-2">
             <li class="nav-item mt-3">
                 <form action="{{ route('logout') }}" method="POST">

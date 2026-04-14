@@ -15,7 +15,7 @@
                                 <i
                                     class="material-symbols-rounded
                                 text-sm align-middle text-success">add</i>
-                                <span class="align-middle fw-bold">Tambah Tahapan</span>
+                                <span class="align-middle fw-bold">Tambah Nilai Kinerja</span>
                             </button>
                         </div>
                     </div>

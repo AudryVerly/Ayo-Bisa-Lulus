@@ -11,6 +11,7 @@ class TugasMahasiswa extends Model
     protected $fillable = [
         'idMahasiswa',
         'idTugas',
+        'tanggalPengumpulan',
         'statusPengumpulan',
         'file_path',
         'catatan'

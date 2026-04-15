@@ -15,6 +15,7 @@ return new class extends Migration
             $table->unsignedBigInteger('idMahasiswa');
             $table->unsignedBigInteger('idTugas');
             $table->enum('statusPengumpulan', ['terlambat', 'tepatwaktu']);
+            $table->date('tanggalPengumpulan');
             $table->text('file_path');
             $table->text('catatan');
             $table->timestamps();

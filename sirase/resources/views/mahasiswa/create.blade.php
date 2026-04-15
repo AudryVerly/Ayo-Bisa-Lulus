@@ -7,7 +7,7 @@
                 <div class="card shadow-sm border-0 rounded-3">
                     <form action="{{ route('mahasiswa.store') }}" method="POST">
                         @csrf
-                        <div class ="card-header bg-gradient-dark d-flex justify-content-between align-items-center">
+                        <div class="card-header bg-gradient-dark d-flex justify-content-between align-items-center">
                             <h5 class="mb-0 text-white d-flex align-items-center"><i
                                     class="material-symbols-rounded text-sm text-white ">person_add</i>&nbsp;&nbsp;Add
                                 Mahasiswa
@@ -34,7 +34,7 @@
                                     info
                                 </i>
                                 <select name="idUser" id="idUser"
-                                    class="form-select  border rounded-3 px-3 py-2">
+                                    class="form-select border rounded-3 px-3 py-2">
                                     <option value="">Pilih User</option>
                                     @foreach ($user as $users)
                                         <option value="{{ $users->id }}"

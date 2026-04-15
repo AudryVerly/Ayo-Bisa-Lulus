@@ -17,4 +17,19 @@ class Mahasiswa extends Model
     public function pendaftaran(){
         return $this->hasMany(Pendaftaran::class, 'idMahasiswa');
     }
+
+    public function tugasMahasiswa(){
+        return $this->belongsToMany(
+           Tugas::class,
+           'tugas_mahasiswa',
+           'idMahasiswa',
+           'idTugas' 
+        )
+        ->using(TugasMahasiswa::class)
+        ->withPivot('statusPengumpulan','file_path','catatan');
+    }
+
+    public function penilaianKinerja(){
+        return $this->hasMany(PenilaianKinerja::class, 'idMahasiswa');
+    }
 }

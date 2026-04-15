@@ -22,8 +22,8 @@ return new class extends Migration
             $table->enum('progressTugas',['assigned','inProgress','revisi','done']);
             $table->timestamps();
 
-            $table->foreign('idStaffUnit')->references('id')->on('staffunit')->onDelete();
-            $table->foreign('idUnit')->references('id')->on('unit')->onDelete();
+            $table->foreign('idStaffUnit')->references('id')->on('staffunit')->onDelete('cascade');
+            $table->foreign('idUnit')->references('id')->on('unit')->onDelete('cascade');
         });
     }
 

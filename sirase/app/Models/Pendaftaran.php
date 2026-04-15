@@ -46,4 +46,8 @@ class Pendaftaran extends Model
     public function pengumuman(){
         return $this->hasMany(PengumumanKandidat::class,'idPendaftaran');
     }
+
+    public function totlapeniliankinerja(){
+        return $this->hasMany(TotalPenilaianKinerja::class, 'idPendaftaran');
+    }
 }

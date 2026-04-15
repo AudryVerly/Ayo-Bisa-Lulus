@@ -25,4 +25,8 @@ class Tugas extends Model
     public function unit(){
         return $this->belongsTo(Unit::class,'idUnit');
     }
+
+    public function penilaiankinerja(){
+        return $this->hasMany(PenilaianKinerja::class, 'idTugas');
+    }
 }

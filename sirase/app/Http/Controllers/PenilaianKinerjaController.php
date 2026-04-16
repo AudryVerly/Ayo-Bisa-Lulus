@@ -221,4 +221,40 @@ class PenilaianKinerjaController extends Controller
             ->route('tugas.listtugas', $request->idUnit)
             ->with('success', 'Tugas berhasil ditambahkan');
     }
+
+    // list lowongan mahasiswa
+    public function listLowonganAktif()
+    {
+        $idMahasiswa = Auth::user()->mahasiswa->id;
+
+        $lowongan = DB::table('pendaftaran as p')
+            ->join('lowongan as l', 'l.id', '=', 'p.idLowongan')
+            ->join('unit as u','u.id','=','l.idUnit')
+            ->where('p.idMahasiswa', $idMahasiswa)
+            ->where('p.statusPendaftaran', 'diterima')
+            ->select(
+                'l.id',
+                'l.judulLowongan',
+                'u.name',
+                'l.mulaiKerja',
+                'l.akhirKerja'
+
+            )
+            ->orderByRaw(
+                    "CASE 
+                    WHEN NOW() BETWEEN l.mulaiKerja AND l.akhirKerja THEN 1
+                    ELSE 2
+                END
+            ")
+            ->get();
+
+        return view('mahasiswaPage.listlowongan', compact('lowongan'));
+    }
+
+    // ini list tugas untuk mahasiswa
+    public function listTugas($idUnit)
+    {
+        $idMahasiswa = Auth::user()->mahasiswa->id;
+        return view('mahasiswaPage.listtugasmahasiswa');
+    }
 }

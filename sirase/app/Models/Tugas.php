@@ -11,6 +11,7 @@ class Tugas extends Model
     protected $fillable = [
         'idStaffUnit',
         'idUnit',
+        'idLowonga',
         'namaTugas',
         'deskripsi',
         'bobotNilai',
@@ -28,5 +29,9 @@ class Tugas extends Model
 
     public function penilaiankinerja(){
         return $this->hasMany(PenilaianKinerja::class, 'idTugas');
+    }
+
+    public function lowongan(){
+        return $this->belongsTo(Lowongan::class, 'idLowongan');
     }
 }

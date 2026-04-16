@@ -228,6 +228,24 @@
                     </a>
                 </li>
             @endcan
+            @can('role:Mahasiswa')
+                @php
+                    $punyaKerja = DB::table('pendaftaran as p')
+                        ->join('lowongan as l', 'l.id', '=', 'p.idLowongan')
+                        ->where('p.idMahasiswa', Auth::user()->mahasiswa->id)
+                        ->where('p.statusPendaftaran', 'diterima')
+                        ->exists();
+                @endphp
+                @if ($punyaKerja)
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('tugasmahasiswa*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                            href="{{ route('tugasmahasiswa.listlowongan') }}">
+                            <i class="material-symbols-rounded opacity-5">assignment_globe</i>
+                            <span class="nav-link-text ms-1">Tugas Student Employee</span>
+                        </a>
+                    </li>
+                @endif
+            @endcan
             <hr class="horizontal dark mt-4 mb-2">
             <li class="nav-item mt-3">
                 <form action="{{ route('logout') }}" method="POST">

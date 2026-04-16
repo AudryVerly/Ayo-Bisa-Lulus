@@ -20,8 +20,7 @@
                         </div>
                     </div>
 
-                    <div class="card-body
-                                px-2 pb-2">
+                    <div class="card-body px-2 pb-2">
                         <div class="table-responsive p-0">
                             <table id="tableKualitasKinerja" class="table align-items-center mb-0">
                                 <thead class="bg-light">

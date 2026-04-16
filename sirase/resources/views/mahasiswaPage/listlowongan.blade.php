@@ -61,7 +61,7 @@
                                             </td>
 
                                             <td class="text-sm" style="text-align: center;">
-                                                <a href="" class="btn btn-sm bg-gradient-info text-white">
+                                                <a href="{{ route('tugasmahasiswa.listtugas',$low->id) }}" class="btn btn-sm bg-gradient-info text-white">
                                                     Lihat Tugas
                                                 </a>
                                             </td>

@@ -60,7 +60,8 @@ Route::middleware(['auth','role:Mahasiswa'])->group(function(){
     Route::get('/riwayatPendaftaran',[PendaftaranController::class, 'showRiwayatPendaftaran'])->name('riwayatPendaftaran.list');
     Route::get('/riwayatPendaftaran/{id}/detailPendaftaran',[PendaftaranController::class, 'showDetailPendaftaran'])->name('riwayatPendaftaran.detail');
     Route::get('/listwawancaramahasiswa',[WawancaraController::class, 'showCalendarMahasiswa'])->name('listwawancara.show');
-    Route::get('/tugasmahasiswa/litslowongan',[PenilaianKinerjaController::class,'listLowonganAktif'])->name('tugasmahasiswa.listlowongan');
+    Route::get('/tugasmahasiswa/listlowongan',[PenilaianKinerjaController::class,'listLowonganAktif'])->name('tugasmahasiswa.listlowongan');
+    Route::get('/tugasmahasiswa/listugas/{idLowongan}',[PenilaianKinerjaController::class,'listTugas'])->name('tugasmahasiswa.listtugas');
 });
 
 Route::middleware(['auth','role:AdminUnit'])->group(function(){

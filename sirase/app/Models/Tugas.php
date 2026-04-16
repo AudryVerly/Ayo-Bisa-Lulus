@@ -11,7 +11,7 @@ class Tugas extends Model
     protected $fillable = [
         'idStaffUnit',
         'idUnit',
-        'idLowonga',
+        'idLowongan',
         'namaTugas',
         'deskripsi',
         'bobotNilai',

@@ -165,7 +165,8 @@ class PenilaianKinerjaController extends Controller
             ->select(
                 'm.id as idMahasiswa',
                 'u.name as namaMahasiswa',
-                'l.judulLowongan as namaLowongan'
+                'l.judulLowongan as namaLowongan',
+                'l.id as idLowongan'
             )
             ->get();
 
@@ -177,6 +178,7 @@ class PenilaianKinerjaController extends Controller
         $request->validate([
             'idUnit' => 'required',
             'idMahasiswa' => 'required',
+            'idLowongan' => 'required',
             'namaTugas' => 'required',
             'deskripsi' => 'required',
             'bobotNilai' => 'required|numeric',
@@ -188,6 +190,7 @@ class PenilaianKinerjaController extends Controller
         ], [
             'idUnit' => 'isUnit',
             'idMahasiswa' => 'idMahasiswa',
+            'idLowongan' => 'idLowongan',
             'namaTugas' => 'nama Tugas',
             'deskripsi' => 'deskripsi',
             'bobotNilai' => 'bobot nilai',
@@ -195,11 +198,15 @@ class PenilaianKinerjaController extends Controller
         ]);
 
         DB::transaction(function () use ($request) {
-            $idStaffUnit = Auth::user()->staffUnit()->pluck('id')->first();
+            $idStaffUnit = DB::table('staffunit')
+                ->where('idUser', Auth::id())
+                ->where('idUnit', $request->idUnit)
+                ->value('id');
 
             $idTugas = DB::table('tugas')->insertGetId([
                 'idStaffUnit' => $idStaffUnit,
                 'idUnit' => $request->idUnit,
+                'idLowongan' => $request->idLowongan,
                 'namaTugas' => $request->namaTugas,
                 'deskripsi' => $request->deskripsi,
                 'bobotNilai' => $request->bobotNilai,
@@ -229,7 +236,7 @@ class PenilaianKinerjaController extends Controller
 
         $lowongan = DB::table('pendaftaran as p')
             ->join('lowongan as l', 'l.id', '=', 'p.idLowongan')
-            ->join('unit as u','u.id','=','l.idUnit')
+            ->join('unit as u', 'u.id', '=', 'l.idUnit')
             ->where('p.idMahasiswa', $idMahasiswa)
             ->where('p.statusPendaftaran', 'diterima')
             ->select(
@@ -241,20 +248,40 @@ class PenilaianKinerjaController extends Controller
 
             )
             ->orderByRaw(
-                    "CASE 
+                'CASE 
                     WHEN NOW() BETWEEN l.mulaiKerja AND l.akhirKerja THEN 1
                     ELSE 2
                 END
-            ")
+            ')
             ->get();
 
         return view('mahasiswaPage.listlowongan', compact('lowongan'));
     }
 
     // ini list tugas untuk mahasiswa
-    public function listTugas($idUnit)
+    public function listTugas($idLowongan)
     {
         $idMahasiswa = Auth::user()->mahasiswa->id;
-        return view('mahasiswaPage.listtugasmahasiswa');
+
+        $tugas = DB::table('tugas as t')
+                 ->join('staffUnit as st','st.id','=','t.idStaffUnit')
+                 ->join('users as u','u.id','=','st.idUser')
+                 ->join('tugas_mahasiswa as tm','tm.idTugas', '=', 't.id')
+                 ->where('tm.idMahasiswa',$idMahasiswa)
+                 ->where('t.idLowongan', $idLowongan)
+                 ->select(
+                    't.id',
+                    't.namaTugas',
+                    't.deskripsi',
+                    't.tenggatPengumpulan',
+                    't.progressTugas',
+                    'tm.statusPengumpulan',
+                    'tm.tanggalPengumpulan',
+                    'tm.file_path',
+                    'u.name as namaUser'
+                )
+                ->get();
+
+        return view('mahasiswaPage.listtugasmahasiswa', compact('tugas'));
     }
 }

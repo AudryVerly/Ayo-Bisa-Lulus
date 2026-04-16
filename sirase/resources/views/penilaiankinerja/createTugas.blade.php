@@ -16,6 +16,7 @@
                         </div>
                         <div class="card-body">
                             <input type="hidden" name="idUnit" value="{{ $idUnit }}">
+                            <input type="hidden" name="idLowongan" id="idLowongan">
                             <div class="form-group mb-2">
                                 <label for="namaTugas" class="form-label fw-bold text-secondary">
                                     Nama Tugas
@@ -45,7 +46,8 @@
                                     <option value="" disabled selected>Pilih Mahasiswa</option>
                                     @foreach ($mahasiswa as $siswa)
                                         <option value="{{ $siswa->idMahasiswa }}"
-                                            {{ old('idMahasiswa') == $siswa->idMahasiswa ? 'selected' : ' ' }}>
+                                            {{ old('idMahasiswa') == $siswa->idMahasiswa ? 'selected' : ' ' }}
+                                            data-lowongan="{{ $siswa->idLowongan }}">
                                             {{ $siswa->namaMahasiswa }} - {{ $siswa->namaLowongan }}
                                         </option>
                                     @endforeach
@@ -116,3 +118,13 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+    <script>
+        $('#idMahasiswa').on('change',function(){
+            let selected = $(this).find(':selected');
+            let idLowongan = selected.data('lowongan');
+
+            $('#idLowongan').val(idLowongan);
+        });
+    </script>
+@endpush

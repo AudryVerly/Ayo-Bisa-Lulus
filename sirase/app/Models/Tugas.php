@@ -34,4 +34,15 @@ class Tugas extends Model
     public function lowongan(){
         return $this->belongsTo(Lowongan::class, 'idLowongan');
     }
+
+    public function tugasMahasiswa(){
+        return $this->belongsToMany(
+           Tugas::class,
+           'tugas_mahasiswa',
+           'idTugas',
+           'idMahasiswa'
+        )
+        ->using(TugasMahasiswa::class)
+        ->withPivot('statusPengumpulan','file_path','catatan');
+    }
 }

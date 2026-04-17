@@ -108,7 +108,7 @@ class LowonganController extends Controller
             'kuota_diterima.min' => 'Bagian kuota_diterima min 1 orang',
             'after_or_equal' => 'Tanggal :attribute tidak sesuai dengan ketentuan periode lowongan.',
             'mulaiKerja.after_or_equal' => 'Tanggal mulai kerja setidaknya harus 14 hari setelah batas pendaftaran',
-            'mulaiKerja.after_or_equal' => 'Tanggal akhir kerja setidaknya harus 1 bulan setelah mulai bekerja',
+            'akhirkerja.after_or_equal' => 'Tanggal akhir kerja setidaknya harus 1 bulan setelah mulai bekerja',
             'poster.mimes' => 'Poster harus berformat JPG, JPEG, atau PNG.',
             'poster.max' => 'Ukuran poster maksimal 20MB.',
         ], [

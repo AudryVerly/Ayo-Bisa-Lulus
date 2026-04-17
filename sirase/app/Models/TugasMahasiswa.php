@@ -16,15 +16,4 @@ class TugasMahasiswa extends Model
         'file_path',
         'catatan'
     ];
-
-    public function tugasMahasiswa(){
-        return $this->belongsToMany(
-           Tugas::class,
-           'tugas_mahasiswa',
-           'idTugas',
-           'idMahasiswa'
-        )
-        ->using(TugasMahasiswa::class)
-        ->withPivot('statusPengumpulan','file_path','catatan');
-    }
 }

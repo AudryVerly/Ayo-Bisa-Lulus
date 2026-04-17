@@ -16,11 +16,11 @@ class PenilaianKinerja extends Model
         'nilaiAkhir',
     ];
 
-    public function Tugas(){
+    public function mahasiswa(){
         return $this->belongsTo(Mahasiswa::class,'idMahasiswa');
     }
 
-    public function Mahasiswa(){
+    public function tugas(){
         return $this->belongsTo(Tugas::class, 'idTugas');
     }
 }

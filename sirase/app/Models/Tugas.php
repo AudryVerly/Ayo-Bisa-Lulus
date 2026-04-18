@@ -37,7 +37,7 @@ class Tugas extends Model
 
     public function tugasMahasiswa(){
         return $this->belongsToMany(
-           Tugas::class,
+           Mahasiswa::class,
            'tugas_mahasiswa',
            'idTugas',
            'idMahasiswa'

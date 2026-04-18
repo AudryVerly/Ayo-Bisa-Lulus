@@ -134,6 +134,9 @@ Route::middleware(['auth','role:AdminUnit'])->group(function(){
   Route::post('/nilaikinerja/update/{id}',[PenilaianKinerjaController::class,'updateNilaiKinerja'])->name('nilaikinerja.update');
   Route::post('/nilaikinerja/toggle/{id}',[PenilaianKinerjaController::class,'toggleStatus'])->name('nilaikerja.toggle');
 
+  Route::get('/tugasadmin/listmahasiswa',[PenilaianKinerjaController::class,'showMahasiswa'])->name('tugasadmin.listmahasiswa');
+  Route::get('/tugasadmin/listtugas/{idMahasiswa}/{idLowongan}',[PenilaianKinerjaController::class,'showTugasMahasiswaAdmin'])->name('tugasadmin.listtugasadmin');
+
 });
 Route::middleware(['auth','role:StaffUnit'])->group(function(){
    Route::get('/dashboardStaff',[DashboardStaffUnitController::class, 'index'])->name('staff.dashboard');

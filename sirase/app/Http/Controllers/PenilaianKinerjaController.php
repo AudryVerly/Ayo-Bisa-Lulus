@@ -264,24 +264,82 @@ class PenilaianKinerjaController extends Controller
         $idMahasiswa = Auth::user()->mahasiswa->id;
 
         $tugas = DB::table('tugas as t')
-                 ->join('staffUnit as st','st.id','=','t.idStaffUnit')
-                 ->join('users as u','u.id','=','st.idUser')
-                 ->join('tugas_mahasiswa as tm','tm.idTugas', '=', 't.id')
-                 ->where('tm.idMahasiswa',$idMahasiswa)
-                 ->where('t.idLowongan', $idLowongan)
-                 ->select(
-                    't.id',
-                    't.namaTugas',
-                    't.deskripsi',
-                    't.tenggatPengumpulan',
-                    't.progressTugas',
-                    'tm.statusPengumpulan',
-                    'tm.tanggalPengumpulan',
-                    'tm.file_path',
-                    'u.name as namaUser'
-                )
-                ->get();
+            ->join('staffUnit as st', 'st.id', '=', 't.idStaffUnit')
+            ->join('users as u', 'u.id', '=', 'st.idUser')
+            ->join('tugas_mahasiswa as tm', 'tm.idTugas', '=', 't.id')
+            ->where('tm.idMahasiswa', $idMahasiswa)
+            ->where('t.idLowongan', $idLowongan)
+            ->select(
+                't.id',
+                't.namaTugas',
+                't.deskripsi',
+                't.tenggatPengumpulan',
+                't.progressTugas',
+                'tm.statusPengumpulan',
+                'tm.tanggalPengumpulan',
+                'tm.file_path',
+                'u.name as namaUser'
+            )
+            ->get();
 
         return view('mahasiswaPage.listtugasmahasiswa', compact('tugas'));
+    }
+
+    public function showMahasiswa()
+    {
+        $idUnit = Auth::user()->staffUnit()->pluck('idUnit')->first();
+        $mahasiswa = DB::table('pendaftaran as p')
+            ->join('mahasiswa as m', 'm.id', '=', 'p.idMahasiswa')
+            ->join('users as us', 'us.id', '=', 'm.idUser')
+            ->join('lowongan as l', 'l.id', '=', 'p.idLowongan')
+            ->join('unit as u', 'u.id', '=', 'l.idUnit')
+            ->where('l.idUnit', $idUnit)
+            ->where('p.statusPendaftaran', 'diterima')
+            ->select(
+                'm.id as idMahasiswa',
+                'l.id as idLowongan',
+                'p.id',
+                'us.name as namaMahasiswa',
+                'l.judulLowongan',
+                'u.name as namaUnit',
+                'p.statusPendaftaran'
+            )
+            ->get();
+
+        return view('adminUnitPage.listmahasiswatugas', compact('mahasiswa'));
+
+    }
+
+    public function showTugasMahasiswaAdmin($idMahasiswa, $idLowongan)
+    {
+        $mahasiswa = DB::table('mahasiswa as m')
+            ->join('users as u', 'u.id', '=', 'm.idUser')
+            ->where('m.id', $idMahasiswa)
+            ->select('m.id', 'u.name as namaMahasiswa')
+            ->first();
+        $tugas = DB::table('tugas_mahasiswa as tm')
+            ->join('tugas as t', 't.id', '=', 'tm.idTugas')
+            ->leftJoin('penilaian_kinerja as pk', function ($join) use ($idMahasiswa) {
+                $join->on('pk.idTugas', '=', 't.id')
+                    ->where('pk.idMahasiswa', '=', $idMahasiswa);
+            })
+            ->where('tm.idMahasiswa', $idMahasiswa)
+            ->where('t.idLowongan', $idLowongan)
+            ->select(
+                't.namaTugas',
+                't.deskripsi',
+                't.bobotNilai',
+                't.tenggatPengumpulan',
+                'tm.statusPengumpulan',
+                'tm.tanggalPengumpulan',
+                'tm.file_path',
+                'tm.catatan',
+                'pk.penalti',
+                'pk.nilaiAkhir'
+            )
+            ->get();
+
+        return view('adminUnitPage.listtugasmahasiswa', compact('mahasiswa', 'tugas'));
+
     }
 }

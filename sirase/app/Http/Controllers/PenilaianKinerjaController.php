@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\KualitasKerja;
+use App\Models\Tugas;
+use App\Models\TugasMahasiswa;
 use App\Models\Unit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class PenilaianKinerjaController extends Controller
 {
@@ -138,12 +141,13 @@ class PenilaianKinerjaController extends Controller
             ->join('users as u', 'u.id', '=', 'm.idUser')
             ->where('t.idUnit', $idUnit)
             ->select(
+                't.id',
                 'u.name as namaMahasiswa',
                 't.namaTugas',
                 't.deskripsi',
                 't.bobotNilai',
                 't.tenggatPengumpulan',
-                't.progressTugas',
+                'tm.progressTugas',
                 'tm.file_path',
                 'tm.statusPengumpulan',
                 'tm.tanggalPengumpulan'
@@ -177,7 +181,7 @@ class PenilaianKinerjaController extends Controller
     {
         $request->validate([
             'idUnit' => 'required',
-            'idMahasiswa' => 'required',
+            'idMahasiswa' => 'required|array|min:1',
             'idLowongan' => 'required',
             'namaTugas' => 'required',
             'deskripsi' => 'required',
@@ -187,6 +191,7 @@ class PenilaianKinerjaController extends Controller
             'required' => 'Bagian :attribute wajib untuk diisi.',
             'numeric' => 'Bagian :attribute wajib dalam bentuk angka',
             'date' => 'Bagian :attribute wajib dalam bentuk tanggal',
+            'idMahasiswa.min' => 'Mahasiswa harus dipilih minimal 1',
         ], [
             'idUnit' => 'isUnit',
             'idMahasiswa' => 'idMahasiswa',
@@ -211,16 +216,23 @@ class PenilaianKinerjaController extends Controller
                 'deskripsi' => $request->deskripsi,
                 'bobotNilai' => $request->bobotNilai,
                 'tenggatPengumpulan' => $request->tenggatPengumpulan,
-                'progressTugas' => 'assigned',
             ]);
 
-            DB::table('tugas_mahasiswa')->insert([
-                'idMahasiswa' => $request->idMahasiswa,
-                'idTugas' => $idTugas,
-                'statusPengumpulan' => null,
-                'tanggalPengumpulan' => null,
-                'file_path' => null,
-            ]);
+            $dataInsert = [];
+
+            foreach ($request->idMahasiswa as $idMhs) {
+                $dataInsert[] = [
+                    'idMahasiswa' => $idMhs,
+                    'idTugas' => $idTugas,
+                    'statusPengumpulan' => null,
+                    'tanggalPengumpulan' => null,
+                    'progressTugas' => 'assigned',
+                    'file_path' => null,
+                ];
+            }
+
+            DB::table('tugas_mahasiswa')->insert($dataInsert);
+
         });
 
         return redirect()
@@ -269,11 +281,11 @@ class PenilaianKinerjaController extends Controller
             ->where('tm.idMahasiswa', $idMahasiswa)
             ->where('t.idLowongan', $idLowongan)
             ->select(
-                't.id',
+                't.id as idTugas',
                 't.namaTugas',
                 't.deskripsi',
                 't.tenggatPengumpulan',
-                't.progressTugas',
+                'tm.progressTugas',
                 'tm.statusPengumpulan',
                 'tm.tanggalPengumpulan',
                 'tm.file_path',
@@ -284,13 +296,17 @@ class PenilaianKinerjaController extends Controller
         return view('mahasiswaPage.listtugasmahasiswa', compact('tugas'));
     }
 
-    public function updateProgress($idTugas){
-        DB::table('tugas')
-            ->where('id',$idTugas)
+    public function updateProgress($idTugas)
+    {
+        $idMahasiswa = Auth::user()->mahasiswa->id;
+        DB::table('tugas_mahasiswa')
+            ->where('idMahasiswa', $idMahasiswa)
+            ->where('idTugas', $idTugas)
             ->update([
-                'progressTugas' => 'inProgress'
+                'progressTugas' => 'inProgress',
             ]);
-        return back()->with('success','status tugas diubah menjadi proses');
+
+        return back()->with('success', 'status tugas diubah menjadi proses');
     }
 
     public function showMahasiswa()
@@ -351,7 +367,50 @@ class PenilaianKinerjaController extends Controller
 
     }
 
-    public function submitTugas($idTugas){
+    public function submitTugas($idTugas, Request $request)
+    {
+        $request->validate([
+            'tugas' => 'required|file|mimes:jpg,jpeg,png,pdf,xlsx,xls,doc,docx,ppt,pptx|max:2048',
+        ], [
+            'required' => 'Bagian :attribute wajib diisi.',
+            'file' => 'Bagian :attribute harus bertipe file',
+            'mimes' => 'Bagian :attribute harus berjenis jpg/jpeg/png/pdf/excel/doc/ppt',
+            'max' => 'Bagian :attribute maksimal 20MB',
+        ], [
+            'tugas' => 'file tugas',
+        ]);
+
+        $file = $request->file('tugas');
+        $idMahasiswa = Auth::user()->mahasiswa->id;
+
+        $tugas = Tugas::findOrFail($idTugas);
+        $namaTugas = Str::slug($tugas->namaTugas, '_');
+
+        $namaFile = $namaTugas.'_'.$idMahasiswa.'.'.$file->getClientOriginalExtension();
+
+        $filePath = $file->storeAs(
+            'tugas/'.$idTugas,
+            $namaFile,
+            'public'
+        );
+
+        $status = now()->lte($tugas->tenggatPengumpulan)
+                  ? 'tepatwaktu'
+                  : 'terlambat';
         
+        TugasMahasiswa::updateOrInsert(
+            [
+                'idMahasiswa' => $idMahasiswa,
+                'idTugas' => $idTugas,
+            ],
+            [
+                'tanggalPengumpulan' => now(),
+                'statusPengumpulan' => $status,
+                'file_path' => $filePath,
+                'progressTugas' => 'submitted'
+            ]
+        );
+
+        return back()->with('success', 'Tugas berhasil dikumpulkan');
     }
 }

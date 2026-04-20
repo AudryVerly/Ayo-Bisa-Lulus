@@ -48,14 +48,14 @@
                                                 {{ $t->statusPengumpulan ?? '-' }}</td>
                                             <td class="text-sm" style="text-align: center;">
                                                 <button type="button" class="btn btn-sm bg-gradient-info text-white"
-                                                    data-bs-toggle="modal" data-bs-target="#detailModal{{ $t->id }}">
+                                                    data-bs-toggle="modal" data-bs-target="#detailModal{{ $t->idTugas }}">
                                                     Detail Tugas
                                                 </button>
                                             </td>
                                             <td>
                                                 <div class="d-flex justify-content-center gap-2">
                                                     @if ($t->progressTugas == 'assigned')
-                                                        <form action="{{ route('tugasmahasiswa.updateprogress', $t->id) }}"
+                                                        <form action="{{ route('tugasmahasiswa.updateprogress', $t->idTugas) }}"
                                                             method="POST">
                                                             @csrf
                                                             <button class="btn btn-sm bg-gradient-warning text-white">
@@ -66,9 +66,9 @@
 
                                                     @if ($t->progressTugas == 'inProgress')
                                                         <button type="button"
-                                                            class="btn bg-success text-white border shadow-sm btn-publish"
+                                                            class="btn bg-success text-white border shadow-sm btn-submit"
                                                             data-bs-toggle="modal" data-bs-target="#modaladdtugas"
-                                                            data-id={{ $t->id }}>
+                                                            data-id={{ $t->idTugas }}>
                                                             Submit
                                                         </button>
                                                     @endif
@@ -87,7 +87,7 @@
 @endsection
 @push('modals')
     @foreach ($tugas as $t)
-        <div class="modal fade" id="detailModal{{ $t->id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal fade" id="detailModal{{ $t->idTugas }}" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div
@@ -126,7 +126,7 @@
     <div class="modal fade" id="modaladdtugas" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <form action="" method="POST">
+                <form id="formSubmitTugas" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div
                         class="modal-header d-flex justify-content-between align-items-center bg-dark text-white px-4 py-3">
@@ -214,6 +214,15 @@
                     $('#previewContainer').fadeOut();
                 }
             });
+        });
+
+        $(document).on('click','.btn-submit', function(){
+            let idTugas = $(this).data('id');
+
+            $('#idTugas').val(idTugas);
+
+            let url = "/tugasmahasiswa/submitugas/" + idTugas;
+            $('#formSubmitTugas').attr('action', url);
         });
 
         @if (session('success'))

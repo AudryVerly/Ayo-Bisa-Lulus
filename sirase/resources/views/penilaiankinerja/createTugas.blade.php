@@ -16,7 +16,28 @@
                         </div>
                         <div class="card-body">
                             <input type="hidden" name="idUnit" value="{{ $idUnit }}">
-                            <input type="hidden" name="idLowongan" id="idLowongan">
+                            {{-- <input type="hidden" name="idLowongan" id="idLowongan"> --}}
+                            <div class="form-group mb-2">
+                                <label for="lowongan" class="form-label fw-bold text-secondary">
+                                    Lowongan
+                                </label>
+                                <i class="material-symbols-rounded text-secondary ms-0" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Pilih lowongan untuk membantu memilih mahasiswa"
+                                    style="font-size: 1rem; cursor: help;">
+                                    info
+                                </i>
+                                <select name="idLowongan" id="idLowongan" class="form-select border rounded-3 px-3 py-2">
+                                    <option value="" disabled selected>Pilih Lowongan</option>
+                                    @foreach ($mahasiswa->unique('idLowongan') as $l)
+                                        <option value="{{ $l->idLowongan }}">
+                                            {{ $l->namaLowongan }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('idLowongan')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
                             <div class="form-group mb-2">
                                 <label for="namaTugas" class="form-label fw-bold text-secondary">
                                     Nama Tugas
@@ -42,7 +63,21 @@
                                     style="font-size: 1rem; cursor: help;">
                                     info
                                 </i>
-                                <select name="idMahasiswa" id="idMahasiswa" class="form-select border rounded-3 px-3 py-2">
+                                <div id="listMahsiswa">
+                                    @foreach ($mahasiswa as $siswa)
+                                        <div class="form-check mahasiswa-item" data-lowongan="{{ $siswa->idLowongan }}">
+                                            <input class="form-check-input" type="checkbox" name="idMahasiswa[]"
+                                                value="{{ $siswa->idMahasiswa }}">
+                                            <label class="form-check-label">
+                                                {{ $siswa->namaMahasiswa }} - {{ $siswa->namaLowongan }}
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                @error('idMahasiswa')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                                {{-- <select name="idMahasiswa" id="idMahasiswa" class="form-select border rounded-3 px-3 py-2">
                                     <option value="" disabled selected>Pilih Mahasiswa</option>
                                     @foreach ($mahasiswa as $siswa)
                                         <option value="{{ $siswa->idMahasiswa }}"
@@ -54,7 +89,7 @@
                                     @error('idMahasiswa')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
-                                </select>
+                                </select> --}}
                             </div>
                             <div class="form-group mb-2">
                                 <label for="deskripsi" name="deskripsi"
@@ -106,7 +141,8 @@
                                         class="align-middle">&nbsp;&nbsp;Simpan
                                         Perubahan</span>
                                 </button>
-                                <a href="{{ route('tugas.listtugas',$idUnit) }}" class="btn bg-gradient-danger text-white px-4">
+                                <a href="{{ route('tugas.listtugas', $idUnit) }}"
+                                    class="btn bg-gradient-danger text-white px-4">
                                     <i class="material-symbols-rounded text-sm">close</i><span
                                         class="align-middle">&nbsp;&nbsp;Batal</span>
                                 </a>
@@ -120,11 +156,33 @@
 @endsection
 @push('scripts')
     <script>
-        $('#idMahasiswa').on('change',function(){
-            let selected = $(this).find(':selected');
-            let idLowongan = selected.data('lowongan');
+        $(document).ready(function() {
 
-            $('#idLowongan').val(idLowongan);
+            // awal: sembunyikan semua dulu
+            $('.mahasiswa-item').hide();
+
+            $('#idLowongan').on('change', function() {
+                let selected = $(this).val();
+                console.log('selected:', selected);
+
+                $('.mahasiswa-item').each(function() {
+                    let lowongan = $(this).attr('data-lowongan');
+
+                    if (lowongan == selected) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                        $(this).find('input').prop('checked', false);
+                    }
+                });
+            });
+
         });
+        // $('#idMahasiswa').on('change', function() {
+        //     let selected = $(this).find(':selected');
+        //     let idLowongan = selected.data('lowongan');
+
+        //     $('#idLowongan').val(idLowongan);
+        // });
     </script>
 @endpush

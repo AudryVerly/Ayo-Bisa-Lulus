@@ -19,7 +19,6 @@ return new class extends Migration
             $table->text('deskripsi');
             $table->double('bobotNilai');
             $table->date('tenggatPengumpulan');
-            $table->enum('progressTugas',['assigned','inProgress','revisi','done']);
             $table->timestamps();
 
             $table->foreign('idStaffUnit')->references('id')->on('staffunit')->onDelete('cascade');

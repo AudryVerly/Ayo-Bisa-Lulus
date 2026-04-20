@@ -16,7 +16,6 @@ class Tugas extends Model
         'deskripsi',
         'bobotNilai',
         'tenggatPengumpulan',
-        'progressTugas'
     ];
 
     public function staffunit(){

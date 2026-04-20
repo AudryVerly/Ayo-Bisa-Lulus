@@ -64,6 +64,9 @@
                                                     @elseif ($d->progressTugas == 'inProgress')
                                                         <span
                                                             class="badge bg-gradient-warning text-white px-3 py-2">Proses</span>
+                                                    @elseif ($d->progressTugas == 'submitted')
+                                                        <span
+                                                            class="badge bg-gradient-warning text-white px-3 py-2">Dikumpulkan</span>
                                                     @elseif ($d->progressTugas == 'revisi')
                                                         <span
                                                             class="badge bg-gradient-primary text-white px-3 py-2">Revisi</span>
@@ -99,7 +102,7 @@
                                             </td>
                                             <td>
                                                 <div class="d-flex justify-content-center gap-2">
-                                                    @if ($d->statusPengumpulan == 'submit' || $d->statusPengumpulan == 'telat')
+                                                    @if ($d->progressTugas == 'submitted')
                                                         <a href="" class="btn bg-gradient-success btn-sm text-white">
                                                             Nilai
                                                         </a>

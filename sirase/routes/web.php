@@ -62,6 +62,7 @@ Route::middleware(['auth','role:Mahasiswa'])->group(function(){
     Route::get('/listwawancaramahasiswa',[WawancaraController::class, 'showCalendarMahasiswa'])->name('listwawancara.show');
     Route::get('/tugasmahasiswa/listlowongan',[PenilaianKinerjaController::class,'listLowonganAktif'])->name('tugasmahasiswa.listlowongan');
     Route::get('/tugasmahasiswa/listugas/{idLowongan}',[PenilaianKinerjaController::class,'listTugas'])->name('tugasmahasiswa.listtugas');
+    Route::post('/tugasmahasiswa/tugas/progress/{idTugas}',[PenilaianKinerjaController::class,'updateProgress'])->name('tugasmahasiswa.updateprogress');
 });
 
 Route::middleware(['auth','role:AdminUnit'])->group(function(){

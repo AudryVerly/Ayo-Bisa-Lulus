@@ -55,15 +55,22 @@
                                             <td>
                                                 <div class="d-flex justify-content-center gap-2">
                                                     @if ($t->progressTugas == 'assigned')
-                                                        <a href="" class="btn btn-sm bg-gradient-warning text-white">
-                                                            Proses
-                                                        </a>
+                                                        <form action="{{ route('tugasmahasiswa.updateprogress', $t->id) }}"
+                                                            method="POST">
+                                                            @csrf
+                                                            <button class="btn btn-sm bg-gradient-warning text-white">
+                                                                Proses
+                                                            </button>
+                                                        </form>
                                                     @endif
 
-                                                    @if ($t->progressTugas == 'proses')
-                                                        <a href="" class="btn btn-sm bg-gradient-success text-white">
+                                                    @if ($t->progressTugas == 'inProgress')
+                                                        <button type="button"
+                                                            class="btn bg-success text-white border shadow-sm btn-publish"
+                                                            data-bs-toggle="modal" data-bs-target="#modaladdtugas"
+                                                            data-id={{ $t->id }}>
                                                             Submit
-                                                        </a>
+                                                        </button>
                                                     @endif
                                                 </div>
                                             </td>
@@ -115,4 +122,116 @@
             </div>
         </div>
     @endforeach
+    {{-- modal buat submit hasil kerjaan --}}
+    <div class="modal fade" id="modaladdtugas" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form action="" method="POST">
+                    @csrf
+                    <div
+                        class="modal-header d-flex justify-content-between align-items-center bg-dark text-white px-4 py-3">
+                        <h5 class="modal-title text-white">Kumpulkan Tugas</h5>
+                        <button type="button" class="btn-close btn-white" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="form-group mb-2">
+                            <label for="tugas" class="form-label fw-bold text-secondary">Upload Tugas</label>
+                            <div class="custom-tooltip"
+                                data-title="Masukkan file tugas dalam bentuk pdf,jpg,jpeg,png atau excel">
+                                <i class="material-symbols-rounded text-secondary ms-1" style="font-size: 1rem;">info</i>
+                            </div>
+                            <div id="previewContainer" class="mt-3 text-center" style="display: none;">
+                                <img id="previewImage" src="" class="img-fluid rounded shadow-sm"
+                                    style="max-height: 200px;">
+                                <small class="text-muted d-block mt-1">Preview Gambar</small>
+                            </div>
+                            <input type="file" id="tugas" name="tugas"
+                                class="form-control shadow-sm border rounded-3 px-3 py-2">
+                            @error('file_path')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="text-end mt-4">
+                            <button type="submit" class="btn bg-gradient-success text-white px-4">
+                                <i class="material-symbols-rounded text-sm">save</i><span
+                                    class="align-middle">&nbsp;&nbsp;Simpan</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+@endpush
+@push('scripts')
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#tableListTugas').DataTable({
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json",
+                    emptyTable: 'Belum ada Lowongan',
+                    paginate: {
+                        previous: "<",
+                        next: ">",
+                    }
+                },
+                lengthMenu: [5, 10, 25, 50, 100],
+                columnDefs: [{
+                    orderable: false,
+                    targets: -1
+                }]
+            });
+
+            $('#tugas').on('change', function() {
+                let file = this.files[0];
+
+                if (!file) {
+                    $('#previewContainer').hide();
+                    return;
+                }
+
+                let fileType = file.type;
+
+                if (fileType.startsWith('image/')) {
+                    let reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        $('#previewImage').attr('src', e.target.result);
+                        $('#previewContainer').fadeIn();
+                    };
+
+                    reader.readAsDataURL(file);
+
+                } else {
+                    $('#previewContainer').fadeOut();
+                }
+            });
+        });
+
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: "{{ session('success') }}",
+                timer: 2500,
+                showConfirmButton: false
+            });
+        @elseif (session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: "{{ session('error') }}",
+                timer: 2500,
+                showConfirmButton: false
+            });
+        @endif
+    </script>
 @endpush

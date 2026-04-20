@@ -17,7 +17,6 @@ return new class extends Migration
             $table->enum('statusPengumpulan', ['terlambat', 'tepatwaktu']);
             $table->date('tanggalPengumpulan');
             $table->text('file_path');
-            $table->text('catatan');
             $table->timestamps();
 
             $table->primary([

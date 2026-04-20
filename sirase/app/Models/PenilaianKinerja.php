@@ -14,6 +14,7 @@ class PenilaianKinerja extends Model
         'nilaiAwal',
         'penalti',
         'nilaiAkhir',
+        'catatan',
     ];
 
     public function mahasiswa(){

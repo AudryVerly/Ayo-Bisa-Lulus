@@ -220,7 +220,6 @@ class PenilaianKinerjaController extends Controller
                 'statusPengumpulan' => null,
                 'tanggalPengumpulan' => null,
                 'file_path' => null,
-                'catatan' => null,
             ]);
         });
 
@@ -285,6 +284,15 @@ class PenilaianKinerjaController extends Controller
         return view('mahasiswaPage.listtugasmahasiswa', compact('tugas'));
     }
 
+    public function updateProgress($idTugas){
+        DB::table('tugas')
+            ->where('id',$idTugas)
+            ->update([
+                'progressTugas' => 'inProgress'
+            ]);
+        return back()->with('success','status tugas diubah menjadi proses');
+    }
+
     public function showMahasiswa()
     {
         $idUnit = Auth::user()->staffUnit()->pluck('idUnit')->first();
@@ -333,7 +341,7 @@ class PenilaianKinerjaController extends Controller
                 'tm.statusPengumpulan',
                 'tm.tanggalPengumpulan',
                 'tm.file_path',
-                'tm.catatan',
+                'pk.catatan',
                 'pk.penalti',
                 'pk.nilaiAkhir'
             )
@@ -341,5 +349,9 @@ class PenilaianKinerjaController extends Controller
 
         return view('adminUnitPage.listtugasmahasiswa', compact('mahasiswa', 'tugas'));
 
+    }
+
+    public function submitTugas($idTugas){
+        
     }
 }

@@ -14,6 +14,5 @@ class TugasMahasiswa extends Model
         'tanggalPengumpulan',
         'statusPengumpulan',
         'file_path',
-        'catatan'
     ];
 }

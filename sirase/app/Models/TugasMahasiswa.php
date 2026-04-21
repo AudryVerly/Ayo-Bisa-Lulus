@@ -12,7 +12,7 @@ class TugasMahasiswa extends Model
         'idMahasiswa',
         'idTugas',
         'tanggalPengumpulan',
-        'tanggalRevisi',
+        'tenggatRevisi',
         'catatanRevisi',
         'statusPengumpulan',
         'file_path',

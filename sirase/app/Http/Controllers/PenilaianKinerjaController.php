@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\KualitasKerja;
+use App\Models\PenilaianKinerja;
 use App\Models\Tugas;
 use App\Models\TugasMahasiswa;
 use App\Models\Unit;
@@ -290,6 +291,8 @@ class PenilaianKinerjaController extends Controller
                 'tm.statusPengumpulan',
                 'tm.tanggalPengumpulan',
                 'tm.file_path',
+                'tm.tenggatRevisi',
+                'tm.catatanRevisi',
                 'u.name as namaUser'
             )
             ->get();
@@ -385,6 +388,10 @@ class PenilaianKinerjaController extends Controller
         $idMahasiswa = Auth::user()->mahasiswa->id;
 
         $tugas = Tugas::findOrFail($idTugas);
+
+        $tugasMhs = TugasMahasiswa::where('idMahasiswa', $idMahasiswa)
+            ->where('idTugas', $idTugas)
+            ->first();
         $namaTugas = Str::slug($tugas->namaTugas, '_');
 
         $namaFile = $namaTugas.'_'.$idMahasiswa.'.'.$file->getClientOriginalExtension();
@@ -395,10 +402,12 @@ class PenilaianKinerjaController extends Controller
             'public'
         );
 
-        $status = now()->lte($tugas->tenggatPengumpulan)
+        $deadline = $tugasMhs->tenggatRevisi ?? $tugas->tenggatPengumpulan;
+
+        $status = now()->lte($deadline)
                   ? 'tepatwaktu'
                   : 'terlambat';
-        
+
         TugasMahasiswa::updateOrInsert(
             [
                 'idMahasiswa' => $idMahasiswa,
@@ -408,10 +417,110 @@ class PenilaianKinerjaController extends Controller
                 'tanggalPengumpulan' => now(),
                 'statusPengumpulan' => $status,
                 'file_path' => $filePath,
-                'progressTugas' => 'submitted'
+                'progressTugas' => 'submitted',
             ]
         );
 
         return back()->with('success', 'Tugas berhasil dikumpulkan');
+    }
+
+    // ini untuk penilaian kinerja
+    public function simpanPenilaian(Request $request)
+    {
+        // dd($request->all());
+
+        $request->validate([
+            'idTugas' => 'required',
+            'idMahasiswa' => 'required',
+            'nilaiAwal' => 'required|numeric|min:0',
+            'penalti' => 'nullable|numeric|min:0',
+            'catatan' => 'required',
+        ], [
+            'required' => 'Bagian :attribute wajib diisi.',
+            'numeric' => 'Bagian :attribute wajib dalam bentuk angka.',
+            'min' => 'Bagian :attribute harus minimal 0',
+        ], [
+            'idTugas' => 'idTugas',
+            'idMahasiswa' => 'idMahasiswa',
+            'nilaiAwal' => 'nilai awal',
+            'catatan' => 'catatan',
+        ]);
+
+        $tugas = TugasMahasiswa::where('idTugas', $request->idTugas)
+            ->where('idMahasiswa', $request->idMahasiswa)
+            ->first();
+
+        if (! $tugas) {
+            return back()->with('error', 'Data tidak ditemukan');
+        }
+
+        // $bobot = $tugas->bobotNilai;
+        $nilaiAwal = $request->nilaiAwal;
+        $penalti = min($request->penalti ?? 0, $nilaiAwal);
+        $nilaiAkhir = $nilaiAwal - $penalti;
+
+        PenilaianKinerja::updateOrCreate(
+            [
+                'idTugas' => $request->idTugas,
+                'idMahasiswa' => $request->idMahasiswa,
+            ],
+            [
+                'nilaiAwal' => $nilaiAwal,
+                'penalti' => $penalti,
+                'nilaiAkhir' => $nilaiAkhir,
+                'catatan' => $request->catatan,
+            ]
+        );
+
+        TugasMahasiswa::where('idTugas', $request->idTugas)
+            ->where('idMahasiswa', $request->idMahasiswa)
+            ->update([
+                'progressTugas' => 'done',
+            ]);
+
+            
+        return back()->with('success', 'Penilaian berhasil disimpan');
+    }
+
+    public function kirimRevisi(Request $request)
+    {
+        // dd($request->all());
+        $request->validate([
+            'idTugas' => 'required',
+            'idMahasiswa' => 'required',
+            'tenggatRevisi' => 'required|date',
+            'catatanRevisi' => 'required',
+        ], [
+            'required' => 'Bagian :attribute wajib diisi.',
+            'date' => 'Bagian :atrribute harus dalam bentuk tanggal',
+        ], [
+            'idTugas' => 'idTugas',
+            'idMahasiswa' => 'idMahasiswa',
+            'tenggatRevisi' => 'tenggatRevisi',
+            'catatanRevisi' => 'catatanRevisi',
+        ]);
+
+        TugasMahasiswa::where('idTugas', $request->idTugas)
+            ->where('idMahasiswa', $request->idMahasiswa)
+            ->update([
+                'tenggatRevisi' => $request->tenggatRevisi,
+                'catatanRevisi' => $request->catatanRevisi,
+                'progressTugas' => 'revisi',
+                'statusPengumpulan' => null,
+            ]);
+
+        // if (! $tugas) {
+        //     return back()->with('error', 'Data tidak ditemukan');
+        // }
+
+        // $tugas->update([
+        //     'tenggatRevisi' => $request->tenggatRevisi,
+        //     'catatanRevisi' => $request->catatanRevisi,
+        //     'progressTugas' => 'revisi',
+        //     'statusPengumpulan' => null,
+        // ]);
+
+        return back()->with('success', 'Revisi berhasil dikirim');
+
     }
 }

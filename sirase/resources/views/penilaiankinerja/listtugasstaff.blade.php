@@ -105,18 +105,22 @@
                                                     @if ($d->progressTugas == 'submitted')
                                                         <button class="btn bg-gradient-success btn-sm text-white btn-nilai"
                                                             data-bs-toggle="modal" data-bs-target="#modalPenilaian"
-                                                            data-idTugas="{{ $d->id }}"
-                                                            data-idMahasiswa="{{ $d->idMahasiswa }}"
+                                                            data-idtugas="{{ $d->id }}"
+                                                            data-idmahasiswa="{{ $d->idMahasiswa }}"
                                                             data-status="{{ $d->statusPengumpulan }}"
                                                             data-bobot="{{ $d->bobotNilai }}">
                                                             Nilai
                                                         </button>
                                                         <button class="btn bg-gradient-danger btn-sm text-white btn-revisi"
                                                             data-bs-toggle="modal" data-bs-target="#modalrevisi"
-                                                            data-idTugas="{{ $d->id }}"
-                                                            data-idMahasiswa="{{ $d->idMahasiswa }}">
+                                                            data-idtugas="{{ $d->id }}"
+                                                            data-idmahasiswa="{{ $d->idMahasiswa }}">
                                                             Revisi
                                                         </button>
+                                                    @elseif($d->progressTugas == 'revisi')
+                                                        <span class="badge bg-warning">Revisi/span>
+                                                    @elseif ($d->progressTugas == 'done')
+                                                        <span class="badge bg-success">Sudah diNilai</span>
                                                     @else
                                                         <span class="badge bg-gradient-info text-white px-3 py-2">Belum
                                                             Dikerjakan</span>
@@ -138,7 +142,7 @@
     <div class="modal fade" id="modalPenilaian" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <form id="formpeniliantugas" method="POST">
+                <form id="formpeniliantugas" method="POST" action="{{ route('tugas.simpanpenilaian') }}">
                     @csrf
                     <div
                         class="modal-header d-flex justify-content-between align-items-center bg-dark text-white px-4 py-3">
@@ -147,7 +151,7 @@
                     </div>
                     <div class="modal-body">
                         <input type="hidden" name="idTugas" id="idTugas">
-                        <input type="hidden" name="idMahasiwa" id="idMahasiswa">
+                        <input type="hidden" name="idMahasiswa" id="idMahasiswa">
                         <div class="form-group mb-2">
                             <label for="nilaiAwal" class="form-label fw-bold text-secondary">Nilai</label>
                             <div class="custom-tooltip"
@@ -212,7 +216,7 @@
     <div class="modal fade" id="modalrevisi" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <form id="formrevisi" method="POST">
+                <form id="formrevisi" method="POST" action="{{ route('tugas.revisitugas') }}">
                     @csrf
                     <div
                         class="modal-header d-flex justify-content-between align-items-center bg-dark text-white px-4 py-3">
@@ -224,7 +228,7 @@
                         <input type="hidden" name="idTugas" id="rev_idTugas">
                         <input type="hidden" name="idMahasiswa" id="rev_idMahasiswa">
                         <div class="form-group mb-2">
-                            <label for="tenggatRevisi" class="form-label fw-bold text-secondary">Catatan</label>
+                            <label for="tenggatRevisi" class="form-label fw-bold text-secondary">Tenggat Revisi</label>
                             <div class="custom-tooltip"
                                 data-title="Silahkan atur ulang tenggat untuk revisi,wajib untuk diisi">
                                 <i class="material-symbols-rounded text-secondary ms-1" style="font-size: 1rem;">info</i>
@@ -291,8 +295,8 @@
         let bobotGlobal = 0;
 
         $(document).on('click', '.btn-nilai', function() {
-            let idTugas = $(this).data('idTugas');
-            let idMahasiswa = $(this).data('idMahasiswa');
+            let idTugas = $(this).data('idtugas');
+            let idMahasiswa = $(this).data('idmahasiswa');
             let status = $(this).data('status');
             let bobot = $(this).data('bobot');
 
@@ -347,8 +351,8 @@
         });
 
         $(document).on('click', '.btn-revisi', function() {
-            let idTugas = $(this).data('idTugas');
-            let idMahasiswa = $(this).data('idMahasiswa');
+            let idTugas = $(this).data('idtugas');
+            let idMahasiswa = $(this).data('idmahasiswa');
 
             $('#rev_idTugas').val(idTugas);
             $('#rev_idMahasiswa').val(idMahasiswa);

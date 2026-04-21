@@ -24,9 +24,13 @@
                                         <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
                                             style="text-align: center;">Tenggat Pegumpulan</th>
                                         <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
+                                            style="text-align: center;">Tenggat Revisi</th>
+                                        <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
                                             style="text-align: center;">Tanggal Pengumpulan</th>
                                         <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
                                             style="text-align: center;">Status</th>
+                                        <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
+                                            style="text-align: center;">Status Tugas</th>
                                         <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
                                             style="text-align: center;">Detail</th>
                                         <th class="text-uppercase text-body-secondary text-xxs font-weight-bolder opacity-7"
@@ -42,10 +46,26 @@
                                                 {{ \Carbon\Carbon::parse($t->tenggatPengumpulan)->translatedFormat('d F Y ') }}
                                             </td>
                                             <td class="text-sm" style="text-align: center;">
+                                                {{ \Carbon\Carbon::parse($t->tenggatRevisi)->translatedFormat('d F Y ') }}
+                                            </td>
+                                            <td class="text-sm" style="text-align: center;">
                                                 {{ $t->tanggalPengumpulan ? \Carbon\Carbon::parse($t->tanggalPengumpulan)->translatedFormat('d F Y') : '-' }}
                                             </td>
                                             <td class="text-sm" style="text-align: center;">
                                                 {{ $t->statusPengumpulan ?? '-' }}</td>
+                                            <td class="text-sm text-center">
+                                                @if ($t->progressTugas == 'assigned')
+                                                    <span class="badge bg-secondary">Belum Dikerjakan</span>
+                                                @elseif ($t->progressTugas == 'inProgress')
+                                                    <span class="badge bg-warning">Sedang Dikerjakan</span>
+                                                @elseif ($t->progressTugas == 'submitted')
+                                                    <span class="badge bg-info">Menunggu Penilaian</span>
+                                                @elseif ($t->progressTugas == 'revisi')
+                                                    <span class="badge bg-danger">Perlu Revisi</span>
+                                                @else
+                                                    <span class="badge bg-success">Selesai</span>
+                                                @endif
+                                            </td>
                                             <td class="text-sm" style="text-align: center;">
                                                 <button type="button" class="btn btn-sm bg-gradient-info text-white"
                                                     data-bs-toggle="modal" data-bs-target="#detailModal{{ $t->idTugas }}">
@@ -55,7 +75,8 @@
                                             <td>
                                                 <div class="d-flex justify-content-center gap-2">
                                                     @if ($t->progressTugas == 'assigned')
-                                                        <form action="{{ route('tugasmahasiswa.updateprogress', $t->idTugas) }}"
+                                                        <form
+                                                            action="{{ route('tugasmahasiswa.updateprogress', $t->idTugas) }}"
                                                             method="POST">
                                                             @csrf
                                                             <button class="btn btn-sm bg-gradient-warning text-white">
@@ -71,6 +92,20 @@
                                                             data-id={{ $t->idTugas }}>
                                                             Submit
                                                         </button>
+                                                    @endif
+
+                                                    @if ($t->progressTugas == 'revisi')
+                                                        <button type="button" class="btn bg-danger text-white btn-submit"
+                                                            data-bs-toggle="modal" data-bs-target="#modaladdtugas"
+                                                            data-id="{{ $t->idTugas }}">
+                                                            Upload Revisi
+                                                        </button>
+                                                    @endif
+
+                                                    @if($t->progressTugas == 'submitted')
+                                                        <span class="badge bg-success">Sudah diKumpulkan</span>
+                                                    @elseif ($t->progressTugas == 'done')
+                                                        <span class="badge bg-success">Sudah diNilai</span>
                                                     @endif
                                                 </div>
                                             </td>
@@ -111,12 +146,23 @@
                             <div>{{ $t->deskripsi }}</div>
                         </div>
 
-                        <div class="p-3 border rounded">
+                        <div class="p-3 border rounded mb-3">
                             <small class="text-muted">Deadline</small>
                             <div class="fw-bold text-danger">
                                 {{ \Carbon\Carbon::parse($t->tenggatPengumpulan)->translatedFormat('d F Y') }}
                             </div>
                         </div>
+                        @if ($t->progressTugas == 'revisi')
+                            <div class="p-3 border rounded bg-danger text-white">
+                                <small>Catatan Revisi</small>
+                                <div>{{ $t->catatanRevisi }}</div>
+
+                                <small>
+                                    Tenggat Revisi:
+                                    {{ \Carbon\Carbon::parse($t->tenggatRevisi)->translatedFormat('d F Y') }}
+                                </small>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -216,7 +262,7 @@
             });
         });
 
-        $(document).on('click','.btn-submit', function(){
+        $(document).on('click', '.btn-submit', function() {
             let idTugas = $(this).data('id');
 
             $('#idTugas').val(idTugas);

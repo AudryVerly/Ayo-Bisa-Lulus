@@ -142,6 +142,7 @@ class PenilaianKinerjaController extends Controller
             ->where('t.idUnit', $idUnit)
             ->select(
                 't.id',
+                'm.id as idMahasiswa',
                 'u.name as namaMahasiswa',
                 't.namaTugas',
                 't.deskripsi',

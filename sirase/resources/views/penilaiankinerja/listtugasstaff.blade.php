@@ -103,12 +103,20 @@
                                             <td>
                                                 <div class="d-flex justify-content-center gap-2">
                                                     @if ($d->progressTugas == 'submitted')
-                                                        <a href="" class="btn bg-gradient-success btn-sm text-white">
+                                                        <button class="btn bg-gradient-success btn-sm text-white btn-nilai"
+                                                            data-bs-toggle="modal" data-bs-target="#modalPenilaian"
+                                                            data-idTugas="{{ $d->id }}"
+                                                            data-idMahasiswa="{{ $d->idMahasiswa }}"
+                                                            data-status="{{ $d->statusPengumpulan }}"
+                                                            data-bobot="{{ $d->bobotNilai }}">
                                                             Nilai
-                                                        </a>
-                                                        <a href=""class="btn bg-gradient-danger btn-sm text-white">
+                                                        </button>
+                                                        <button class="btn bg-gradient-danger btn-sm text-white btn-revisi"
+                                                            data-bs-toggle="modal" data-bs-target="#modalrevisi"
+                                                            data-idTugas="{{ $d->id }}"
+                                                            data-idMahasiswa="{{ $d->idMahasiswa }}">
                                                             Revisi
-                                                        </a>
+                                                        </button>
                                                     @else
                                                         <span class="badge bg-gradient-info text-white px-3 py-2">Belum
                                                             Dikerjakan</span>
@@ -126,6 +134,131 @@
         </div>
     </div>
 @endsection
+@push('modals')
+    <div class="modal fade" id="modalPenilaian" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="formpeniliantugas" method="POST">
+                    @csrf
+                    <div
+                        class="modal-header d-flex justify-content-between align-items-center bg-dark text-white px-4 py-3">
+                        <h5 class="modal-title text-white">Kumpulkan Tugas</h5>
+                        <button type="button" class="btn-close btn-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="idTugas" id="idTugas">
+                        <input type="hidden" name="idMahasiwa" id="idMahasiswa">
+                        <div class="form-group mb-2">
+                            <label for="nilaiAwal" class="form-label fw-bold text-secondary">Nilai</label>
+                            <div class="custom-tooltip"
+                                data-title="Masukkan nilai yang akan diberikan tidak boleh melebih bobot ">
+                                <i class="material-symbols-rounded text-secondary ms-1" style="font-size: 1rem;">info</i>
+                            </div>
+                            <input type="number" id="nilaiAwal" name="nilaiAwal"
+                                class="form-control border rounded-3 px-3 py-2" min="0">
+                            <small id="infoNilaiAwal" class="text-muted">
+                                Nilai tidak boleh melebihi bobot
+                            </small>
+                            @error('nilaiAwal')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label for="penalti" class="form-label fw-bold text-secondary">Penalti</label>
+                            <div class="custom-tooltip"
+                                data-title="Masukkan nilai penalti yang sesuai tidak boleh melebihi nilai bobot">
+                                <i class="material-symbols-rounded text-secondary ms-1" style="font-size: 1rem;">info</i>
+                            </div>
+                            <input type="number" id="penalti" name="penalti"
+                                class="form-control border rounded-3 px-3 py-2" min="0">
+                            <small id="infoPenalti" class="text-muted">
+                                Penalti hanya berlaku jika terlambat
+                            </small>
+                            @error('penalti')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="form-group mb-2">
+                            <label for="catatan" class="form-label fw-bold text-secondary">Catatan</label>
+                            <div class="custom-tooltip"
+                                data-title="Masukkan catatan penilaian mengenai tugas yang diberikan ini, wajib diisi">
+                                <i class="material-symbols-rounded text-secondary ms-1" style="font-size: 1rem;">info</i>
+                            </div>
+                            <textarea name="catatan" id="catatan" rows="3" class="form-control border rounded-3 px-3 py-2"></textarea>
+                        </div>
+                        <div class="form-group mb-2">
+                            <label class="form-label fw-bold text-secondary">Nilai Akhir</label>
+                            <div id="nilaiAkhir" class="form-control bg-light text-dark fw-bold text-center">
+                                0
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <div class="text-end mt-4">
+                            <button type="submit" class="btn bg-gradient-success text-white px-4">
+                                <i class="material-symbols-rounded text-sm">save</i><span
+                                    class="align-middle">&nbsp;&nbsp;Simpan</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- ini buat tampilan revisi --}}
+    <div class="modal fade" id="modalrevisi" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="formrevisi" method="POST">
+                    @csrf
+                    <div
+                        class="modal-header d-flex justify-content-between align-items-center bg-dark text-white px-4 py-3">
+                        <h5 class="modal-title text-white">Revisi Tugas </h5>
+                        <button type="button" class="btn-close btn-white" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <input type="hidden" name="idTugas" id="rev_idTugas">
+                        <input type="hidden" name="idMahasiswa" id="rev_idMahasiswa">
+                        <div class="form-group mb-2">
+                            <label for="tenggatRevisi" class="form-label fw-bold text-secondary">Catatan</label>
+                            <div class="custom-tooltip"
+                                data-title="Silahkan atur ulang tenggat untuk revisi,wajib untuk diisi">
+                                <i class="material-symbols-rounded text-secondary ms-1" style="font-size: 1rem;">info</i>
+                            </div>
+                            <input type="date" name="tenggatRevisi" id="tenggatRevisi"
+                                class="form-control border rounded-3 px-3 py-2">
+                            <small class="text-muted">
+                                Tenggat revisi adalah batas terakhir pengumpulan ulang
+                            </small>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label for="tenggatRevisi" class="form-label fw-bold text-secondary">Catatan Revisi</label>
+                            <div class="custom-tooltip"
+                                data-title="Tuliskan secara lengkap revisi yang diberikan, wajib diisi">
+                                <i class="material-symbols-rounded text-secondary ms-1" style="font-size: 1rem;">info</i>
+                            </div>
+                            <textarea name="catatanRevisi" id="catatanRevisi" rows="2" class="form-control border rounded-3 px-3 py-2"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <div class="text-end mt-4">
+                            <button type="submit" class="btn bg-gradient-success text-white px-4">
+                                <i class="material-symbols-rounded text-sm">save</i><span
+                                    class="align-middle">&nbsp;&nbsp;Simpan</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+@endpush
 @push('scripts')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
@@ -151,6 +284,77 @@
                     }
                 ]
             })
+        });
+    </script>
+
+    <script>
+        let bobotGlobal = 0;
+
+        $(document).on('click', '.btn-nilai', function() {
+            let idTugas = $(this).data('idTugas');
+            let idMahasiswa = $(this).data('idMahasiswa');
+            let status = $(this).data('status');
+            let bobot = $(this).data('bobot');
+
+            bobotGlobal = bobot;
+
+            $('#idTugas').val(idTugas);
+            $('#idMahasiswa').val(idMahasiswa);
+
+            $('#nilaiAwal').val('');
+            $('#penalti').val(0);
+            $('#nilaiAkhir').text('0');
+            $('#catatan').val('');
+
+            if (status === 'terlambat') {
+                $('#penalti').prop('readonly', false)
+                    .removeClass('bg-light text-muted');
+            } else {
+                $('#penalti').val(0)
+                    .prop('readonly', true)
+                    .addClass('bg-light text-muted');
+            }
+
+            $('#infoNilaiAwal').text(`Nilai maksimal adalah ${bobot}`);
+        });
+
+        //ini buat hitung nilai akhir
+        $('#nilaiAwal , #penalti').on('input', function() {
+            let nilaiAwal = parseFloat($('#nilaiAwal').val()) || 0;
+            let penalti = parseFloat($('#penalti').val()) || 0;
+
+            if (nilaiAwal > bobotGlobal) {
+                nilaiAwal = bobotGlobal;
+                $('#nilaiAwal').val(bobotGlobal);
+            }
+
+            // batas penalti
+            if (penalti > bobotGlobal) {
+                penalti = bobotGlobal;
+                $('#penalti').val(bobotGlobal);
+            }
+
+            // penalti gak boleh > nilaiAwal
+            if (penalti > nilaiAwal) {
+                penalti = nilaiAwal;
+                $('#penalti').val(nilaiAwal);
+            }
+
+            let nilaiAkhir = nilaiAwal - penalti;
+            if (nilaiAkhir < 0) nilaiAkhir = 0;
+
+            $('#nilaiAkhir').text(nilaiAkhir);
+        });
+
+        $(document).on('click', '.btn-revisi', function() {
+            let idTugas = $(this).data('idTugas');
+            let idMahasiswa = $(this).data('idMahasiswa');
+
+            $('#rev_idTugas').val(idTugas);
+            $('#rev_idMahasiswa').val(idMahasiswa);
+
+            $('#tenggatRevisi').val('');
+            $('#catatanRevisi').val('');
         });
     </script>
 @endpush

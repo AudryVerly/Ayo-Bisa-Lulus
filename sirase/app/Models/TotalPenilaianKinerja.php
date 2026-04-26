@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TotalPenilaianKinerja extends Model
 {
-    protected $table = 'total_penilian_kinerja';
+    protected $table = 'total_penilaian_kinerja';
 
     protected $fillable = [
         'idPendaftaran',

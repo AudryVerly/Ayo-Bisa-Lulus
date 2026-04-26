@@ -29,6 +29,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Phiki\Phast\Root;
 use App\Mail\MyTestEmail;
+use App\Models\PenilaianKinerja;
 use App\Models\PenilaianSetiapBobot;
 
 // Route::get('/', function () {
@@ -49,6 +50,9 @@ Route::get('/testroute', function(){
 });
 Route::get('/interview/confirm/{idpewawancara}/{aksi}',[WawancaraController::class, 'confirmJadwal'])->name('interview.confirm');
 
+Route::middleware(['auth','role:AdminUnit,StaffUnit'])->group(function(){
+    Route::get('/penilaiankinerja/listmahasiswa',[PenilaianKinerjaController::class, 'listpenilaiankinerja'])->name('penilaiankinerja.listmahasiswa');
+});
 
 // Route::get('/dashboard', function () {return view('dashboard');})->name('superadmin.dashboard')->middleware('role:SuperAdmin');
 

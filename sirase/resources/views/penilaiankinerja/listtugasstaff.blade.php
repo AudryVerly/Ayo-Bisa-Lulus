@@ -118,7 +118,7 @@
                                                             Revisi
                                                         </button>
                                                     @elseif($d->progressTugas == 'revisi')
-                                                        <span class="badge bg-warning">Revisi/span>
+                                                        <span class="badge bg-warning">Revisi</span>
                                                     @elseif ($d->progressTugas == 'done')
                                                         <span class="badge bg-success">Sudah diNilai</span>
                                                     @else
@@ -360,5 +360,23 @@
             $('#tenggatRevisi').val('');
             $('#catatanRevisi').val('');
         });
+
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: "{{ session('success') }}",
+                timer: 2500,
+                showConfirmButton: false
+            });
+        @elseif (session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: "{{ session('error') }}",
+                timer: 2500,
+                showConfirmButton: false
+            });
+        @endif
     </script>
 @endpush

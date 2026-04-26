@@ -8,9 +8,10 @@ use Illuminate\Support\Facades\Gate;
 class AppServiceProvider extends ServiceProvider
 {
     // ini merupakan bawaan daei laravel yang digunakan untuk mengatur policy atau aturan
-    protected $policies= [
+    protected $policies = [
 
     ];
+
     /**
      * Register any application services.
      */
@@ -25,10 +26,13 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerPolicies();
-        //ini merupakan bagian authorize yang digunakan, yang dimana can tau mana muncul di role apa
-        Gate::define('role:SuperAdmin', fn($user) => $user->role ==='SuperAdmin');
-        Gate::define('role:AdminUnit', fn($user) => $user->role ==='AdminUnit');
-        Gate::define('role:StaffUnit', fn($user) => $user->role ==='StaffUnit');
-        Gate::define('role:Mahasiswa', fn($user) => $user->role === 'Mahasiswa');
+        // ini merupakan bagian authorize yang digunakan, yang dimana can tau mana muncul di role apa
+        Gate::define('role:SuperAdmin', fn ($user) => $user->role === 'SuperAdmin');
+        Gate::define('role:AdminUnit', fn ($user) => $user->role === 'AdminUnit');
+        Gate::define('role:StaffUnit', fn ($user) => $user->role === 'StaffUnit');
+        Gate::define('role:Mahasiswa', fn ($user) => $user->role === 'Mahasiswa');
+
+        Gate::define('role:AdminOrStaff', fn ($user) => in_array($user->role, ['AdminUnit', 'StaffUnit'])
+        );
     }
 }

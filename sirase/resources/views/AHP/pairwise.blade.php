@@ -40,47 +40,6 @@
                 </div>
             </form>
         </div>
-        <div class="card-custom mt-4">
-            <h4 style="color: black; font-size: 1.1rem; margin-bottom: 15px;">
-                Nilai slider 1-9 menunjukkan tingkat kepentingan relatif antara dua kriteria:
-            </h4>
-            <div class="table-responsive">
-                <table class="table table-sm table-bordered table-ahp">
-                    <thead class="bg-white text-center text-dark">
-                        <tr>
-                            <th style="width: 20%; background-color: white; padding: 12px;">Nilai</th>
-                            <th>Definisi Kepentingan</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="text-center"><span class="badge-ahp">1</span></td>
-                            <td class="text-center">Kedua elemen sama pentingnya</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center"><span class="badge-ahp">3</span></td>
-                            <td class="text-center">Salah satu elemen sedikit lebih penting</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center"><span class="badge-ahp">5</span></td>
-                            <td class="text-center">Salah satu elemen jelas lebih penting</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center"><span class="badge-ahp">7</span></td>
-                            <td class="text-center">Salah satu elemen sangat jelas lebih penting</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center"><span class="badge-ahp">9</span></td>
-                            <td class="text-center">Salah satu elemen paling penting</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center"><span class="badge-ahp">2,4,6,8</span></td>
-                            <td class="text-center">Apabila ragu-ragu antara dua nilai yang berdekatan</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
     </div>
 @endsection
 @push('scripts')

@@ -5,6 +5,8 @@
             aria-hidden="true" id="iconSidenav"></i>
         <a class="navbar-brand px-4 py-3 m-0" href=" https://demos.creative-tim.com/material-dashboard/pages/dashboard "
             target="_blank">
+            <img src="{{ asset('template/img/logoubaya.png') }}"
+                style="width:90px; height:90px; object-fit:contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
             {{-- <img src="../assets/img/logo-ct-dark.png" class="navbar-brand-img" width="26" height="26" alt="main_logo"> --}}
             <span class="ms-1 text-sm text-dark">Sirase</span>
         </a>
@@ -274,7 +276,7 @@
                 </li>
             @endcan
             <hr class="horizontal dark mt-4 mb-2">
-            <li class="nav-item mt-3">
+            {{-- <li class="nav-item mt-3">
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button type="submit" class="nav-link border-0 bg-transparent text-dark"
@@ -283,7 +285,26 @@
                         <span class="nav-link-text ms-1">Logout</span>
                     </button>
                 </form>
-            </li>
+            </li> --}}
         </ul>
+        <div class="mt-auto px-3 pb-3">
+            <div class="mb-2">
+                <div class="text-sm fw-bold text-dark">
+                    {{ Auth::user()->name }}
+                </div>
+                <div class="text-xs text-secondary">
+                    {{ Auth::user()->email }}
+                </div>
+            </div>
+
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit"
+                    class="btn btn-sm btn-outline-dark w-100 d-flex align-items-center justify-content-center gap-2">
+                    <i class="material-symbols-rounded" style="font-size:18px;">logout</i>
+                    Logout
+                </button>
+            </form>
+        </div>
     </div>
 </aside>

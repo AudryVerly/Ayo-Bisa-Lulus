@@ -45,7 +45,7 @@
                                                 <td class="text-sm" style="text-align: center;">
                                                     {{ \Carbon\Carbon::parse($riwayat->mulai)->translatedFormat('d M Y') }}
                                                     -
-                                                    {{ \Carbon\Carbon::parse($riwayat->mulai)->translatedFormat('d M Y') }}
+                                                    {{ \Carbon\Carbon::parse($riwayat->akhir)->translatedFormat('d M Y') }}
                                                 </td>
                                                 <td class="text-sm" style="text-align: center;">
                                                     {{ \Carbon\Carbon::parse($riwayat->tanggal_daftar)->translatedFormat('d M Y') }}

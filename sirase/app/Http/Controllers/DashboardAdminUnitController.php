@@ -125,13 +125,25 @@ class DashboardAdminUnitController extends Controller
 
                 DB::raw('MAX(tr.urutan) as maxUrutan'),
 
-                DB::raw('MAX(CASE 
-                            WHEN pt.status = "Proses" THEN tr.name
-                             END) as tahapProses'),
+                DB::raw('(
+                    SELECT tr3.name
+                    FROM progress_tahapan_kandidat pt3
+                    JOIN tahap_rekrutmen tr3 ON tr3.id = pt3.idTahapRekrutmen
+                    WHERE pt3.idPendaftaran = p.id
+                    AND pt3.status = "Proses"
+                    ORDER BY tr3.urutan ASC
+                    LIMIT 1
+                ) as tahapProses'),
 
-                DB::raw('MAX(CASE 
-                            WHEN pt.status = "Lulus" THEN tr.name
-                            END) as tahapSelesai'),
+                                DB::raw('(
+                    SELECT tr2.name
+                    FROM progress_tahapan_kandidat pt2
+                    JOIN tahap_rekrutmen tr2 ON tr2.id = pt2.idTahapRekrutmen
+                    WHERE pt2.idPendaftaran = p.id
+                    AND pt2.status = "Lulus"
+                    ORDER BY tr2.urutan DESC
+                    LIMIT 1
+                ) as tahapSelesai'),
 
                 DB::raw('COUNT(pt.id) as totalTahap'),
 

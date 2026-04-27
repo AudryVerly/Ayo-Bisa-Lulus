@@ -122,6 +122,12 @@ class KriteriaController extends Controller
             ->where('is_active', 1)
             ->pluck('idKriteria')
             ->toArray();
+        $lockedKriteria = DB::table('penilaian_setiap_bobot as psb')
+            ->join('bobot_kriteria as bk', 'psb.idBobotKriteria', '=', 'bk.id')
+            ->where('bk.idUnit', $idUnit)
+            ->pluck('bk.idKriteria')
+            ->unique()
+            ->toArray();
         $kriteriaUnit = DB::table('bobot_kriteria as bk')
             ->join('kriteria as k', 'bk.idKriteria', '=', 'k.id')
             ->where('bk.idUnit', $idUnit)
@@ -132,7 +138,7 @@ class KriteriaController extends Controller
             )
             ->get();
 
-        return view('kriteria.kriteriaunit', compact('kriteria', 'selected', 'kriteriaUnit', 'isLocked', 'kriteriaExists'));
+        return view('kriteria.kriteriaunit', compact('kriteria', 'selected', 'kriteriaUnit', 'isLocked', 'kriteriaExists','lockedKriteria'));
     }
 
     public function storeKriteriaUnit(Request $request)
@@ -171,16 +177,20 @@ class KriteriaController extends Controller
 
         $kriteriaDipilih = $request->kriteria;
 
-        if (! $kriteriaDipilih || count($kriteriaDipilih) < 3) {
+        if (! $kriteriaDipilih || count($kriteriaDipilih) < 2) {
             return redirect()->back()
-                ->with('error', 'Minimal pilih 3 kriteria');
+                ->with('error', 'Minimal pilih 2 kriteria');
         }
 
-        if (count($kriteriaDipilih) > 5) {
-            return back()->with('error', 'Maksimal 5 kriteria');
-        }
+        $lockedKriteria = DB::table('penilaian_setiap_bobot')
+            ->pluck('idBobotKriteria')
+            ->toArray();
 
-        DB::transaction(function () use ($idUnit, $kriteriaDipilih) {
+        // if (count($kriteriaDipilih) > 5) {
+        //     return back()->with('error', 'Maksimal 5 kriteria');
+        // }
+
+        DB::transaction(function () use ($idUnit, $kriteriaDipilih, $lockedKriteria) {
 
             $sudahada = DB::table('bobot_kriteria')
                 ->where('idUnit', $idUnit)
@@ -188,6 +198,10 @@ class KriteriaController extends Controller
                 ->toArray();
 
             foreach ($kriteriaDipilih as $idKriteria) {
+                if (in_array($idKriteria, $lockedKriteria)) {
+                    continue;
+                }
+
                 $cek = DB::table('bobot_kriteria')
                     ->where('idUnit', $idUnit)
                     ->where('idKriteria', $idKriteria)

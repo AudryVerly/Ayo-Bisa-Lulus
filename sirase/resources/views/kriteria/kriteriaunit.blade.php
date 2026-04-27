@@ -7,11 +7,11 @@
             <div class="card-header bg-white d-flex justify-content-between align-items-center">
                 <div>
                     <h4 class="fw-bold mb-0">Konfigurasi Kriteria Penilaian</h4>
-                    <small class="text-muted">Pilih maksimal 5 kriteria</small>
+                    <small class="text-muted">Pilih manimal 2 kriteria</small>
                 </div>
 
                 <span class="badge bg-info fs-6" id="counterKriteria">
-                    {{ count($selected) }} / 5 dipilih
+                    {{ count($selected) }} 5 dipilih
                 </span>
             </div>
 
@@ -39,12 +39,22 @@
                     @csrf
                     <div class="row" id="kriteriaContainer">
                         @foreach ($kriteria as $k)
+                            @php
+                                $checked = in_array($k->id, $selected);
+
+                                //yang sudah pernah dipakai di bobot -> tidak boleh di uncentang
+                                $locked = in_array($k->id, $lockedKriteria);
+                            @endphp
                             <div class="col-md-4 mb-3">
-                                <div class="cardUnit-checkbox {{ in_array($k->id, $selected) ? 'checked' : '' }}">
+                                <div
+                                    class="cardUnit-checkbox {{ $checked ? 'checked' : '' }} {{ $locked ? 'border-success' : '' }}">
                                     <input type="checkbox" name="kriteria[]" value={{ $k->id }}
-                                        {{ in_array($k->id, $selected) ? 'checked' : '' }}
-                                        {{ $isLocked ? 'disabled' : '' }}>
-                                    <label class="m-0">{{ $k->namaKriteria }}</label>
+                                        {{ $checked ? 'checked' : '' }} data-locked="{{ $locked ? '1' : '0' }}">
+                                    <label class="m-0">{{ $k->namaKriteria }}
+                                        @if ($locked)
+                                            <span class="badge bg-success ms-1">Sudah Digunakan</span>
+                                        @endif
+                                    </label>
                                 </div>
                             </div>
                         @endforeach
@@ -169,26 +179,17 @@
 
                 let total = $('input[name="kriteria[]"]:checked').length
 
-                $('#counterKriteria').text(total + '/ 5 dipilih')
+                $('#counterKriteria').text(total + ' dipilih')
 
-                if (total > 5) {
-                    alert('Maksimal 5 kriteria')
-
-                    $('input[name="kriteria[]"]:checked').last().prop('checked', false)
-                    $('.cardUnit-checkbox.checked').last().removeClass('checked')
-
-                    total--
+                if (total < 2) {
+                    $('#btnSimpan').prop('disabled', true);
+                } else {
+                    $('#btnSimpan').prop('disabled', false);
                 }
 
                 if (isLocked) {
                     $('#btnSimpan').prop('disabled', true)
                     return
-                }
-
-                if (total < 3) {
-                    $('#btnSimpan').prop('disabled', true)
-                } else {
-                    $('#btnSimpan').prop('disabled', false)
                 }
             }
 
@@ -199,18 +200,37 @@
             //ini dipakai kalau user tekan cardnya bukan checkboxnya
             $(document).on('click', '.cardUnit-checkbox', function(e) {
 
+                if (isLocked) return;
+
                 if (e.target.tagName === 'INPUT') return
 
-                let cb = $(this).find('input')
+                let cb = $(this).find('input');
+                let locked = cb.data('locked');
+
+                if (locked == 1 && cb.is(':checked')) {
+                    return;
+                }
 
                 cb.prop('checked', !cb.prop('checked'))
-
                 $(this).toggleClass('checked')
 
                 updateLimit()
             })
 
             $(document).on('change', 'input[name="kriteria[]"]', function() {
+                if (isLocked) {
+                    $(this).prop('checked', !$(this).prop('checked'));
+                    return;
+                }
+
+                let locked = $(this).data('locked');
+
+                // kalau locked dan mau uncheck -> balikin
+                if (locked == 1 && !$(this).is(':checked')) {
+                    $(this).prop('checked', true);
+                    return;
+                }
+
                 $(this).closest('.cardUnit-checkbox').toggleClass('checked')
 
                 updateLimit()

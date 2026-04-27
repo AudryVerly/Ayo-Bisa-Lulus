@@ -86,7 +86,7 @@
         {{-- ini untuk status kandidat --}}
         <div class="card shadow-sm border-0 mb-4">
             <div class="card-body">
-                <h5 class="fw-semibold mb-3">Kandidat Perlu ditindak</h5>
+                <h5 class="fw-semibold mb-3">Kandidat Perlu diProses </h5>
                 <table id="kandidattindakantable" class="table align-items-center mb-0">
                     <thead class="bg-light">
                         <tr>
@@ -129,7 +129,7 @@
         {{-- Tahapan kandidat --}}
         <div class="card shadow-sm border-0 mb-4">
             <div class="card-body">
-                <h5 class="fw-semibold mb-3">Tahapan kanadidat</h5>
+                <h5 class="fw-semibold mb-3">Tahapan kandidat</h5>
                 <table id="tableTahapan" class="table align-items-center mb-0">
                     <thead class="bg-light">
                         <tr>

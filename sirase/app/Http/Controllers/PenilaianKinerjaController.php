@@ -135,11 +135,15 @@ class PenilaianKinerjaController extends Controller
 
     public function listTugasStaff($idUnit)
     {
+        $idStaffUnits = DB::table('staffunit')
+            ->where('idUser', auth()->id())
+            ->pluck('id'); // ini idStaffUnit
         $data = DB::table('tugas as t')
             ->join('tugas_mahasiswa as tm', 'tm.idTugas', '=', 't.id')
             ->join('mahasiswa as m', 'm.id', '=', 'tm.idMahasiswa')
             ->join('users as u', 'u.id', '=', 'm.idUser')
             ->where('t.idUnit', $idUnit)
+            ->whereIn('t.idStaffUnit', $idStaffUnits)
             ->select(
                 't.id',
                 'm.id as idMahasiswa',
@@ -449,7 +453,7 @@ class PenilaianKinerjaController extends Controller
             ->where('id', $request->idTugas)
             ->first();
 
-        //dd($tugas->idLowongan, $tugas->idUnit);
+        // dd($tugas->idLowongan, $tugas->idUnit);
 
         if (! $tugas) {
             return back()->with('error', 'Tugas tidak ditemukan');
@@ -497,7 +501,7 @@ class PenilaianKinerjaController extends Controller
             ->where('idMahasiswa', $request->idMahasiswa)
             ->where('idLowongan', $tugas->idLowongan)
             ->first();
-        //dd($pendaftaran);
+        // dd($pendaftaran);
 
         if (! $pendaftaran) {
             return back()->with('error', 'Pendaftaran tidak ditemukan');
@@ -509,7 +513,7 @@ class PenilaianKinerjaController extends Controller
             ->where('pk.idMahasiswa', $request->idMahasiswa)
             ->where('t.idLowongan', $tugas->idLowongan)
             ->avg('pk.nilaiAkhir') ?? 0;
-        //dd($total);
+        // dd($total);
 
         // 8. kategori
         $kategori = DB::table('kualitas_kinerja')
@@ -573,29 +577,30 @@ class PenilaianKinerjaController extends Controller
 
     }
 
-    public function listpenilaiankinerja(){
+    public function listpenilaiankinerja()
+    {
         $data = DB::table('total_penilaian_kinerja as tp')
-                ->join('pendaftaran as p','p.id','=','tp.idPendaftaran')
-                ->join('mahasiswa as m','m.id','=','p.idMahasiswa')
-                ->join('users as u','u.id','=','m.idUser')
-                ->join('lowongan as l','l.id','=','p.idLowongan')
-                ->join('unit as un','un.id','=','l.idUnit')
-                ->select(
-                    'm.id as idMahasiswa',
-                    'u.name as namaMahasiswa',
-                    'l.id as idLowongan',
-                    'l.judulLowongan',
-                    'tp.totalNilai',
-                    'tp.kategori',
-                    'un.name'
-                )
-                ->get();
-        foreach($data as $d){
+            ->join('pendaftaran as p', 'p.id', '=', 'tp.idPendaftaran')
+            ->join('mahasiswa as m', 'm.id', '=', 'p.idMahasiswa')
+            ->join('users as u', 'u.id', '=', 'm.idUser')
+            ->join('lowongan as l', 'l.id', '=', 'p.idLowongan')
+            ->join('unit as un', 'un.id', '=', 'l.idUnit')
+            ->select(
+                'm.id as idMahasiswa',
+                'u.name as namaMahasiswa',
+                'l.id as idLowongan',
+                'l.judulLowongan',
+                'tp.totalNilai',
+                'tp.kategori',
+                'un.name'
+            )
+            ->get();
+        foreach ($data as $d) {
             $d->detail = DB::table('tugas_mahasiswa as tm')
-                ->join('tugas as t','t.id','=','tm.idTugas')
-                ->leftJoin('penilaian_kinerja as pk', function ($join) use ($d){
-                        $join->on('pk.idTugas', '=', 't.id')
-                            ->where('pk.idMahasiswa', '=', $d->idMahasiswa);
+                ->join('tugas as t', 't.id', '=', 'tm.idTugas')
+                ->leftJoin('penilaian_kinerja as pk', function ($join) use ($d) {
+                    $join->on('pk.idTugas', '=', 't.id')
+                        ->where('pk.idMahasiswa', '=', $d->idMahasiswa);
                 })
                 ->where('tm.idMahasiswa', $d->idMahasiswa)
                 ->where('t.idLowongan', $d->idLowongan)
@@ -608,6 +613,7 @@ class PenilaianKinerjaController extends Controller
                 )
                 ->get();
         }
+
         return view('penilaiankinerja.halamantotalpenilaian', compact('data'));
     }
 }

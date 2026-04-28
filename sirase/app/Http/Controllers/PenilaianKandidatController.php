@@ -14,7 +14,10 @@ class PenilaianKandidatController extends Controller
      */
     public function index()
     {
-        $idStaff = Auth::user()->staffUnit()->first();
+        $idStaffIds = Auth::user()
+            ->staffUnit()
+            ->pluck('id')
+            ->toArray();
         $kandidat = DB::table('wawancara_penilai as wp')
             ->join('jadwal_wawancara as jw', 'wp.idJadwalWawancara', '=', 'jw.id')
             ->join('pendaftaran as p', 'jw.idPendaftaran', '=', 'p.id')
@@ -22,7 +25,7 @@ class PenilaianKandidatController extends Controller
             ->join('mahasiswa as m', 'p.idMahasiswa', '=', 'm.id')
             ->join('users as u', 'm.idUser', '=', 'u.id')
             ->whereIn('wp.status', ['terjadwal', 'sudah'])
-            ->where('wp.idStaffUnit', $idStaff->id)
+            ->whereIn('wp.idStaffUnit', $idStaffIds)
             ->select(
                 'wp.id',
                 'l.judulLowongan as namaLowongan',
@@ -178,7 +181,11 @@ class PenilaianKandidatController extends Controller
 
     public function detailKandidat(string $id)
     {
-        $idStaff = Auth::user()->staffUnit()->first();
+        $idStaffIds = Auth::user()
+            ->staffUnit()
+            ->pluck('id')
+            ->toArray();
+
         $dataKandidat = DB::table('wawancara_penilai as wp')
             ->join('jadwal_wawancara as jw', 'wp.idJadwalWawancara', '=', 'jw.id')
             ->join('pendaftaran as p', 'jw.idPendaftaran', '=', 'p.id')
@@ -189,7 +196,7 @@ class PenilaianKandidatController extends Controller
             ->join('users as up', 'up.id', '=', 'sf.idUser')
             ->join('penilaian_kandidat as pk', 'wp.id', '=', 'pk.idWawancaraPenilai')
             ->where('wp.id', $id)
-            ->where('wp.idStaffUnit', $idStaff->id)
+            ->whereIn('wp.idStaffUnit', $idStaffIds)
             ->select(
                 'wp.id',
                 'u.name as namaKandidat',

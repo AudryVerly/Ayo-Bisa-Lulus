@@ -29866,4 +29866,48 @@ body.modal-open .sidenav {
   padding: 12px;
 }
 
+.rating-group label {
+  background: #fff;
+  border: 1px solid #dee2e6;
+  color: #333;
+  transition: all 0.2s ease;
+}
+
+/* ====== WARNA MUNCUL HANYA SAAT DIPILIH ====== */
+.rating-group input[value="1"]:checked + label {
+  background: #dc3545;
+  border-color: #dc3545;
+  color: white;
+}
+
+.rating-group input[value="2"]:checked + label {
+  background: #fd7e14;
+  border-color: #fd7e14;
+  color: white;
+}
+
+.rating-group input[value="3"]:checked + label {
+  background: #ffc107;
+  border-color: #ffc107;
+  color: black;
+}
+
+.rating-group input[value="4"]:checked + label {
+  background: #20c997;
+  border-color: #20c997;
+  color: white;
+}
+
+.rating-group input[value="5"]:checked + label {
+  background: #198754;
+  border-color: #198754;
+  color: white;
+}
+
+/* efek klik */
+.rating-group input:checked + label {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  font-weight: 600;
+}
 /*# sourceMappingURL=dashboard-free.css.map */

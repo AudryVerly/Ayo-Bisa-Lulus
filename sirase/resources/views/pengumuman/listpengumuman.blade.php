@@ -9,8 +9,12 @@
                     <div
                         class="bg-gradient-dark shadow-dark border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center px-4">
                         <h6 class="text-white text-capitalize m-0">List Kandidat - {{ $judulLowongan ?? '-' }}</h6>
+                        @php
+                            $allPublished = $pengumuman->every(fn($p) => $p->is_publish == 1);
+                        @endphp
+
                         <button type="button" class="btn bg-white text-dark border shadow-sm btn-publish"
-                            data-bs-toggle="modal" data-bs-target="#modaltambahpengumuman">
+                            data-bs-toggle="modal" data-bs-target="#modaltambahpengumuman" @disabled($allPublished)>
                             Publish Semua
                         </button>
                     </div>

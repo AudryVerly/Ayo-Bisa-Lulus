@@ -180,6 +180,11 @@
         
         $(document).ready(function() {
             let calendarEl = document.getElementById('calendar');
+
+            let today = new Date();
+            let offset = today.getTimezoneOffset() * 60000;
+            let localDate = new Date(Date.now() - offset).toISOString().split("T")[0];
+            $('#tanggal_wawancara').attr('min', localDate);
             let dataWawancara = [];
 
             let calendar = new FullCalendar.Calendar(calendarEl, {
@@ -210,7 +215,7 @@
 
                 eventClick: function(info) {
                     let e = info.event.extendedProps;
-
+                    
                     $('#detailNama').text(info.event.title);
                     $('#detailLowongan').text(e.namaLowongan);
                     $('#detailJam').text(e.waktuMulai + ' - ' + e.waktuSelesai);

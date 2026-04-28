@@ -87,7 +87,7 @@ class PengumumanController extends Controller
                     ->where('id', '!=', $pendaftaran->id)
                     ->pluck('id');
 
-                PengumumanKandidat::updateOrCreate(
+                PengumumanKandidat::updateOrInsert(
                     [
                         'idPendaftaran' => $request->idPendaftaran,
                     ],
@@ -135,7 +135,7 @@ class PengumumanController extends Controller
             'idPendaftaran' => 'required',
         ]);
 
-        PengumumanKandidat::updateOrCreate([
+        PengumumanKandidat::updateOrInsert([
             'idPendaftaran' => $request->idPendaftaran,
         ],
             [

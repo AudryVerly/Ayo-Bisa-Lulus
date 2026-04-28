@@ -74,7 +74,7 @@
             <div class="card-body text-center">
                 <h5 class="text-dark fw-bold"> Nilai Akhir Kandidat</h5>
                 <h2 class="text-info fw-bold">
-                    {{ $summary->nilaiAkhir }}
+                    {{ number_format($summary->nilaiAkhir, 2) }}
                 </h2>
                 <p class="text-muted">
                     Berdasarkan {{ $summary->jumlahPenilai }} penilai

@@ -7,6 +7,7 @@ use App\Mail\InterviewerCancelMail;
 use App\Mail\InterviewInterviewerMail;
 use App\Mail\InterviewUpdateCandidateMail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -100,6 +101,22 @@ class WawancaraController extends Controller
             'keterangan' => 'Keterangan',
         ]);
 
+        $now = Carbon::now('Asia/Jakarta');
+        $jadwal = Carbon::parse($request->tanggal_wawancara.' '.$request->waktu_mulai);
+
+        if ($jadwal->lt($now)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Jadwal tidak boleh di sebelum hari ini',
+            ], 422);
+        }
+
+        if ($request->waktu_mulai >= $request->waktu_selesai) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Waktu selesai harus lebih besar dari waktu mulai',
+            ], 422);
+        }
         // dd($request->tim_penilai);
 
         $lowongan = DB::table('pendaftaran as p')
@@ -134,8 +151,12 @@ class WawancaraController extends Controller
             ], 422);
         }
 
+        $lowongan = DB::table('pendaftaran')
+            ->where('id', $request->idPendaftaran)
+            ->first();
+
         // validasi jumlah penilai
-        $jumlahPenilaiFix = $this->getJumlahPenilaiFix($request->idPendaftaran);
+        $jumlahPenilaiFix = $this->getJumlahPenilaiFix($lowongan->idLowongan);
         $timPenilai = $request->tim_penilai ?? [];
         $jumlahSekarang = is_array($timPenilai) ? count($timPenilai) : 1;
 
@@ -237,32 +258,25 @@ class WawancaraController extends Controller
         ]);
     }
 
-    private function getJumlahPenilaiFix($idPendaftaran)
+    private function getJumlahPenilaiFix($idLowongan)
     {
-        $lowongan = DB::table('pendaftaran')
-            ->where('id', $idPendaftaran)
-            ->first();
-
-        if (!$lowongan) {
-            return null;
-        }
-        $jadwal = DB::table('jadwal_wawancara as j')
+        // return null;
+        $jadwalIds = DB::table('jadwal_wawancara as j')
             ->join('pendaftaran as p', 'j.idPendaftaran', '=', 'p.id')
-            ->where('p.idLowongan', $lowongan->idLowongan)
-            ->where('j.status', '!=', 'batal')
+            ->where('p.idLowongan', $idLowongan)
             ->pluck('j.id');
 
-        if (!$jadwal->isEmpty()) {
+        // kalau belum pernah ada jadwal → belum ada patokan
+        if ($jadwalIds->isEmpty()) {
             return null;
         }
 
-        $count = DB::table('wawancara_penilai')
-            ->whereIn('idJadwalWawancara', $jadwal)
+        // ambil jumlah penilai dari jadwal pertama yang valid
+        return DB::table('wawancara_penilai')
+            ->whereIn('idJadwalWawancara', $jadwalIds)
             ->where('status', '!=', 'gagal')
             ->distinct('idStaffUnit')
             ->count('idStaffUnit');
-
-        return $count > 0 ? $count : null;
     }
 
     public function confirmJadwal($idpewawancara, $aksi, Request $request)

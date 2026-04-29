@@ -154,13 +154,6 @@ class LowonganController extends Controller
 
             $lowongan->update(['poster' => $posterPath]);
         }
-
-        // $today = Carbon::today('Asia/Jakarta')->toDateString();
-        // if($today >= $lowongan->awalPendaftaran && $today <= $lowongan->batasPendaftaran){
-        //     $lowongan->update(['status' => 1]);
-        // } else {
-        //     $lowongan->update(['status' => 0]);
-        // }
         return redirect()->route('formulir.manage', $lowongan->id);
     }
 

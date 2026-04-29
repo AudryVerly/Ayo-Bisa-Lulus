@@ -137,7 +137,6 @@ class KriteriaController extends Controller
                 'bk.is_active'
             )
             ->get();
-
         return view('kriteria.kriteriaunit', compact('kriteria', 'selected', 'kriteriaUnit', 'isLocked', 'kriteriaExists','lockedKriteria'));
     }
 
@@ -191,11 +190,6 @@ class KriteriaController extends Controller
         // }
 
         DB::transaction(function () use ($idUnit, $kriteriaDipilih, $lockedKriteria) {
-
-            $sudahada = DB::table('bobot_kriteria')
-                ->where('idUnit', $idUnit)
-                ->pluck('idKriteria')
-                ->toArray();
 
             foreach ($kriteriaDipilih as $idKriteria) {
                 if (in_array($idKriteria, $lockedKriteria)) {

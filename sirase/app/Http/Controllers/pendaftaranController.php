@@ -177,9 +177,6 @@ class PendaftaranController extends Controller
         });
 
         return redirect()->route('mahasiswa.dashboard')->with('successMendaftar', 'Pendaftaran berhasil dikirim!');
-        // }catch(\Exception $e){
-        //     return back()->with('error', 'Gagal menyimpan: ' . $e->getMessage());
-        // }
     }
 
     // ini buat show riwayat lowongan masing-masing mahasiswa

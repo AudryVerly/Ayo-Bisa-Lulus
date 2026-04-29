@@ -117,7 +117,7 @@ class KandidatPendaftaranController extends Controller
                             'm.fakultas as fakultas',
                             'l.judulLowongan as judulLowongan',
                             'l.id as idLowongan'
-                        )
+                            )
                         ->where('p.id', $idPendaftaran)
                         ->first();
         $batasPendaftaran = DB::table('lowongan')

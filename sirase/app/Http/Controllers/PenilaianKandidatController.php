@@ -267,6 +267,7 @@ class PenilaianKandidatController extends Controller
             ->leftJoin('penilaian_kandidat as pk', 'pk.idWawancaraPenilai', '=', 'wp.id')
             ->leftJoin('pengumuman as pg', 'pg.idPendaftaran', '=', 'p.id')
             ->where('p.idLowongan', $idLowongan)
+            ->where('p.statusPendaftaran', '!=', 'ditolak')
             ->select(
                 'p.id as idPendaftaran',
                 'p.idMahasiswa',

@@ -29874,40 +29874,177 @@ body.modal-open .sidenav {
 }
 
 /* ====== WARNA MUNCUL HANYA SAAT DIPILIH ====== */
-.rating-group input[value="1"]:checked + label {
+.rating-group input[value="1"]:checked+label {
   background: #dc3545;
   border-color: #dc3545;
   color: white;
 }
 
-.rating-group input[value="2"]:checked + label {
+.rating-group input[value="2"]:checked+label {
   background: #fd7e14;
   border-color: #fd7e14;
   color: white;
 }
 
-.rating-group input[value="3"]:checked + label {
+.rating-group input[value="3"]:checked+label {
   background: #ffc107;
   border-color: #ffc107;
   color: black;
 }
 
-.rating-group input[value="4"]:checked + label {
+.rating-group input[value="4"]:checked+label {
   background: #20c997;
   border-color: #20c997;
   color: white;
 }
 
-.rating-group input[value="5"]:checked + label {
+.rating-group input[value="5"]:checked+label {
   background: #198754;
   border-color: #198754;
   color: white;
 }
 
 /* efek klik */
-.rating-group input:checked + label {
+.rating-group input:checked+label {
   transform: scale(1.05);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   font-weight: 600;
 }
+
+/* =========================
+   LOGIN PAGE BASE STYLE
+========================= */
+
+body.login-page {
+  font-family: 'Inter', sans-serif;
+
+  /* background image dari public/template/img */
+  background: url('../img/ubaya.jpg') no-repeat center center;
+
+  background-size: cover;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* subtle pattern */
+body.login-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  /* dark + red soft overlay */
+  background: linear-gradient(135deg,
+      rgba(17, 24, 39, 0.75),
+      rgba(127, 29, 29, 0.4));
+
+  z-index: 0;
+}
+
+/* wrapper */
+.login-wrapper {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 440px;
+}
+
+/* card */
+.login-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  padding: 35px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+  color: #111827;
+}
+
+/* logo badge */
+.ubaya-badge {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: #111827;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 18px;
+  margin: 0 auto 15px;
+}
+
+/* form label */
+.login-card .form-label {
+  font-weight: 500;
+  color: #374151;
+}
+
+/* input */
+.login-card .form-control {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  color: #111827;
+  border-radius: 10px;
+}
+
+.login-card .form-control::placeholder {
+  color: #9ca3af;
+}
+
+.login-card .form-control:focus {
+  box-shadow: none;
+  border-color: #f87171;
+  /* soft red */
+  background: #ffffff;
+}
+
+/* button */
+.btn-ubaya {
+  background: #111827;
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  font-weight: 600;
+  color: white;
+  transition: 0.2s ease;
+}
+
+.btn-ubaya:hover {
+  background: #ef4444;
+  /* soft red hover */
+  color: white;
+}
+
+/* alert tweak */
+.alert {
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.logo-circle-ubaya {
+    width: 110px;
+    height: 110px;
+    background: #ffffff;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    border: 1px solid rgba(0,0,0,0.05);
+
+    margin: 0 auto;
+}
+
+.logo-circle-ubaya img {
+    width: 75px;
+    height: 75px;
+    object-fit: contain;
+}
+
 /*# sourceMappingURL=dashboard-free.css.map */

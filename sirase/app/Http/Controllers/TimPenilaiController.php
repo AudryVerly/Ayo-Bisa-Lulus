@@ -117,7 +117,6 @@ class TimPenilaiController extends Controller
         ]);
 
         $penilai = timPenilai::findOrFail($id);
-
         //cek apakah staff ini sudah dipakai di penilai lain
         $exist = timPenilai::where('idLowongan', $penilai->idLowongan)
                 ->where('idStaffUnit',$request->idStaffUnit)

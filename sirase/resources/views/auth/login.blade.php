@@ -26,89 +26,80 @@
     <link id="pagestyle" href="{{ asset('template/css/material-dashboard.css') }}" rel="stylesheet" />
 </head>
 
-<body class="bg-gray-200">
-    <main class="main-content  mt-0">
-        <div class="page-header align-items-start min-vh-100"
-            style="background-image: url('https://images.unsplash.com/photo-1497294815431-9365093b7331?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1950&q=80');">
-            <span class="mask bg-gradient-dark opacity-6"></span>
-            <div class="container my-auto">
-                <div class="row">
-                    <div class="col-lg-4 col-md-8 col-12 mx-auto">
-                        <div class="card z-index-0 fadeIn3 fadeInBottom">
-                            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                                <div class="bg-gradient-dark shadow-dark border-radius-lg py-4 pe-1">
-                                    <h4 class="text-white font-weight-bolder text-center mt-2 mb-0">Sign in</h4>
-                                </div>
-                            </div>
-                            <div class="card-body">
+<body class="login-page">
 
-                                <script>
-                                    if (localStorage.getItem('logged_out')) {
-                                        window.location.href = "{{ route('login') }}";
-                                    }
-                                </script>
+    <div class="login-wrapper">
 
-                                @if (session('success'))
-                                    <div class="alert alert-success text-center">
-                                        {{ session('success') }}
-                                    </div>
-                                @endif
+        <div class="login-card text-center">
 
-                                @if (session('error'))
-                                    <div class="alert alert-danger text-center">
-                                        {{ session('error') }}
-                                    </div>
-                                @endif
-                                <form role="form" class="text-start" action="{{ route('login.process') }}"
-                                    method="POST">
-                                    @csrf
-                                    <div class="input-group input-group-outline my-3">
-                                        <label class="form-label">Email</label>
-                                        <input type="email" class="form-control" name="email" id="email">
-                                    </div>
-                                    <div class="input-group input-group-outline mb-3">
-                                        <label class="form-label">Password</label>
-                                        <input type="password" class="form-control" name="password" id="password">
-                                    </div>
-                                    {{-- ini buat rember me -> nanti ku pikir caranya --}}
-                                    {{-- <div class="form-check form-switch d-flex align-items-center mb-3">
-                                        <input class="form-check-input" type="checkbox" id="rememberMe" checked>
-                                        <label class="form-check-label mb-0 ms-3" for="rememberMe">Remember me</label>
-                                    </div> --}}
-                                    <div class="text-center">
-                                        <button type="submit" class="btn bg-gradient-dark w-100 my-4 mb-2">Sign
-                                            in</button>
-                                    </div>
-                                    {{-- ini tanya dosbing dulu perlu sign up/ regsiter gak --}}
-                                    {{-- <p class="mt-4 text-sm text-center">
-                                        Don't have an account?
-                                        <a href="../pages/sign-up.html"
-                                            class="text-primary text-gradient font-weight-bold">Sign up</a>
-                                    </p> --}}
-                                </form>
-                            </div>
-                        </div>
-                    </div>
+            {{-- LOGO --}}
+            <div class="mb-3 d-flex justify-content-center">
+                <div class="logo-circle-ubaya">
+                    <img src="{{ asset('template/img/logoubaya.png') }}" alt="UBAYA">
                 </div>
             </div>
+
+            {{-- TITLE --}}
+            <h4 class="fw-bold mb-1">SIRASE UBAYA</h4>
+            <p class="small opacity-75 mb-4">
+                Sistem Rekrutmen & Seleksi Universitas Surabaya
+            </p>
+
+            {{-- ALERT SUCCESS --}}
+            @if (session('success'))
+                <div class="alert alert-success py-2">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            {{-- ALERT ERROR --}}
+            @if (session('error'))
+                <div class="alert alert-danger py-2">
+                    {{ session('error') }}
+                </div>
+            @endif
+
+            {{-- FORM --}}
+            <form action="{{ route('login.process') }}" method="POST" class="text-start">
+
+                @csrf
+
+                {{-- EMAIL --}}
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" class="form-control"  style="padding:10px; border-radius:10px;" placeholder="nama@email.com"
+                        value="{{ old('email') }}" required>
+                </div>
+
+                {{-- PASSWORD --}}
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" name="password" class="form-control" style="padding:10px; border-radius:10px;" placeholder="••••••••" required>
+                </div>
+
+                {{-- BUTTON --}}
+                <button type="submit" class="btn btn-ubaya w-100 text-white mt-2">
+                    Sign In
+                </button>
+
+            </form>
+
+            {{-- FOOTER --}}
+            <p class="mt-4 small opacity-50">
+                © {{ date('Y') }} Universitas Surabaya
+            </p>
+
         </div>
-    </main>
-    <!--   Core JS Files   -->
-    <script src="{{ asset('template/js/core/popper.min.js') }}"></script>
-    <script src="{{ asset('template/js/core/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('template/js/plugins/perfect-scrollbar.min.js') }}"></script>
-    <script src="{{ asset('template/js/plugins/smooth-scrollbar.min.js') }}"></script>
+
+    </div>
     <script>
-        var win = navigator.platform.indexOf('Win') > -1;
-        if (win && document.querySelector('#sidenav-scrollbar')) {
-            var options = {
-                damping: '0.5'
-            }
-            Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+        // kalau kamu pakai logout flag
+        if (localStorage.getItem('logged_out') === 'true') {
+            localStorage.removeItem('logged_out');
+            window.location.href = "{{ route('login') }}";
         }
     </script>
-    <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
-    <script src="{{ asset('template/js/material-dashboard.min.js') }}"></script>
 </body>
-
 </html>
+<!--   Core JS Files   -->
+{{-- </body> --}}

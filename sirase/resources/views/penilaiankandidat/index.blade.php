@@ -13,7 +13,7 @@
         <div class="row">
             @foreach ($kandidat as $k)
                 @php
-                    $now = \Carbon\Carbon::now();
+                    $now = \Carbon\Carbon::now('Asia/Jakarta');
                     $jadwal = \Carbon\Carbon::parse($k->tanggalWawancara);
                 @endphp
                 <div class="col-md-4 mb-4">

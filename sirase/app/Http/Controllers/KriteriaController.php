@@ -137,7 +137,8 @@ class KriteriaController extends Controller
                 'bk.is_active'
             )
             ->get();
-        return view('kriteria.kriteriaunit', compact('kriteria', 'selected', 'kriteriaUnit', 'isLocked', 'kriteriaExists','lockedKriteria'));
+
+        return view('kriteria.kriteriaunit', compact('kriteria', 'selected', 'kriteriaUnit', 'isLocked', 'kriteriaExists', 'lockedKriteria'));
     }
 
     public function storeKriteriaUnit(Request $request)
@@ -181,8 +182,10 @@ class KriteriaController extends Controller
                 ->with('error', 'Minimal pilih 2 kriteria');
         }
 
-        $lockedKriteria = DB::table('penilaian_setiap_bobot')
-            ->pluck('idBobotKriteria')
+        $lockedKriteria = DB::table('penilaian_setiap_bobot as p')
+            ->join('bobot_kriteria as b', 'p.idBobotKriteria', '=', 'b.id')
+            ->where('b.idUnit', $idUnit)
+            ->pluck('b.idKriteria')
             ->toArray();
 
         // if (count($kriteriaDipilih) > 5) {

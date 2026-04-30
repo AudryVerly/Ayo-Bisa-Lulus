@@ -313,14 +313,22 @@ class PenilaianKandidatController extends Controller
             $k->isLocked = in_array($k->idMahasiswa, $lockedMahasiswa);
         }
 
-        $semuaDinilai = DB::table('wawancara_penilai as wp')
-            ->leftJoin('penilaian_kandidat as pk', 'pk.idWawancaraPenilai', '=', 'wp.id')
-            ->join('jadwal_wawancara as jw', 'jw.id', '=', 'wp.idJadwalWawancara')
-            ->join('pendaftaran as p', 'p.id', '=', 'jw.idPendaftaran')
-            ->where('p.idLowongan', $idLowongan)
-            ->whereIn('wp.status', ['terjadwal', 'selesai'])
-            ->whereNull('pk.id') // ini kalau kasus belum ada yang menilai
-            ->doesntExist(); // true kalau semuanya dinilai
+        // $semuaDinilai = DB::table('wawancara_penilai as wp')
+        //     ->leftJoin('penilaian_kandidat as pk', 'pk.idWawancaraPenilai', '=', 'wp.id')
+        //     ->join('jadwal_wawancara as jw', 'jw.id', '=', 'wp.idJadwalWawancara')
+        //     ->join('pendaftaran as p', 'p.id', '=', 'jw.idPendaftaran')
+        //     ->where('p.idLowongan', $idLowongan)
+        //     ->whereIn('wp.status', ['terjadwal', 'selesai'])
+        //     ->whereNull('pk.id') // ini kalau kasus belum ada yang menilai
+        //     ->doesntExist(); // true kalau semuanya dinilai
+        $semuaDinilai = true;
+
+        foreach ($kandidat as $k) {
+            if ($k->totalPenilai == 0 || $k->jumlahPenilai < $k->totalPenilai) {
+                $semuaDinilai = false;
+                break;
+            }
+        }
 
         return view('penilaiankandidat.nilaikandidatadmin', compact('kandidat', 'lowongan', 'semuaDinilai', 'jumlahDiterima', 'kuota'));
     }

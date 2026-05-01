@@ -376,8 +376,9 @@ class PenilaianKinerjaController extends Controller
 
     public function submitTugas($idTugas, Request $request)
     {
+        // dd($request->all(), $request->file('tugas'));
         $request->validate([
-            'tugas' => 'required|file|mimes:jpg,jpeg,png,pdf,xlsx,xls,doc,docx,ppt,pptx|max:2048',
+            'tugas' => 'required|file|mimes:jpg,jpeg,png,pdf,xlsx,xls,doc,docx,ppt,pptx|max:20480',
         ], [
             'required' => 'Bagian :attribute wajib diisi.',
             'file' => 'Bagian :attribute harus bertipe file',
@@ -404,6 +405,7 @@ class PenilaianKinerjaController extends Controller
             $namaFile,
             'public'
         );
+        // dd($filePath);
 
         $deadline = $tugasMhs->tenggatRevisi ?? $tugas->tenggatPengumpulan;
 

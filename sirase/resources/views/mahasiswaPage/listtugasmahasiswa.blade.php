@@ -46,7 +46,7 @@
                                                 {{ \Carbon\Carbon::parse($t->tenggatPengumpulan)->translatedFormat('d F Y ') }}
                                             </td>
                                             <td class="text-sm" style="text-align: center;">
-                                                {{ \Carbon\Carbon::parse($t->tenggatRevisi)->translatedFormat('d F Y ') }}
+                                                {{ $t->tenggatRevisi ? \Carbon\Carbon::parse($t->tanggalPengumpulan)->translatedFormat('d F Y') : '-' }}
                                             </td>
                                             <td class="text-sm" style="text-align: center;">
                                                 {{ $t->tanggalPengumpulan ? \Carbon\Carbon::parse($t->tanggalPengumpulan)->translatedFormat('d F Y') : '-' }}
@@ -89,7 +89,7 @@
                                                         <button type="button"
                                                             class="btn bg-success text-white border shadow-sm btn-submit"
                                                             data-bs-toggle="modal" data-bs-target="#modaladdtugas"
-                                                            data-id={{ $t->idTugas }}>
+                                                            data-id="{{ $t->idTugas }}">
                                                             Submit
                                                         </button>
                                                     @endif

@@ -51,6 +51,7 @@ class DashboardAdminUnitController extends Controller
             ->leftJoin('users as us', 'us.id', '=', 'su.idUser')
             ->where('l.idUnit', $idUnit)
             ->whereIn('jw.status', ['terjadwal', 'selesai'])
+            ->whereNotIn('p.statusPendaftaran',['ditolak'])
             ->select(
                 'jw.id',
                 'jw.tanggal_wawancara',
@@ -77,6 +78,7 @@ class DashboardAdminUnitController extends Controller
             ->leftJoin('wawancara_penilai as wp', 'wp.idJadwalWawancara', '=', 'jw.id')
             ->where('l.idUnit', $idUnit)
             ->whereDate('l.batasPendaftaran', '<', now())
+            ->whereNotIn('p.statusPendaftaran',['ditolak'])
             ->select(
                 'p.id as idPendaftaran',
                 'u.name as namaKandidat',
@@ -86,8 +88,8 @@ class DashboardAdminUnitController extends Controller
                 DB::raw('COUNT(DISTINCT wp.idStaffUnit) as jumlahPenilai'),
 
                 DB::raw('COUNT(DISTINCT CASE 
-            WHEN wp.status = "sudah" THEN wp.idStaffUnit 
-        END) as sudahMenilai'),
+                    WHEN wp.status = "sudah" THEN wp.idStaffUnit 
+                END) as sudahMenilai'),
 
                 DB::raw('CASE WHEN COUNT(jw.id) = 0 THEN 1 ELSE 0 END as belumadajadwal'),
                 DB::raw('CASE WHEN pk.nilaiFinal IS NULL THEN 1 ELSE 0 END as belumdinilai')

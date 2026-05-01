@@ -242,7 +242,14 @@ class PenilaianKandidatController extends Controller
         $lowongan = DB::table('lowongan')
             ->where('id', $idLowongan)
             ->first();
+
         $kuota = $lowongan->kuota_diterima;
+
+        // $isPublish = DB::table('pengumuman as pg')
+        //     ->join('pendaftaran as p', 'p.id', '=', 'pg.idPendaftaran')
+        //     ->where('p.idLowongan', $idLowongan)
+        //     ->where('pg.is_publish', 1)
+        //     ->exists();
 
         $jumlahDiterima = DB::table('pengumuman as pg')
             ->join('pendaftaran as p', 'p.id', '=', 'pg.idPendaftaran')
@@ -267,7 +274,7 @@ class PenilaianKandidatController extends Controller
             ->leftJoin('penilaian_kandidat as pk', 'pk.idWawancaraPenilai', '=', 'wp.id')
             ->leftJoin('pengumuman as pg', 'pg.idPendaftaran', '=', 'p.id')
             ->where('p.idLowongan', $idLowongan)
-            ->where('p.statusPendaftaran', '!=', 'ditolak')
+            // ->where('p.statusPendaftaran', '!=', 'ditolak')
             ->select(
                 'p.id as idPendaftaran',
                 'p.idMahasiswa',
@@ -313,6 +320,11 @@ class PenilaianKandidatController extends Controller
             $k->isLocked = in_array($k->idMahasiswa, $lockedMahasiswa);
         }
 
+        $kandidat = $kandidat->filter(function ($k) {
+            return ! is_null($k->status)
+                || $k->jumlahPenilai > 0;
+        })->values();
+
         // $semuaDinilai = DB::table('wawancara_penilai as wp')
         //     ->leftJoin('penilaian_kandidat as pk', 'pk.idWawancaraPenilai', '=', 'wp.id')
         //     ->join('jadwal_wawancara as jw', 'jw.id', '=', 'wp.idJadwalWawancara')
@@ -322,7 +334,7 @@ class PenilaianKandidatController extends Controller
         //     ->whereNull('pk.id') // ini kalau kasus belum ada yang menilai
         //     ->doesntExist(); // true kalau semuanya dinilai
         $semuaDinilai = true;
-
+        
         foreach ($kandidat as $k) {
             if ($k->totalPenilai == 0 || $k->jumlahPenilai < $k->totalPenilai) {
                 $semuaDinilai = false;

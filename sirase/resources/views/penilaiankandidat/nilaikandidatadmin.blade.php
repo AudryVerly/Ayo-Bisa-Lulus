@@ -13,7 +13,7 @@
                 </div>
 
                 <div class="card-body px-2 pb-2">
-                    @if (!$semuaDinilai)
+                    {{-- @if (!$semuaDinilai)
                         <div class="alert alert-danger text-center mb-3 text-white">
                             Semua kandidat harus dinilai terlebih dahulu sebelum menentukan hasil.
                         </div>
@@ -33,6 +33,29 @@
                         <div class="alert alert-success text-center text-white">
                             Pengumuman sudah dipublish. Data tidak dapat diubah.
                         </div>
+                    @endif --}}
+                    @if ($kandidat->where('is_publish', 1)->count() > 0)
+                        <div class="alert alert-success text-center text-white">
+                            Pengumuman sudah dipublish. Data tidak dapat diubah.
+                        </div>
+                    @else
+                        {{-- semua alert hanya muncul kalau BELUM publish --}}
+
+                        @if (!$semuaDinilai)
+                            <div class="alert alert-danger text-center mb-3 text-white">
+                                Semua kandidat harus dinilai terlebih dahulu sebelum menentukan hasil.
+                            </div>
+                        @endif
+
+                        <div class="alert alert-info text-center text-white">
+                            Kuota diterima: {{ $jumlahDiterima }} / {{ $kuota }}
+                        </div>
+
+                        @if ($jumlahDiterima >= $kuota)
+                            <div class="alert alert-primary text-center text-white">
+                                Kuota sudah penuh. Ubah kandidat lain ke "Tolak" jika ingin mengganti.
+                            </div>
+                        @endif
                     @endif
 
                     <div class="table-responsive p-0">
@@ -107,7 +130,8 @@
                                                 @elseif ($semuaDinilai)
                                                     {{-- LOCKED --}}
                                                     @if (isset($k->isLocked) && $k->isLocked)
-                                                        <button class="btn bg-gradient-secondary btn-sm text-white" disabled>
+                                                        <button class="btn bg-gradient-secondary btn-sm text-white"
+                                                            disabled>
                                                             Tidak Bisa dipilih
                                                         </button>
                                                     @else

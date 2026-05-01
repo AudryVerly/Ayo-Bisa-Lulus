@@ -42,7 +42,7 @@
             {{-- TITLE --}}
             <h4 class="fw-bold mb-1">SIRASE UBAYA</h4>
             <p class="small opacity-75 mb-4">
-                Sistem Rekrutmen & Seleksi Universitas Surabaya
+               Sistem Informasi Rekrutmen dan Seleksi Student Employee Universitas Surabaya
             </p>
 
             {{-- ALERT SUCCESS --}}

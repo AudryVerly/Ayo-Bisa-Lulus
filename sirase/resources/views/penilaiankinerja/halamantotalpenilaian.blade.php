@@ -46,6 +46,12 @@
                                     Unit: {{ $d->name }}
                                 </small>
                             </div>
+                            <small class="text-muted d-block mt-1">
+                                Periode Kerja:
+                                {{ \Carbon\Carbon::parse($d->mulaiKerja)->translatedFormat('d M Y') }}
+                                -
+                                {{ \Carbon\Carbon::parse($d->akhirKerja)->translatedFormat('d M Y') }}
+                            </small>
                         </div>
 
                         <div class="card-footer bg-white border-0 pt-0 pb-3 px-3">
@@ -91,10 +97,12 @@
                                 <strong>Unit:</strong>
                                 {{ $d->name }}
                             </p>
-
-                            <span class="badge bg-success px-3 py-2">
-                                {{ $d->kategori }}
-                            </span>
+                            <p class="mb-2 text-dark">
+                                <strong>Periode Kerja: </strong>
+                                {{ \Carbon\Carbon::parse($d->mulaiKerja)->translatedFormat('d M Y') }}
+                                -
+                                {{ \Carbon\Carbon::parse($d->akhirKerja)->translatedFormat('d M Y') }}
+                            </p>
                         </div>
                         <hr>
                         @forelse ($d->detail as $t)

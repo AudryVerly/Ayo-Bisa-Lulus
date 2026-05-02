@@ -40,12 +40,44 @@
                                 <div class="d-flex align-items-center text-dark">
                                     <div class="icon-shape icon-xs bg-dark rounded-circle me-2 d-flex align-items-center justify-content-center"
                                         style="width: 30px; height: 30px;">
-                                       <i class="material-symbols-rounded" style="font-size: 0.8rem;">nest_clock_farsight_analog</i>
+                                        <i class="material-symbols-rounded"
+                                            style="font-size: 0.8rem;">nest_clock_farsight_analog</i>
                                     </div>
                                     <span class="small fw-600">{{ $jadwal->mulai }} - {{ $jadwal->selesai }} WIB</span>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+        @if ($tugasAktif->count() > 0)
+            <div class="mb-4">
+                <div class="card border-0 shadow-sm" style="border-radius: 12px;">
+                    <div class="card-header bg-info text-white fw-bold">
+                        Tugas Student Employee
+                    </div>
+
+                    <div class="card-body">
+                        @foreach ($tugasAktif as $t)
+                            <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+                                <div>
+                                    <div class="fw-bold text-dark">{{ $t->namaTugas }}</div>
+                                    <small class="text-dark">
+                                        Deadline:
+                                        {{ \Carbon\Carbon::parse($t->tenggatPengumpulan)->translatedFormat('d M Y') }}
+                                    </small>
+                                </div>
+
+                                <span
+                                    class="badge
+                            @if ($t->progressTugas == 'assigned') bg-secondary
+                            @elseif($t->progressTugas == 'inProgress') bg-warning
+                            @else bg-danger @endif">
+                                    {{ ucfirst($t->progressTugas) }}
+                                </span>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
             </div>

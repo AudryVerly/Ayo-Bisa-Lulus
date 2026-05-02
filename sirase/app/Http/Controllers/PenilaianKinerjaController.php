@@ -592,6 +592,8 @@ class PenilaianKinerjaController extends Controller
                 'u.name as namaMahasiswa',
                 'l.id as idLowongan',
                 'l.judulLowongan',
+                'l.mulaiKerja',
+                'l.akhirKerja',
                 'tp.totalNilai',
                 'tp.kategori',
                 'un.name'

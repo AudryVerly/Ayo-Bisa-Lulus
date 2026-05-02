@@ -51,7 +51,7 @@ class DashboardAdminUnitController extends Controller
             ->leftJoin('users as us', 'us.id', '=', 'su.idUser')
             ->where('l.idUnit', $idUnit)
             ->whereIn('jw.status', ['terjadwal', 'selesai'])
-            ->whereNotIn('p.statusPendaftaran',['ditolak'])
+            // ->whereNotIn('p.statusPendaftaran',['ditolak'])
             ->select(
                 'jw.id',
                 'jw.tanggal_wawancara',
@@ -163,24 +163,8 @@ class DashboardAdminUnitController extends Controller
             ->get();
 
         foreach ($progressKandidat as $k) {
-            $k->progressCount = $k->totalTahapSelesai.' / '.$k->totalTahapLowongan;
+            $k->progressCount = $k->totalTahap.' / '.$k->totalTahapLowongan;
 
-            // if ($k->totalTahap == 0) {
-            //     $k->statusProgress = 'Belum mulai';
-            //     $k->tahapSekarang = '-';
-            // } elseif ($k->totalTahap > 0 && $k->totalTahapSelesai == 0) {
-            //     $k->statusProgress = 'Gagal';
-            //     $k->tahapSekarang = '-';
-            // } elseif ($k->tahapProses) {
-            //     $k->statusProgress = 'Sedang proses';
-            //     $k->tahapSekarang = $k->tahapProses;
-            // } elseif ($k->tahapSelesai) {
-            //     $k->statusProgress = 'Selesai';
-            //     $k->tahapSekarang = $k->tahapSelesai;
-            // } else {
-            //     $k->statusProgress = 'Tidak diketahui';
-            //     $k->tahapSekarang = '-';
-            // }
             if ($k->totalTahap == 0) {
                 $k->statusProgress = 'Belum mulai';
                 $k->tahapSekarang = '-';
@@ -188,14 +172,14 @@ class DashboardAdminUnitController extends Controller
             } elseif ($k->tahapProses) {
                 $k->statusProgress = 'Sedang proses';
                 $k->tahapSekarang = $k->tahapProses;
+            } 
+            elseif ($k->totalTahap > 0 && $k->totalTahapSelesai == 0) {
+                $k->statusProgress = 'Gagal';
+                $k->tahapSekarang = $k->tahapSelesai ? $k->tahapSelesai : 'Tahap Awal';
 
-            } elseif ($k->tahapSelesai) {
+            }elseif ($k->tahapSelesai) {
                 $k->statusProgress = 'Selesai';
                 $k->tahapSekarang = $k->tahapSelesai;
-
-            } elseif ($k->totalTahap > 0 && $k->totalTahapSelesai == 0) {
-                $k->statusProgress = 'Gagal';
-                $k->tahapSekarang = '-';
 
             } else {
                 $k->statusProgress = 'Tidak diketahui';

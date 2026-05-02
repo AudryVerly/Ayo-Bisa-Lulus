@@ -320,10 +320,10 @@ class PenilaianKandidatController extends Controller
             $k->isLocked = in_array($k->idMahasiswa, $lockedMahasiswa);
         }
 
-        $kandidat = $kandidat->filter(function ($k) {
-            return ! is_null($k->status)
-                || $k->jumlahPenilai > 0;
-        })->values();
+        // $kandidat = $kandidat->filter(function ($k) {
+        //     return ! is_null($k->status)
+        //         || $k->jumlahPenilai > 0;
+        // })->values();
 
         // $semuaDinilai = DB::table('wawancara_penilai as wp')
         //     ->leftJoin('penilaian_kandidat as pk', 'pk.idWawancaraPenilai', '=', 'wp.id')
@@ -334,13 +334,17 @@ class PenilaianKandidatController extends Controller
         //     ->whereNull('pk.id') // ini kalau kasus belum ada yang menilai
         //     ->doesntExist(); // true kalau semuanya dinilai
         $semuaDinilai = true;
-        
+
         foreach ($kandidat as $k) {
             if ($k->totalPenilai == 0 || $k->jumlahPenilai < $k->totalPenilai) {
                 $semuaDinilai = false;
                 break;
             }
         }
+
+        $kandidat = $kandidat->filter(function ($k) {
+            return $k->jumlahPenilai > 0;
+        })->values();
 
         return view('penilaiankandidat.nilaikandidatadmin', compact('kandidat', 'lowongan', 'semuaDinilai', 'jumlahDiterima', 'kuota'));
     }

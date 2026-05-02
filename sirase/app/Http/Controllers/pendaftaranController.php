@@ -263,8 +263,14 @@ class PendaftaranController extends Controller
             }
         }
 
+        //ini buat kandidat yang ketolak dari awal, karena memang udah keterima dilowongan lain
+        //atau yang belum sama sekali masuk lowongan
         if (! $tahapanBerprogress) {
-            $tahapIni = null;
+            if ($pendaftaran->statusPendaftaran == 'ditolak') {
+                $tahapIni = 'Tidak Lolos / Sudah Diterima di Lowongan Lain';
+            } else {
+                $tahapIni = null;
+            }
         }
 
         return view('pendaftaran.detailPendaftaran', compact('pendaftaran', 'tahapan', 'tahapIni'));

@@ -66,7 +66,9 @@
                         <div class="d-flex flex-column">
                             <small class="text-muted mb-1">Tahapan saat ini</small>
                             <h5 class="fw-bold text-dark mb-0">
-                                @if ($tahapIni === null)
+                                @if ($pendaftaran->statusPendaftaran == 'ditolak')
+                                    <span class="badge bg-danger">Ditolak</span>
+                                @elseif ($tahapIni === null)
                                     <span class="badge bg-secondary">Belum Diproses</span>
                                 @else
                                     <span class="badge bg-gradient-success">

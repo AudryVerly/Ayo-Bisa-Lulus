@@ -193,9 +193,16 @@
                         </div>
                         <div class="form-group mb-2">
                             <label class="form-label fw-bold text-secondary">Nilai Akhir</label>
+                            <div class="custom-tooltip"
+                                data-title="Nilai akhir dihitung otomatis berdasarkan nilai yang diberikan, penalti, dan bobot tugas.">
+                                <i class="material-symbols-rounded text-secondary ms-1">info</i>
+                            </div>
                             <div id="nilaiAkhir" class="form-control bg-light text-dark fw-bold text-center">
                                 0
                             </div>
+                            <small class="text-muted">
+                                Nilai akhir dihitung dari: (Nilai - Penalti) × Bobot / 100
+                            </small>
                         </div>
                     </div>
 
@@ -271,7 +278,9 @@
     <script>
         $(document).ready(function() {
             $('#tablelistugas').DataTable({
-                order: [[4, 'asc']],
+                order: [
+                    [4, 'asc']
+                ],
                 language: {
                     url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json",
                     emptyTable: "Belum ada Tugas yang ditugaskan",
@@ -306,7 +315,10 @@
             $('#idTugas').val(idTugas);
             $('#idMahasiswa').val(idMahasiswa);
 
-            $('#nilaiAwal').val('');
+            $('#nilaiAwal')
+                .attr('min', 0)
+                .attr('max', 100);
+
             $('#penalti').val(0);
             $('#nilaiAkhir').text('0');
             $('#catatan').val('');
@@ -320,35 +332,47 @@
                     .addClass('bg-light text-muted');
             }
 
-            $('#infoNilaiAwal').text(`Nilai maksimal adalah ${bobot}`);
+            $('#infoNilaiAwal').text('Nilai harus diisi dari 0 sampai 100');
+            $('#infoPenalti').text('Penalti hanya berlaku jika terlambat');
         });
 
         //ini buat hitung nilai akhir
-        $('#nilaiAwal , #penalti').on('input', function() {
+        $('#nilaiAwal, #penalti').on('input', function() {
+
             let nilaiAwal = parseFloat($('#nilaiAwal').val()) || 0;
             let penalti = parseFloat($('#penalti').val()) || 0;
 
-            if (nilaiAwal > bobotGlobal) {
-                nilaiAwal = bobotGlobal;
-                $('#nilaiAwal').val(bobotGlobal);
+            // batas nilai 0 - 100
+            if (nilaiAwal > 100) {
+                nilaiAwal = 100;
+                $('#nilaiAwal').val(100);
             }
 
-            // batas penalti
-            if (penalti > bobotGlobal) {
-                penalti = bobotGlobal;
-                $('#penalti').val(bobotGlobal);
+            if (nilaiAwal < 0) {
+                nilaiAwal = 0;
+                $('#nilaiAwal').val(0);
             }
 
-            // penalti gak boleh > nilaiAwal
+            // penalti tidak boleh lebih dari nilai awal
             if (penalti > nilaiAwal) {
                 penalti = nilaiAwal;
                 $('#penalti').val(nilaiAwal);
             }
 
-            let nilaiAkhir = nilaiAwal - penalti;
+            if (penalti < 0) {
+                penalti = 0;
+                $('#penalti').val(0);
+            }
+
+            // rumus baru:
+            // ((nilai - penalti) * bobot) / 100
+            let nilaiBersih = nilaiAwal - penalti;
+
+            let nilaiAkhir = (nilaiBersih * bobotGlobal) / 100;
+
             if (nilaiAkhir < 0) nilaiAkhir = 0;
 
-            $('#nilaiAkhir').text(nilaiAkhir);
+            $('#nilaiAkhir').text(nilaiAkhir.toFixed(2));
         });
 
         $(document).on('click', '.btn-revisi', function() {

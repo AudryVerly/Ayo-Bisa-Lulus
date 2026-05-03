@@ -451,90 +451,120 @@ class PenilaianKinerjaController extends Controller
             'catatan' => 'catatan',
         ]);
 
-        $tugas = DB::table('tugas')
-            ->where('id', $request->idTugas)
-            ->first();
+        try {
 
-        // dd($tugas->idLowongan, $tugas->idUnit);
+            DB::transaction(function () use ($request) {
 
-        if (! $tugas) {
-            return back()->with('error', 'Tugas tidak ditemukan');
+                // 1. Ambil data tugas
+                $tugas = DB::table('tugas')
+                    ->where('id', $request->idTugas)
+                    ->first();
+
+                if (! $tugas) {
+                    throw new \Exception('Tugas tidak ditemukan');
+                }
+
+                // 2. Ambil tugas mahasiswa
+                $tugasMhs = DB::table('tugas_mahasiswa')
+                    ->where('idTugas', $request->idTugas)
+                    ->where('idMahasiswa', $request->idMahasiswa)
+                    ->first();
+
+                if (! $tugasMhs) {
+                    throw new \Exception('Data tugas mahasiswa tidak ditemukan');
+                }
+
+                // 3. Hitung nilai
+                $nilaiAwal = (float) $request->nilaiAwal;
+                $penalti = (float) ($request->penalti ?? 0);
+
+                if ($penalti > $nilaiAwal) {
+                    $penalti = $nilaiAwal;
+                }
+
+                $nilaiBersih = $nilaiAwal - $penalti;
+
+                // nilai akhir per tugas
+                $nilaiAkhir = ($nilaiBersih * $tugas->bobotNilai) / 100;
+
+                // 4. Simpan penilaian
+                DB::table('penilaian_kinerja')->updateOrInsert(
+                    [
+                        'idTugas' => $request->idTugas,
+                        'idMahasiswa' => $request->idMahasiswa,
+                    ],
+                    [
+                        'nilaiAwal' => $nilaiAwal,
+                        'penalti' => $penalti,
+                        'nilaiAkhir' => round($nilaiAkhir, 2),
+                        'catatan' => $request->catatan,
+                    ]
+                );
+
+                // 5. Update progress tugas
+                DB::table('tugas_mahasiswa')
+                    ->where('idTugas', $request->idTugas)
+                    ->where('idMahasiswa', $request->idMahasiswa)
+                    ->update([
+                        'progressTugas' => 'done',
+                    ]);
+
+                // 6. Ambil pendaftaran
+                $pendaftaran = DB::table('pendaftaran')
+                    ->where('idMahasiswa', $request->idMahasiswa)
+                    ->where('idLowongan', $tugas->idLowongan)
+                    ->first();
+
+                if (! $pendaftaran) {
+                    throw new \Exception('Pendaftaran tidak ditemukan');
+                }
+
+                // 7. Hitung total nilai
+                $totalNilai = DB::table('penilaian_kinerja as pk')
+                    ->join('tugas as t', 't.id', '=', 'pk.idTugas')
+                    ->where('pk.idMahasiswa', $request->idMahasiswa)
+                    ->where('t.idLowongan', $tugas->idLowongan)
+                    ->sum('pk.nilaiAkhir');
+
+                // total bobot tugas milik mahasiswa
+                $totalBobot = DB::table('tugas_mahasiswa as tm')
+                    ->join('tugas as t', 't.id', '=', 'tm.idTugas')
+                    ->where('tm.idMahasiswa', $request->idMahasiswa)
+                    ->where('t.idLowongan', $tugas->idLowongan)
+                    ->sum('t.bobotNilai');
+
+                $totalAkhir = 0;
+
+                if ($totalBobot > 0) {
+                    $totalAkhir = ($totalNilai / $totalBobot) * 100;
+                }
+
+                // 8. Ambil kategori
+                $kategori = DB::table('kualitas_kinerja')
+                    ->where('idUnit', $tugas->idUnit)
+                    ->where('status', 1)
+                    ->where('nilaiMin', '<=', $totalAkhir)
+                    ->where('nilaiMax', '>=', $totalAkhir)
+                    ->value('kategori');
+
+                // 9. Simpan total nilai
+                DB::table('total_penilaian_kinerja')->updateOrInsert(
+                    [
+                        'idPendaftaran' => $pendaftaran->id,
+                    ],
+                    [
+                        'totalNilai' => round($totalAkhir, 2),
+                        'kategori' => $kategori,
+                    ]
+                );
+            });
+
+            return back()->with('success', 'Penilaian berhasil disimpan');
+
+        } catch (\Exception $e) {
+
+            return back()->with('error', $e->getMessage());
         }
-
-        // 2. ambil tugas_mahasiswa
-        $tugasMhs = DB::table('tugas_mahasiswa')
-            ->where('idTugas', $request->idTugas)
-            ->where('idMahasiswa', $request->idMahasiswa)
-            ->first();
-
-        if (! $tugasMhs) {
-            return back()->with('error', 'Data tugas mahasiswa tidak ditemukan');
-        }
-
-        // 3. hitung nilai
-        $nilaiAwal = (float) $request->nilaiAwal;
-        $penalti = min((float) ($request->penalti ?? 0), $nilaiAwal);
-        $nilaiAkhir = $nilaiAwal - $penalti;
-
-        // 4. simpan penilaian
-        DB::table('penilaian_kinerja')->updateOrInsert(
-            [
-                'idTugas' => $request->idTugas,
-                'idMahasiswa' => $request->idMahasiswa,
-            ],
-            [
-                'nilaiAwal' => $nilaiAwal,
-                'penalti' => $penalti,
-                'nilaiAkhir' => $nilaiAkhir,
-                'catatan' => $request->catatan,
-            ]
-        );
-
-        // 5. update progress tugas
-        DB::table('tugas_mahasiswa')
-            ->where('idTugas', $request->idTugas)
-            ->where('idMahasiswa', $request->idMahasiswa)
-            ->update([
-                'progressTugas' => 'done',
-            ]);
-
-        // 6. ambil pendaftaran (BERDASARKAN LOWONGAN DARI TUGAS)
-        $pendaftaran = DB::table('pendaftaran')
-            ->where('idMahasiswa', $request->idMahasiswa)
-            ->where('idLowongan', $tugas->idLowongan)
-            ->first();
-        // dd($pendaftaran);
-
-        if (! $pendaftaran) {
-            return back()->with('error', 'Pendaftaran tidak ditemukan');
-        }
-
-        // 7. hitung total nilai
-        $total = DB::table('penilaian_kinerja as pk')
-            ->join('tugas as t', 't.id', '=', 'pk.idTugas')
-            ->where('pk.idMahasiswa', $request->idMahasiswa)
-            ->where('t.idLowongan', $tugas->idLowongan)
-            ->avg('pk.nilaiAkhir') ?? 0;
-        // dd($total);
-
-        // 8. kategori
-        $kategori = DB::table('kualitas_kinerja')
-            ->where('idUnit', $tugas->idUnit)
-            ->where('status', 1)
-            ->where('nilaiMin', '<=', $total)
-            ->where('nilaiMax', '>=', $total)
-            ->value('kategori');
-
-        // 9. simpan total penilaian
-        DB::table('total_penilaian_kinerja')->updateOrInsert(
-            ['idPendaftaran' => $pendaftaran->id],
-            [
-                'totalNilai' => $total,
-                'kategori' => $kategori,
-            ]
-        );
-
-        return back()->with('success', 'Penilaian berhasil disimpan');
     }
 
     public function kirimRevisi(Request $request)
@@ -613,7 +643,8 @@ class PenilaianKinerjaController extends Controller
                     'pk.nilaiAwal',
                     'pk.penalti',
                     'pk.nilaiAkhir',
-                    'pk.catatan'
+                    'pk.catatan',
+                    't.bobotNilai'
                 )
                 ->get();
         }

@@ -114,7 +114,7 @@
 
                                 <div class="row g-2">
 
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <small class="text-muted d-block">
                                             Nilai Awal
                                         </small>
@@ -124,7 +124,12 @@
                                         </span>
                                     </div>
 
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
+                                        <small class="text-muted d-block">Bobot</small>
+                                        <span class="fw-bold text-warning">{{ $t->bobotNilai }}%</span>
+                                    </div>
+
+                                    <div class="col-md-3">
                                         <small class="text-muted d-block">
                                             Penalti
                                         </small>
@@ -134,7 +139,7 @@
                                         </span>
                                     </div>
 
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <small class="text-muted d-block">
                                             Nilai Akhir
                                         </small>
@@ -153,8 +158,10 @@
                                             {{ $t->catatan ?? '-' }}
                                         </div>
                                     </div>
-
                                 </div>
+                                <small class="text-muted">
+                                    Nilai akhir = (Nilai Awal - Penalti) × Bobot / 100
+                                </small>
                             </div>
                         @empty
                             <div class="text-center text-muted py-4">
@@ -165,12 +172,14 @@
 
                         <div class="text-end">
                             <h5 class="mb-0 fw-bold text-info">
-                                Rata-rata : {{ number_format($d->totalNilai, 0) }}
+                                Nilai Kinerja Akhir: {{ number_format($d->totalNilai, 0) }}
                             </h5>
+                            Kategori :
+                            <span class="badge bg-success px-3 py-2">
+                                {{ $d->kategori }}
+                            </span>
                         </div>
-
                     </div>
-
                 </div>
             </div>
         </div>

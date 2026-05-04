@@ -101,17 +101,26 @@ class KriteriaController extends Controller
     public function showKriteriaUnit()
     {
         $idUnit = Auth::user()->staffUnit()->pluck('idUnit')->first();
+        $today = Carbon::today();
+
+        $islLowonganAktif = $isLowonganAktif = DB::table('lowongan')
+            ->where('idUnit', $idUnit)
+            ->whereDate('batasPendaftaran', '<', $today)
+            ->whereDate('mulaiKerja', '>=', $today)
+            ->exists();
+
+        $masihAdaPenilaian = DB::table('wawancara_penilai as wp')
+            ->join('jadwal_wawancara as jw', 'wp.idJadwalWawancara', '=', 'jw.id')
+            ->join('pendaftaran as p', 'jw.idPendaftaran', '=', 'p.id')
+            ->join('lowongan as l', 'p.idLowongan', '=', 'l.id')
+            ->where('l.idUnit', $idUnit)
+            ->whereIn('wp.status', ['terjadwal'])
+            ->exists();
+        $isLocked = $isLowonganAktif || $masihAdaPenilaian;
 
         $kriteriaExists = DB::table('bobot_kriteria')
             ->where('idUnit', $idUnit)
             ->where('is_active', 1)
-            ->exists();
-
-        $today = Carbon::today();
-        $isLocked = DB::table('lowongan')
-            ->where('idUnit', $idUnit)
-            ->whereDate('batasPendaftaran', '<', $today)
-            ->whereDate('mulaiKerja', '>=', $today)
             ->exists();
 
         $kriteria = DB::table('kriteria')
@@ -121,12 +130,6 @@ class KriteriaController extends Controller
             ->where('idUnit', $idUnit)
             ->where('is_active', 1)
             ->pluck('idKriteria')
-            ->toArray();
-        $lockedKriteria = DB::table('penilaian_setiap_bobot as psb')
-            ->join('bobot_kriteria as bk', 'psb.idBobotKriteria', '=', 'bk.id')
-            ->where('bk.idUnit', $idUnit)
-            ->pluck('bk.idKriteria')
-            ->unique()
             ->toArray();
         $kriteriaUnit = DB::table('bobot_kriteria as bk')
             ->join('kriteria as k', 'bk.idKriteria', '=', 'k.id')
@@ -138,7 +141,7 @@ class KriteriaController extends Controller
             )
             ->get();
 
-        return view('kriteria.kriteriaunit', compact('kriteria', 'selected', 'kriteriaUnit', 'isLocked', 'kriteriaExists', 'lockedKriteria'));
+        return view('kriteria.kriteriaunit', compact('kriteria', 'selected', 'kriteriaUnit', 'isLocked', 'kriteriaExists'));
     }
 
     public function storeKriteriaUnit(Request $request)
@@ -182,22 +185,15 @@ class KriteriaController extends Controller
                 ->with('error', 'Minimal pilih 2 kriteria');
         }
 
-        $lockedKriteria = DB::table('penilaian_setiap_bobot as p')
-            ->join('bobot_kriteria as b', 'p.idBobotKriteria', '=', 'b.id')
-            ->where('b.idUnit', $idUnit)
-            ->pluck('b.idKriteria')
-            ->toArray();
-
-        // if (count($kriteriaDipilih) > 5) {
-        //     return back()->with('error', 'Maksimal 5 kriteria');
-        // }
-
-        DB::transaction(function () use ($idUnit, $kriteriaDipilih, $lockedKriteria) {
+        DB::transaction(function () use ($idUnit, $kriteriaDipilih) {
+            
+        DB::table('bobot_kriteria')
+                ->where('idUnit', $idUnit)
+                ->update([
+                    'is_active' => 0,
+                ]);
 
             foreach ($kriteriaDipilih as $idKriteria) {
-                if (in_array($idKriteria, $lockedKriteria)) {
-                    continue;
-                }
 
                 $cek = DB::table('bobot_kriteria')
                     ->where('idUnit', $idUnit)
@@ -211,6 +207,7 @@ class KriteriaController extends Controller
                             'is_active' => 1,
                         ]);
                 } else {
+                    // kalau belum ada insert baru
                     DB::table('bobot_kriteria')->insert([
                         'idUnit' => $idUnit,
                         'idKriteria' => $idKriteria,
@@ -228,6 +225,28 @@ class KriteriaController extends Controller
     public function resetKriteria()
     {
         $idUnit = Auth::user()->staffUnit()->pluck('idUnit')->first();
+        $today = now();
+
+        $islLowonganAktif = $isLowonganAktif = DB::table('lowongan')
+            ->where('idUnit', $idUnit)
+            ->whereDate('batasPendaftaran', '<', $today)
+            ->whereDate('mulaiKerja', '>=', $today)
+            ->exists();
+
+        $masihAdaPenilaian = DB::table('wawancara_penilai as wp')
+            ->join('jadwal_wawancara as jw', 'wp.idJadwalWawancara', '=', 'jw.id')
+            ->join('pendaftaran as p', 'jw.idPendaftaran', '=', 'p.id')
+            ->join('lowongan as l', 'p.idLowongan', '=', 'l.id')
+            ->where('l.idUnit', $idUnit)
+            ->whereIn('wp.status', ['terjadwal'])
+            ->exists();
+
+        if ($isLowonganAktif || $masihAdaPenilaian) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Tidak bisa reset karena proses rekrutmen/penilaian masih berlangsung',
+            ]);
+        }
 
         DB::table('bobot_kriteria')
             ->where('idUnit', $idUnit)

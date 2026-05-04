@@ -31,8 +31,7 @@
                 </div>
                 @if ($isLocked)
                     <div class="alert alert-danger text-white">
-                        Tidak bisa mengubah kriteria karena lowongan sedang dalam proses (pendaftaran sudah ditutup dan
-                        belum mulai kerja).
+                        Tidak bisa mengubah kriteria karena lowongan sedang dalam proses rekrutmen dan lowongan belum mulai sampai mulai kerja.
                     </div>
                 @endif
                 <form action="{{ route('kriteria.kriteriaunit') }}" method="POST">
@@ -41,19 +40,14 @@
                         @foreach ($kriteria as $k)
                             @php
                                 $checked = in_array($k->id, $selected);
-
-                                //yang sudah pernah dipakai di bobot -> tidak boleh di uncentang
-                                $locked = in_array($k->id, $lockedKriteria);
                             @endphp
                             <div class="col-md-4 mb-3">
-                                <div
-                                    class="cardUnit-checkbox {{ $checked ? 'checked' : '' }} {{ $locked ? 'border-success' : '' }}">
+                                <div class="cardUnit-checkbox {{ $checked ? 'checked' : '' }}"
+                                    style="{{ $isLocked ? 'cursor: not-allowed;' : 'cursor: pointer;' }}">
                                     <input type="checkbox" name="kriteria[]" value={{ $k->id }}
-                                        {{ $checked ? 'checked' : '' }} data-locked="{{ $locked ? '1' : '0' }}">
+                                        {{ $checked ? 'checked' : '' }} {{ $isLocked ? 'disabled' : '' }}
+                                        style="{{ $isLocked ? 'cursor: not-allowed;' : '' }}">
                                     <label class="m-0">{{ $k->namaKriteria }}
-                                        @if ($locked)
-                                            <span class="badge bg-success ms-1">Sudah Digunakan</span>
-                                        @endif
                                     </label>
                                 </div>
                             </div>
@@ -70,7 +64,8 @@
                 </form>
                 <div class="text-end">
                     @if ($kriteriaExists)
-                        <button type="button" class="btn btn-danger" {{ $isLocked ? 'disabled' : '' }} id="btnReset">
+                        <button type="button" class="btn btn-danger" id="btnReset"
+                            style="{{ $isLocked ? 'cursor: not-allowed; opacity:0.6;' : '' }}">
                             Reset Kriteria
                         </button>
                     @endif
@@ -205,11 +200,6 @@
                 if (e.target.tagName === 'INPUT') return
 
                 let cb = $(this).find('input');
-                let locked = cb.data('locked');
-
-                if (locked == 1 && cb.is(':checked')) {
-                    return;
-                }
 
                 cb.prop('checked', !cb.prop('checked'))
                 $(this).toggleClass('checked')
@@ -220,14 +210,6 @@
             $(document).on('change', 'input[name="kriteria[]"]', function() {
                 if (isLocked) {
                     $(this).prop('checked', !$(this).prop('checked'));
-                    return;
-                }
-
-                let locked = $(this).data('locked');
-
-                // kalau locked dan mau uncheck -> balikin
-                if (locked == 1 && !$(this).is(':checked')) {
-                    $(this).prop('checked', true);
                     return;
                 }
 

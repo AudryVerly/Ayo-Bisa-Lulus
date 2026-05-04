@@ -22,7 +22,7 @@
                     }
                 @endphp
                 @foreach ($pairs as $index => $pair)
-                    <div class="comparison-card">
+                    <div class="comparison-card" style="{{ $isLocked ? 'cursor: not-allowed; opacity:0.6;' : '' }}">
 
                         <div class="criterion text-center fw-bold mb-2">
                             {{ $pair[0]->namaKriteria }}
@@ -34,7 +34,8 @@
 
                             <input type="range" min="1" max="9" value="1" class="slider"
                                 id="slider{{ $index }}" name="comparison[{{ $pair[0]->id }}-{{ $pair[1]->id }}]"
-                                {{ $isLocked ? 'disabled' : '' }}>
+                                {{ $isLocked ? 'disabled' : '' }} 
+                                style="{{ $isLocked ? 'cursor: not-allowed;' : '' }}">
 
                             <div class="d-flex justify-content-between mt-2 small text-muted">
                                 <span>{{ $pair[0]->namaKriteria }} lebih penting</span>
@@ -54,8 +55,9 @@
                     </div>
                 @endforeach
                 <div class="d-flex justify-content-end mt-3">
-                    <button type="button" id="btnProses" class="btn btn-success" style="width: 15%;"
-                        {{ $isLocked ? 'disabled' : '' }}>
+                    <button type="button" id="btnProses" class="btn btn-success"
+                        {{ $isLocked ? 'disabled' : '' }}
+                       style="width: 15%; {{ $isLocked ? 'cursor: not-allowed; pointer-events: all;' : '' }}">
                         Proses AHP
                     </button>
                 </div>

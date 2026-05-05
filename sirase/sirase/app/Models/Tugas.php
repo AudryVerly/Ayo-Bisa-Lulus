@@ -1,0 +1,47 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Tugas extends Model
+{
+    protected $table = 'tugas';
+
+    protected $fillable = [
+        'idStaffUnit',
+        'idUnit',
+        'idLowongan',
+        'namaTugas',
+        'deskripsi',
+        'bobotNilai',
+        'tenggatPengumpulan',
+    ];
+
+    public function staffunit(){
+        return $this->belongsTo(StaffUnit::class, 'idStaffUnit');
+    }
+
+    public function unit(){
+        return $this->belongsTo(Unit::class,'idUnit');
+    }
+
+    public function penilaiankinerja(){
+        return $this->hasMany(PenilaianKinerja::class, 'idTugas');
+    }
+
+    public function lowongan(){
+        return $this->belongsTo(Lowongan::class, 'idLowongan');
+    }
+
+    public function tugasMahasiswa(){
+        return $this->belongsToMany(
+           Mahasiswa::class,
+           'tugas_mahasiswa',
+           'idTugas',
+           'idMahasiswa'
+        )
+        ->using(TugasMahasiswa::class)
+        ->withPivot('statusPengumpulan','file_path','catatan');
+    }
+}

@@ -126,11 +126,13 @@ class KriteriaController extends Controller
         $kriteria = DB::table('kriteria')
             ->where('status', 1)
             ->get();
+
         $selected = DB::table('bobot_kriteria')
             ->where('idUnit', $idUnit)
             ->where('is_active', 1)
             ->pluck('idKriteria')
             ->toArray();
+            
         $kriteriaUnit = DB::table('bobot_kriteria as bk')
             ->join('kriteria as k', 'bk.idKriteria', '=', 'k.id')
             ->where('bk.idUnit', $idUnit)

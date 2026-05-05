@@ -31,6 +31,7 @@ use Phiki\Phast\Root;
 use App\Mail\MyTestEmail;
 use App\Models\PenilaianKinerja;
 use App\Models\PenilaianSetiapBobot;
+use App\Http\Controllers\KriteriaKinerjaController;
 
 // Route::get('/', function () {
 //     return view('dashboard'); 
@@ -142,6 +143,11 @@ Route::middleware(['auth','role:AdminUnit'])->group(function(){
 
   Route::get('/tugasadmin/listmahasiswa',[PenilaianKinerjaController::class,'showMahasiswa'])->name('tugasadmin.listmahasiswa');
   Route::get('/tugasadmin/listtugas/{idMahasiswa}/{idLowongan}',[PenilaianKinerjaController::class,'showTugasMahasiswaAdmin'])->name('tugasadmin.listtugasadmin');
+
+  Route::get('/kriteriakinerja',[KriteriaKinerjaController::class,'index'])->name('kriteriakinerja.kriteria');
+  Route::post('/kriteriakinerja/storekriteriaunit',[KriteriaKinerjaController::class,'storeKriteriaUnit'])->name('kriteriakinerja.kriteriaUnit');
+  Route::post('/kriteriakinerja/storekriteriaKinerja',[KriteriaKinerjaController::class,'saveKriteriaUnit'])->name('kriteriakinerja.kriteriaKinerja');
+  Route::post('/kriteriakinerja/resetkriteria',[KriteriaKinerjaController::class,'resetKriteria'])->name('kriteriakinerja.resetkriteria');
 
 });
 Route::middleware(['auth','role:StaffUnit'])->group(function(){

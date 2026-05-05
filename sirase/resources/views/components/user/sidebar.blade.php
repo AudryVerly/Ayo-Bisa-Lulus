@@ -196,6 +196,15 @@
             @endcan
             @can('role:AdminUnit')
                 <li class="nav-item">
+                    <a class="nav-link {{ request()->is('kriteriakinerja*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                        href="{{ route('kriteriakinerja.kriteria') }}">
+                        <i class="material-symbols-rounded opacity-5">variable_insert</i>
+                        <span class="nav-link-text ms-1">Kriteria Kinerja<span>
+                    </a>
+                </li>
+            @endcan
+            @can('role:AdminUnit')
+                <li class="nav-item">
                     <a class="nav-link {{ request()->is('nilaikandidat*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
                         href="{{ route('kandidatadmin.listlowongan') }}">
                         <i class="material-symbols-rounded opacity-5">person_heart</i>

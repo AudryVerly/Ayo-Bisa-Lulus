@@ -172,10 +172,10 @@ class KandidatPendaftaranController extends Controller
 
     // jadi ini bakal update status dari pendaftaran
     // juga bakal insert progress kandidat
-    public function updateStatusDaftar(string $idPendaftaran)
+    public function updateStatusDaftar(string $idPendaftaran, Request $request)
     {
         // ini harus pakai transaction karena dia ada 2 kasus sekaligus
-        DB::transaction(function () use ($idPendaftaran) {
+        DB::transaction(function () use ($idPendaftaran, $request) {
 
             $pendaftaran = Pendaftaran::findOrFail($idPendaftaran);
 
@@ -194,7 +194,7 @@ class KandidatPendaftaranController extends Controller
                 ->where('p.idLowongan', '!=', $pendaftaran->idLowongan)
                 ->where('pg.status', 'Terima')
                 ->whereDate('l.akhirKerja', '>=', now())
-                ->existst();
+                ->exists();
 
             // kalau udah keterima lowongan lain
             if ($terimalowonganLain) {
@@ -203,7 +203,8 @@ class KandidatPendaftaranController extends Controller
                 ]);
                 return;
             }
-
+        
+            //benerin nanti
             $request->validate([
                 'catatan' => 'required|string',
             ]);

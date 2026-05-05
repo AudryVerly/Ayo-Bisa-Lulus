@@ -41,4 +41,7 @@ class Unit extends Model
         return $this->hasMany(Tugas::class, 'idUnit');
     }
 
+    public function kriteriakinerja(){
+        return $this->hasMany(KriteriaKinerja::class, 'idUnit');
+    }
 }

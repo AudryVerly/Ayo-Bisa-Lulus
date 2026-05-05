@@ -21,4 +21,8 @@ class Kriteria extends Model
         return $this->hasMany(PairwiseComparison::class, 'kriteriaAwal')
                ->orWhere('kriteriaPembanding', $this->id);
     }
+
+    public function kriteriakinerja(){
+        return $this->hasMany(KriteriaKinerja::class, 'idKriteria');
+    }
 }

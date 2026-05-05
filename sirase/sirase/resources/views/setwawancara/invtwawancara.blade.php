@@ -1,0 +1,429 @@
+@extends('layouts.app')
+@section('breadcrumb', 'Kalendar Wawancara')
+
+@section('content')
+    <div class="container-fluid py-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white">
+                <h6 class="mb-0 fw-semibold">Jadwal Wawancara Kandidat</h6>
+            </div>
+
+            <div class="card-body">
+                <div id="calendar"></div>
+            </div>
+        </div>
+    </div>
+@endsection
+@push('modals')
+    <div class="modal fade" id="modalwawancara" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                {{-- <form method="POST" id="formwawancara" action="{{ route('kandidat.addWawancara') }}"> --}}
+                <form method="POST" id="formwawancara" action="/simpanWawancara">
+                    @csrf
+                    <div
+                        class="modal-header d-flex justify-content-between align-items-center bg-dark text-white px-4 py-3">
+                        <h5 class="modal-title text-white">Tambah Jadwal Wawancara </h5>
+                        <button type="button" class="btn-close btn-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="idPendaftaran" value="{{ $pendaftaran->idPendaftaran }}">
+                        <input type="hidden" name="idProgressTahapan" value="{{ $idProgressTahapan }}">
+                        <div class="form-group mb-1">
+                            <label for="namaMahasiswa" class="form-label fw-bold text-secondary">Nama Mahasiswa</label>
+                            <input type="text" class="form-control border rounded-3 px-3 py-2"
+                                style="background-color: #e0e0e0; color: #6e757b;" value="{{ $pendaftaran->namaMahasiswa }}"
+                                readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="timPenilai"
+                                class="form-label fw-bold text-secondary d-flex align-items-center mt-1">Penilai
+                                <i class="material-symbols-rounded text-secondary ms-1" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Penilai wajib diisi boleh memilih lebih dari 1"
+                                    style="font-size: 1rem; cursor: help;">
+                                    info
+                                </i>
+                            </label>
+                            <div class="d-flex flex-wrap gap-3">
+
+                                @foreach ($penilai as $p)
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="tim_penilai[]"
+                                            value="{{ $p->idStaffUnit }}">
+
+                                        <label class="form-check-label">
+                                            {{ $p->namaPenilai }}
+                                        </label>
+                                    </div>
+                                @endforeach
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="tanggalWawancara"
+                                class="form-label fw-bold text-secondary d-flex align-items-center mt-1">Tanggal
+                                Wawancara
+                                <i class="material-symbols-rounded text-secondary ms-1" data-bs-toggle="tooltip"
+                                    title="Tanggal Wawancara wajib diisi sesuai dengan tanggal yang benar"
+                                    style="font-size: 1rem; cursor: help; line-height:0.5;">
+                                    info
+                                </i>
+                            </label>
+                            <input type="date" name="tanggal_wawancara" id="tanggal_wawancara"
+                                class="form-control border rounded-3 px-3 py-2">
+                        </div>
+                        <div class="form-group">
+                            <label for="Waktu_Mulai"
+                                class="form-label fw-bold text-secondary d-flex align-items-center mt-1">
+                                Waktu Mulai
+                                <i class="material-symbols-rounded text-secondary ms-1" data-bs-toggle="tooltip"
+                                    title="Waktu Mulai wajib diisi" style="font-size: 1rem; cursor: help; line-height:0.5;">
+                                    info
+                                </i>
+                            </label>
+                            <input type="time" name="waktu_mulai" class="form-control border rounded-3 px-3 py-2">
+                        </div>
+                        <div class="form-group">
+                            <label for="Waktu_Selesai"
+                                class="form-label fw-bold text-secondary d-flex align-items-center mt-1">
+                                Waktu Selesai
+                                <i class="material-symbols-rounded text-secondary ms-1" data-bs-toggle="tooltip"
+                                    title="Waktu Selesai wajib diisi" style="font-size: 1rem; cursor: help; line-height:0;">
+                                    info
+                                </i>
+                            </label>
+                            <input type="time" name="waktu_selesai" class="form-control border rounded-3 px-3 py-2">
+                        </div>
+                        <div class="form-group">
+                            <label for="lokasi"
+                                class="form-label fw-bold text-secondary d-flex align-items-center mt-1">Lokasi Interview
+                                <i class="material-symbols-rounded text-secondary ms-1" data-bs-toggle="tooltip"
+                                    title="Lokasi wajib diisi" style="font-size: 1rem; cursor: help; line-height:1;">
+                                    info
+                                </i>
+                            </label>
+                            <input type="text" class="form-control border rounded-3 px-3 py-2" name="lokasi">
+                        </div>
+                        <div class="form-group">
+                            <label for="link_wawancara"
+                                class="form-label fw-bold text-secondary d-flex align-items-center mt-1">Link Wawancara
+                                <i class="material-symbols-rounded text-secondary ms-1" data-bs-toggle="tooltip"
+                                    title="Link Wawancara wajib diisi"
+                                    style="font-size: 1rem; cursor: help; line-height:1;">
+                                    info
+                                </i>
+                            </label>
+                            <div class="input-group border-0 rounded-3 overflow-hidden">
+                                <input type="text" class="form-control border py-2 px-3" id="link_wawancara"
+                                    name="link_wawancara">
+                                <span
+                                    class="input-group-text bg-success text-white border-0 px-3 d-flex align-items-center justify-content-center"
+                                    style="cursor: pointer; line-height: 1; min-height: 100%;"
+                                    onclick="window.open('https://meet.google.com/new', '_blank')">
+                                    Buat Meet
+                                </span>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="keterangan"
+                                class="form-label fw-bold text-secondary d-flex align-items-center">Keterangan
+                                <i class="material-symbols-rounded text-secondary ms-1" data-bs-toggle="tooltip"
+                                    title="Keterangan wajib diisi dan max karakternya 255"
+                                    style="font-size: 1rem; cursor: help; line-height:1;">
+                                    info
+                                </i>
+                            </label>
+                            <textarea id="keterangan" name="keterangan" class="form-control border rounded-3 px-3 py-2" rows="2">
+                            </textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        {{-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button> --}}
+                        <button type="submit" class="btn btn-success" id="btnSubmit">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalDetailJadwal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header d-flex justify-content-between align-items-center bg-dark text-white px-4 py-3">
+                    <h5 class="modal-title text-white">Detail Wawancara </h5>
+                    <button type="button" class="btn-close btn-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Nama Mahasiswa: </strong><span id="detailNama"></span></p>
+                    <p><strong>Lowongan:</strong> <span id="detailLowongan"></span></p>
+                    <p><strong>Penilai:</strong> <span id="detailPenilai"></span></p>
+                    <p><strong>Waktu Wawancara:</strong> <span id="detailJam"></span></p>
+                    <p><strong>Lokasi:</strong> <span id="detailLokasi"></span></p>
+                    <p><strong>Link:</strong> <a href="#" id="detailLink" target="_blank">Buka Link</a></p>
+                    <p><strong>Keterangan:</strong> <span id="detailKeterangan"></span></p>
+                    <p><strong>Status:</strong> <span id="detailStatus"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger d-none" id="btnCancelJadwal">
+                        Cancel Jadwal
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+@endpush
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        let jumlahPenilaiFix = {{ $jumlahPenilaiFix ?? 'null' }};
+        
+        $(document).ready(function() {
+            let calendarEl = document.getElementById('calendar');
+
+            let today = new Date();
+            let offset = today.getTimezoneOffset() * 60000;
+            let localDate = new Date(Date.now() - offset).toISOString().split("T")[0];
+            $('#tanggal_wawancara').attr('min', localDate);
+            let dataWawancara = [];
+
+            let calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+
+                headerToolbar: {
+                    left: 'prev,next,today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+
+                height: '75vh',
+                selectable: true,
+
+                eventTimeFormat: {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                },
+
+                displayEventTime: true,
+                displayEventEnd: true,
+
+                dateClick: function(info) {
+                    $('#modalwawancara').modal('show');
+                    $('#tanggal_wawancara').val(info.dateStr);
+                },
+
+                eventClick: function(info) {
+                    let e = info.event.extendedProps;
+                    
+                    $('#detailNama').text(info.event.title);
+                    $('#detailLowongan').text(e.namaLowongan);
+                    $('#detailJam').text(e.waktuMulai + ' - ' + e.waktuSelesai);
+                    $('#detailPenilai').text(e.penilaiStr);
+                    $('#detailLokasi').text(e.lokasi || '-');
+                    $('#detailLink').attr('href', e.link || '#');
+                    $('#detailKeterangan').text(e.keterangan || '-');
+                    $('#detailStatus').text(e.status);
+
+                    if (e.status === 'terjadwal') {
+                        $('#btnCancelJadwal').removeClass('d-none')
+                            .data('id', info.event.id);
+                    } else {
+                        $('#btnCancelJadwal').addClass('d-none');
+                    }
+
+                    $('#modalDetailJadwal').modal('show');
+                }
+            });
+
+            $('input[name="tim_penilai[]"]').on('change', function() {
+
+                if (jumlahPenilaiFix === null) return;
+
+                let checked = $('input[name="tim_penilai[]"]:checked');
+
+                if (checked.length > jumlahPenilaiFix) {
+                    this.checked = false;
+
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Batas Penilai',
+                        text: 'Jumlah penilai harus ' + jumlahPenilaiFix + ' orang'
+                    });
+                }
+            });
+
+            let tanggalvent = [];
+
+            $.get("{{ route('jadwal.alljadwal') }}", function(data) {
+                dataWawancara = data;
+                data.forEach(function(item) {
+                    let warna = '#6c757d';
+                    if (item.status === 'terjadwal') warna = '#0d6efd';
+                    else if (item.status === 'selesai') warna = '#198754';
+                    else if (item.status === 'batal') warna = '#dc3545';
+
+                    calendar.addEvent({
+                        id: item.id,
+                        title: item.namaMahasiswa,
+                        start: item.tanggalWawancara + 'T' + item.waktuMulai,
+                        end: item.tanggalWawancara + 'T' + item.waktuSelesai,
+                        backgroundColor: warna,
+                        borderColor: warna,
+                        extendedProps: {
+                            namaLowongan: item.namaLowongan,
+                            penilaiStr: item.penilaiStr,
+                            lokasi: item.lokasi,
+                            link: item.link,
+                            keterangan: item.keterangan,
+                            status: item.status,
+                            waktuMulai: item.waktuMulai,
+                            waktuSelesai: item.waktuSelesai
+                        }
+                    });
+                });
+
+            });
+            calendar.render();
+        });
+
+        $('#formwawancara').on('submit', function(e) {
+            e.preventDefault();
+
+            let checked = $('input[name="tim_penilai[]"]:checked').length;
+            if (checked === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Oops',
+                    text: 'Minimal pilih 1 penilai'
+                });
+                return;
+            }
+
+            if (jumlahPenilaiFix !== null && checked > jumlahPenilaiFix) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Tidak Sesuai',
+                    text: 'Jumlah penilai harus ' + jumlahPenilaiFix + ' orang'
+                });
+                return;
+            }
+
+            // let form = $(this);
+            let formData = $(this).serialize();
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+
+                success: function(response) {
+
+                    if (response.status === false) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: response.message
+                        });
+                        return;
+                    }
+
+                    // $('#modalwawancara').modal('hide');
+                    let modal = bootstrap.Modal.getInstance(document.getElementById('modalwawancara'));
+                    if (modal) modal.hide();
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil',
+                        text: 'Jadwal wawancara berhasil dibuat',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+
+                    $('#modalwawancara').modal('hide');
+                },
+                error: function(xhr) {
+                    $('#modalwawancara').modal('hide');
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: xhr.responseJSON?.message ?? 'Terjadi kesalahan'
+                    });
+                }
+
+            });
+        });
+
+        $('#btnCancelJadwal').on('click', function() {
+
+            let id = $(this).data('id');
+            let modal = bootstrap.Modal.getInstance(
+                document.getElementById('modalDetailJadwal')
+            );
+
+            if (modal) {
+                modal.hide();
+            }
+
+            Swal.fire({
+                title: 'Cancel Jadwal?',
+                text: "Jadwal wawancara akan dibatalkan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya Cancel',
+                cancelButtonText: 'Tidak'
+            }).then((result) => {
+
+                if (result.isConfirmed) {
+
+                    $.ajax({
+                        url: '/jadwal/cancel/' + id,
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+
+                        success: function(response) {
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: response.message ?? 'Jadwal berhasil dicancel',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                        },
+
+                        error: function(xhr) {
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: xhr.responseJSON?.message ?? 'Terjadi kesalahan'
+                            });
+
+                        }
+                    });
+
+                }
+
+            });
+
+        });
+
+        $('#modalwawancara').on('hidden.bs.modal', function() {
+            let form = $('#formwawancara');
+
+            form[0].reset();
+
+            // paksa bersihin semua input
+            form.find('input[type="text"], input[type="date"], input[type="time"], textarea').val('');
+
+            // uncheck checkbox
+            form.find('input[type="checkbox"]').prop('checked', false);
+        });
+    </script>
+@endpush
